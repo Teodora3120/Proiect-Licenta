@@ -196,7 +196,7 @@ const FirstStep = ({ handleType }) => {
                     className="fas fa-user text-info"
                     style={{ fontSize: '45px' }}
                   />
-                  <h1 className="display-4 mt-3">I'm a patient</h1>
+                  <h1 className="display-4 mt-3">I'm a customer</h1>
                 </div>
               </Col>
               <Col>
@@ -208,7 +208,7 @@ const FirstStep = ({ handleType }) => {
                     className="fas fa-user-md text-primary"
                     style={{ fontSize: '45px' }}
                   />
-                  <h1 className="display-4 mt-3">I'm a doctor</h1>
+                  <h1 className="display-4 mt-3">I'm a worker</h1>
                 </div>
               </Col>
             </Row>
