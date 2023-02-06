@@ -39,7 +39,7 @@ const AdminNavbar = () => {
           <NavbarBrand to="/" tag={Link}>
             <img
               alt="..."
-              src={require('../../assets/img/brand/logo-white.png')}
+              src={require('../../assets/img/brand/schedule-mate-logo-white-on-transparent-background.png')}
             />
           </NavbarBrand>
           <button className="navbar-toggler" id="navbar-collapse-main">

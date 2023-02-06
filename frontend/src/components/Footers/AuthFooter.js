@@ -34,7 +34,7 @@ const Login = () => {
                   href="#"
                   target="_blank"
                 >
-                  Green Team
+                  Vestale Ionela-Teodora
                 </a>
               </div>
             </Col>

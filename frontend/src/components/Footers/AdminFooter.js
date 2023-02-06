@@ -33,7 +33,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               target="_blank"
             >
-              Green Team
+              Vestale Ionela-Teodora
             </a>
           </div>
         </Col>

@@ -1,8 +1,7 @@
 import Axios from 'axios'
 
-const version  = 1;
 const axios = Axios.create({
-  baseURL: `https://localhost:7244/api/v${version}`,
+  baseURL: `https://localhost:7244/api/`,
   headers: { 'Content-Type': 'application/json' },
 })
 
