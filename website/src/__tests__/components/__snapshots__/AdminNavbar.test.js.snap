@@ -1,0 +1,146 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should test Register component 1`] = `
+<Fragment>
+  <Navbar
+    className="navbar-top navbar-dark"
+    expand="md"
+    id="navbar-main"
+    tag="nav"
+  >
+    <Container
+      fluid={true}
+      tag="div"
+    >
+      <Link
+        className="h2 mb-0 text-white d-none d-lg-inline-block"
+        to="/"
+      />
+      <Nav
+        className="align-items-center d-none d-md-flex"
+        navbar={true}
+        tag="ul"
+        vertical={false}
+      >
+        <UncontrolledDropdown
+          nav={true}
+        >
+          <DropdownToggle
+            aria-haspopup={true}
+            className="pr-0"
+            color="secondary"
+            nav={true}
+          >
+            <Media
+              className="align-items-center"
+            >
+              <span
+                className="avatar avatar-sm rounded-circle"
+              >
+                <img
+                  alt="..."
+                  src="team-4-800x800.jpg"
+                />
+              </span>
+              <Media
+                className="ml-2 d-none d-lg-block"
+              >
+                <span
+                  className="mb-0 text-sm font-weight-bold"
+                />
+              </Media>
+            </Media>
+          </DropdownToggle>
+          <DropdownMenu
+            className="dropdown-menu-arrow"
+            flip={true}
+            right={true}
+            tag="div"
+          >
+            <DropdownItem
+              className="noti-title"
+              header={true}
+              tag="div"
+              toggle={true}
+            >
+              <h6
+                className="text-overflow m-0"
+              >
+                Welcome!
+              </h6>
+            </DropdownItem>
+            <DropdownItem
+              tag={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              to="/admin/user-profile"
+              toggle={true}
+            >
+              <i
+                className="ni ni-single-02"
+              />
+              <span>
+                My profile
+              </span>
+            </DropdownItem>
+            <DropdownItem
+              tag={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              to="/admin/user-profile"
+              toggle={true}
+            >
+              <i
+                className="ni ni-settings-gear-65"
+              />
+              <span>
+                Settings
+              </span>
+            </DropdownItem>
+            <DropdownItem
+              divider={true}
+              tag="button"
+              toggle={true}
+            />
+            <DropdownItem
+              href="#pablo"
+              onClick={[Function]}
+              tag="button"
+              toggle={true}
+            >
+              <i
+                className="ni ni-user-run"
+              />
+              <span>
+                Logout
+              </span>
+            </DropdownItem>
+          </DropdownMenu>
+        </UncontrolledDropdown>
+      </Nav>
+    </Container>
+  </Navbar>
+</Fragment>
+`;

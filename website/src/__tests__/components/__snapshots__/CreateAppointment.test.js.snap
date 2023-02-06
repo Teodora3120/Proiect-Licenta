@@ -1,0 +1,273 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should test CreateAppointment component 1`] = `
+<Fragment>
+  <Header />
+  <Container
+    className="mt--7"
+    fluid={true}
+    tag="div"
+  >
+    <Row
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        <Card
+          className="shadow"
+          tag="div"
+        >
+          <CardHeader
+            className="bg-transparent"
+            tag="div"
+          >
+            <h3
+              className="mb-0"
+            >
+              Create an Appointment
+            </h3>
+          </CardHeader>
+          <CardBody
+            tag="div"
+          >
+            <Row
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+            >
+              <Col
+                className="text-left"
+                lg="6"
+                md="12"
+                sm="12"
+                style={
+                  Object {
+                    "zIndex": "100",
+                  }
+                }
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                  ]
+                }
+                xs="12"
+              >
+                <h3>
+                  Select a speciality
+                </h3>
+                <ForwardRef
+                  className="basic-single"
+                  classNamePrefix="select"
+                  defaultValue={null}
+                  isClearable={true}
+                  isSearchable={true}
+                  name="speciality"
+                  onChange={[Function]}
+                  options={Array []}
+                />
+              </Col>
+            </Row>
+            <Row
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+            >
+              <Col
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                  ]
+                }
+              >
+                <Row
+                  tag="div"
+                  widths={
+                    Array [
+                      "xs",
+                      "sm",
+                      "md",
+                      "lg",
+                      "xl",
+                    ]
+                  }
+                />
+              </Col>
+            </Row>
+            <Row
+              className="d-none"
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+            >
+              <Col
+                className="text-left mt-3"
+                lg="6"
+                md="12"
+                sm="12"
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                  ]
+                }
+                xs="12"
+              >
+                <h3>
+                  Select Date
+                </h3>
+                <F
+                  calendarClassName="w-100"
+                  colorPrimary="#0eca2d"
+                  colorPrimaryLight="#cff4d5"
+                  customDaysClassName={Array []}
+                  locale="en"
+                  maximumDate={null}
+                  minimumDate={null}
+                  onChange={[Function]}
+                  renderFooter={[Function]}
+                  shouldHighlightWeekends={true}
+                  slideAnimationDuration="0.4s"
+                  value={null}
+                />
+              </Col>
+              <Col
+                lg="6"
+                md="12"
+                sm="12"
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                  ]
+                }
+                xs="12"
+              >
+                <h3
+                  className="mt-3"
+                >
+                  Choose a time range
+                </h3>
+                <p
+                  className="mt-0 text-sm"
+                >
+                  Please select a date first.
+                </p>
+                <Row
+                  tag="div"
+                  widths={
+                    Array [
+                      "xs",
+                      "sm",
+                      "md",
+                      "lg",
+                      "xl",
+                    ]
+                  }
+                />
+              </Col>
+            </Row>
+          </CardBody>
+          <CardFooter
+            className="border-0 pt-0"
+            tag="div"
+          >
+            <Row
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+            >
+              <Col
+                className="text-right d-flex align-items-center justify-content-end"
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                  ]
+                }
+              >
+                <Button
+                  color="primary btn-lg"
+                  disabled={true}
+                  onClick={[Function]}
+                  tag="button"
+                >
+                  Create Appointment
+                </Button>
+              </Col>
+            </Row>
+          </CardFooter>
+        </Card>
+      </Col>
+    </Row>
+  </Container>
+</Fragment>
+`;

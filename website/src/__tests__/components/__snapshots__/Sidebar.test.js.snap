@@ -1,0 +1,364 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should test Sidebar component 1`] = `
+<Navbar
+  className="navbar-vertical fixed-left navbar-light bg-white"
+  expand="md"
+  id="sidenav-main"
+  tag="nav"
+>
+  <Container
+    fluid={true}
+    tag="div"
+  >
+    <button
+      className="navbar-toggler"
+      onClick={[Function]}
+      type="button"
+    >
+      <span
+        className="navbar-toggler-icon"
+      />
+    </button>
+    <Nav
+      className="align-items-center d-md-none"
+      tag="ul"
+      vertical={false}
+    >
+      <UncontrolledDropdown
+        nav={true}
+      >
+        <DropdownToggle
+          aria-haspopup={true}
+          className="nav-link-icon"
+          color="secondary"
+          nav={true}
+        >
+          <i
+            className="ni ni-bell-55"
+          />
+        </DropdownToggle>
+        <DropdownMenu
+          aria-labelledby="navbar-default_dropdown_1"
+          className="dropdown-menu-arrow"
+          flip={true}
+          right={true}
+          tag="div"
+        >
+          <DropdownItem
+            tag="button"
+            toggle={true}
+          >
+            Action
+          </DropdownItem>
+          <DropdownItem
+            tag="button"
+            toggle={true}
+          >
+            Another action
+          </DropdownItem>
+          <DropdownItem
+            divider={true}
+            tag="button"
+            toggle={true}
+          />
+          <DropdownItem
+            tag="button"
+            toggle={true}
+          >
+            Something else here
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledDropdown>
+      <UncontrolledDropdown
+        nav={true}
+      >
+        <DropdownToggle
+          aria-haspopup={true}
+          color="secondary"
+          nav={true}
+        >
+          <Media
+            className="align-items-center"
+          >
+            <span
+              className="avatar avatar-sm rounded-circle"
+            >
+              <img
+                alt="..."
+                src="team-1-800x800.jpg"
+              />
+            </span>
+          </Media>
+        </DropdownToggle>
+        <DropdownMenu
+          className="dropdown-menu-arrow"
+          flip={true}
+          right={true}
+          tag="div"
+        >
+          <DropdownItem
+            className="noti-title"
+            header={true}
+            tag="div"
+            toggle={true}
+          >
+            <h6
+              className="text-overflow m-0"
+            >
+              Welcome!
+            </h6>
+          </DropdownItem>
+          <DropdownItem
+            tag={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "displayName": "Link",
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="/admin/user-profile"
+            toggle={true}
+          >
+            <i
+              className="ni ni-single-02"
+            />
+            <span>
+              My profile
+            </span>
+          </DropdownItem>
+          <DropdownItem
+            tag={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "displayName": "Link",
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="/admin/user-profile"
+            toggle={true}
+          >
+            <i
+              className="ni ni-settings-gear-65"
+            />
+            <span>
+              Settings
+            </span>
+          </DropdownItem>
+          <DropdownItem
+            tag={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "displayName": "Link",
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="/admin/user-profile"
+            toggle={true}
+          >
+            <i
+              className="ni ni-calendar-grid-58"
+            />
+            <span>
+              Activity
+            </span>
+          </DropdownItem>
+          <DropdownItem
+            tag={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "displayName": "Link",
+                "propTypes": Object {
+                  "innerRef": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to="/admin/user-profile"
+            toggle={true}
+          >
+            <i
+              className="ni ni-support-16"
+            />
+            <span>
+              Support
+            </span>
+          </DropdownItem>
+          <DropdownItem
+            divider={true}
+            tag="button"
+            toggle={true}
+          />
+          <DropdownItem
+            href="#pablo"
+            onClick={[Function]}
+            tag="button"
+            toggle={true}
+          >
+            <i
+              className="ni ni-user-run"
+            />
+            <span>
+              Logout
+            </span>
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledDropdown>
+    </Nav>
+    <Collapse
+      appear={false}
+      enter={true}
+      exit={true}
+      in={false}
+      isOpen={false}
+      mountOnEnter={false}
+      navbar={true}
+      onEnter={[Function]}
+      onEntered={[Function]}
+      onEntering={[Function]}
+      onExit={[Function]}
+      onExited={[Function]}
+      onExiting={[Function]}
+      tag="div"
+      timeout={350}
+      unmountOnExit={false}
+    >
+      <div
+        className="navbar-collapse-header d-md-none"
+      >
+        <Row
+          tag="div"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+            ]
+          }
+        >
+          <Col
+            className="collapse-close"
+            tag="div"
+            widths={
+              Array [
+                "xs",
+                "sm",
+                "md",
+                "lg",
+                "xl",
+              ]
+            }
+            xs="6"
+          >
+            <button
+              className="navbar-toggler"
+              onClick={[Function]}
+              type="button"
+            >
+              <span />
+              <span />
+            </button>
+          </Col>
+        </Row>
+      </div>
+      <Form
+        className="mt-4 mb-3 d-md-none"
+        tag="form"
+      >
+        <InputGroup
+          className="input-group-rounded input-group-merge"
+          tag="div"
+        >
+          <Input
+            aria-label="Search"
+            className="form-control-rounded form-control-prepended"
+            placeholder="Search"
+            type="search"
+          />
+          <InputGroupAddon
+            addonType="prepend"
+            tag="div"
+          >
+            <InputGroupText
+              tag="span"
+            >
+              <span
+                className="fa fa-search"
+              />
+            </InputGroupText>
+          </InputGroupAddon>
+        </InputGroup>
+      </Form>
+      <Nav
+        navbar={true}
+        tag="ul"
+        vertical={false}
+      >
+        <NavItem
+          key="0"
+          tag="li"
+        >
+          <NavLink
+            activeClassName="active"
+            onClick={[Function]}
+            tag={
+              Object {
+                "$$typeof": Symbol(react.forward_ref),
+                "displayName": "NavLink",
+                "propTypes": Object {
+                  "activeClassName": [Function],
+                  "activeStyle": [Function],
+                  "aria-current": [Function],
+                  "className": [Function],
+                  "exact": [Function],
+                  "innerRef": [Function],
+                  "isActive": [Function],
+                  "location": [Function],
+                  "onClick": [Function],
+                  "replace": [Function],
+                  "sensitive": [Function],
+                  "strict": [Function],
+                  "style": [Function],
+                  "target": [Function],
+                  "to": [Function],
+                },
+                "render": [Function],
+              }
+            }
+            to={NaN}
+          >
+            <i />
+          </NavLink>
+        </NavItem>
+      </Nav>
+    </Collapse>
+  </Container>
+</Navbar>
+`;

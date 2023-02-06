@@ -1,0 +1,137 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should test PatientSurvey component 1`] = `
+<Fragment>
+  <Header />
+  <Container
+    className="mt--7"
+    fluid={true}
+    tag="div"
+  >
+    <Row
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+        ]
+      }
+    >
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+          ]
+        }
+      >
+        <Card
+          className="shadow"
+          tag="div"
+        >
+          <CardHeader
+            className="bg-transparent"
+            tag="div"
+          >
+            <h3
+              className="mb-0"
+            >
+              Complete Survey
+            </h3>
+          </CardHeader>
+          <CardBody
+            tag="div"
+          >
+            <Row
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+            >
+              <Col
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                  ]
+                }
+              >
+                <h3>
+                  Please answer all questions by checking the right answer for you.
+                </h3>
+              </Col>
+            </Row>
+          </CardBody>
+          <CardFooter
+            className="border-0 pt-0"
+            tag="div"
+          >
+            <Row
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+            >
+              <Col
+                className="text-right  d-flex align-items-center justify-content-end"
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                  ]
+                }
+              >
+                <h3
+                  className="text-right text-success mb-0 mr-3 font-weight-600 d-none"
+                  style={
+                    Object {
+                      "transition": ".2s all",
+                    }
+                  }
+                >
+                  Survey sent successfully!
+                </h3>
+                <Button
+                  className="btn btn-lg"
+                  color="primary"
+                  onClick={[Function]}
+                  tag="button"
+                >
+                  Save survey
+                </Button>
+              </Col>
+            </Row>
+          </CardFooter>
+        </Card>
+      </Col>
+    </Row>
+  </Container>
+</Fragment>
+`;

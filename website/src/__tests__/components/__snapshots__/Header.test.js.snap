@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should test Header component 1`] = `
+<Fragment>
+  <div
+    className="header bg-gradient-info pb-6 pt-5 pt-md-8"
+  >
+    <Container
+      fluid={true}
+      tag="div"
+    >
+      <div
+        className="header-body"
+      />
+    </Container>
+  </div>
+</Fragment>
+`;

@@ -1,0 +1,251 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should test Register component 1`] = `
+<Fragment>
+  <Navbar
+    className="navbar-top navbar-horizontal navbar-dark"
+    expand="md"
+    tag="nav"
+  >
+    <Container
+      className="px-4"
+      tag="div"
+    >
+      <NavbarBrand
+        tag={
+          Object {
+            "$$typeof": Symbol(react.forward_ref),
+            "displayName": "Link",
+            "propTypes": Object {
+              "innerRef": [Function],
+              "onClick": [Function],
+              "replace": [Function],
+              "target": [Function],
+              "to": [Function],
+            },
+            "render": [Function],
+          }
+        }
+        to="/"
+      >
+        <img
+          alt="..."
+          src="logo-white.png"
+        />
+      </NavbarBrand>
+      <button
+        className="navbar-toggler"
+        id="navbar-collapse-main"
+      >
+        <span
+          className="navbar-toggler-icon"
+        />
+      </button>
+      <UncontrolledCollapse
+        navbar={true}
+        toggleEvents={
+          Array [
+            "touchstart",
+            "click",
+          ]
+        }
+        toggler="#navbar-collapse-main"
+      >
+        <div
+          className="navbar-collapse-header d-md-none"
+        >
+          <Row
+            tag="div"
+            widths={
+              Array [
+                "xs",
+                "sm",
+                "md",
+                "lg",
+                "xl",
+              ]
+            }
+          >
+            <Col
+              className="collapse-brand"
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+              xs="6"
+            >
+              <Link
+                to="/"
+              >
+                <img
+                  alt="..."
+                  src="argon-react.png"
+                />
+              </Link>
+            </Col>
+            <Col
+              className="collapse-close"
+              tag="div"
+              widths={
+                Array [
+                  "xs",
+                  "sm",
+                  "md",
+                  "lg",
+                  "xl",
+                ]
+              }
+              xs="6"
+            >
+              <button
+                className="navbar-toggler"
+                id="navbar-collapse-main"
+              >
+                <span />
+                <span />
+              </button>
+            </Col>
+          </Row>
+        </div>
+        <Nav
+          className="ml-auto"
+          navbar={true}
+          tag="ul"
+          vertical={false}
+        >
+          <NavItem
+            tag="li"
+          >
+            <NavLink
+              className="nav-link-icon"
+              tag={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              to="/auth/login"
+            >
+              <i
+                className="ni ni-planet"
+              />
+              <span
+                className="nav-link-inner--text"
+              >
+                Dashboard
+              </span>
+            </NavLink>
+          </NavItem>
+          <NavItem
+            tag="li"
+          >
+            <NavLink
+              className="nav-link-icon"
+              tag={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              to="/auth/register"
+            >
+              <i
+                className="ni ni-circle-08"
+              />
+              <span
+                className="nav-link-inner--text"
+              >
+                Register
+              </span>
+            </NavLink>
+          </NavItem>
+          <NavItem
+            tag="li"
+          >
+            <NavLink
+              className="nav-link-icon"
+              tag={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              to="/auth/login"
+            >
+              <i
+                className="ni ni-key-25"
+              />
+              <span
+                className="nav-link-inner--text"
+              >
+                Login
+              </span>
+            </NavLink>
+          </NavItem>
+          <NavItem
+            tag="li"
+          >
+            <NavLink
+              className="nav-link-icon"
+              tag={
+                Object {
+                  "$$typeof": Symbol(react.forward_ref),
+                  "displayName": "Link",
+                  "propTypes": Object {
+                    "innerRef": [Function],
+                    "onClick": [Function],
+                    "replace": [Function],
+                    "target": [Function],
+                    "to": [Function],
+                  },
+                  "render": [Function],
+                }
+              }
+              to="/auth/login"
+            >
+              <i
+                className="ni ni-single-02"
+              />
+              <span
+                className="nav-link-inner--text"
+              >
+                Profile
+              </span>
+            </NavLink>
+          </NavItem>
+        </Nav>
+      </UncontrolledCollapse>
+    </Container>
+  </Navbar>
+</Fragment>
+`;
