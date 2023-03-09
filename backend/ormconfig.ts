@@ -9,4 +9,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     database: 'schedule_mate',
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     synchronize: true,
+    autoLoadEntities: true,
 };
