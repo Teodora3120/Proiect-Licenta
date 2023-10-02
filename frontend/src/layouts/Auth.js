@@ -1,11 +1,11 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.2.2
+* Argon Dashboard React - v1.2.3
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
@@ -16,7 +16,7 @@
 
 */
 import React from "react";
-import { useLocation, Route, Switch, Redirect } from "react-router-dom";
+import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
 
@@ -43,14 +43,10 @@ const Auth = (props) => {
   }, [location]);
 
   const getRoutes = (routes) => {
-    return routes.PATIENT.map((prop, key) => {
+    return routes.map((prop, key) => {
       if (prop.layout === "/auth") {
         return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
+          <Route path={prop.path} element={prop.component} key={key} exact />
         );
       } else {
         return null;
@@ -64,12 +60,13 @@ const Auth = (props) => {
         <AuthNavbar />
         <div className="header bg-gradient-info py-7 py-lg-8">
           <Container>
-            <div className="header-body text-center mb-4">
+            <div className="header-body text-center mb-7">
               <Row className="justify-content-center">
                 <Col lg="5" md="6">
                   <h1 className="text-white">Welcome!</h1>
-                  <p className="text-lead text-white">
-                    In order to use our services, you need an account.<br/>Please create one or log in.
+                  <p className="text-lead text-light">
+                    Use these awesome forms to login or create new account in
+                    your project for free.
                   </p>
                 </Col>
               </Row>
@@ -94,10 +91,10 @@ const Auth = (props) => {
         {/* Page content */}
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
-            <Switch>
+            <Routes>
               {getRoutes(routes)}
-              <Redirect from="*" to="/auth/login" />
-            </Switch>
+              <Route path="*" element={<Navigate to="/auth/login" replace />} />
+            </Routes>
           </Row>
         </Container>
       </div>

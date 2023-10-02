@@ -1,11 +1,11 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.2.2
+* Argon Dashboard React - v1.2.3
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
@@ -17,10 +17,10 @@
 */
 
 // reactstrap components
-import { useEffect, useState } from 'react'
 import {
   Button,
   Card,
+  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -28,58 +28,59 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Col
-} from 'reactstrap'
-import AuthApi from 'api/auth'
-import { useHistory } from 'react-router-dom'
-import { useUserContext } from "context/UserContext";
+  Row,
+  Col,
+} from "reactstrap";
 
 const Login = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
-  const [showPassword, setShowPassword] = useState(false)
-  const history = useHistory()
-  const { login: loginContext } = useUserContext()
-
-  useEffect(() => {
-    setError(null)
-  }, [email, password])
-
-  const login = async (e) => {
-    if (e) e.preventDefault()
-    if (!email || !password) {
-      return setError('Please fill in your credentials.')
-    }
-    try {
-      const credentials = {
-        email: email,
-        password: password,
-      }
-      const response = await AuthApi.Login(credentials)
-      const user = response.data
-      localStorage.setItem(
-        'user',
-        JSON.stringify({ ...user.userDetails, jwtToken: user.jwtToken }),
-      )
-      loginContext();
-      return history.push('/admin/index')
-    } catch (err) {
-      console.log(err)
-      if (err && err.response && err.response.data) {
-        return setError(err.response.data)
-      }
-      return setError('There has been an error.')
-    }
-  }
-
   return (
     <>
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
+          <CardHeader className="bg-transparent pb-5">
+            <div className="text-muted text-center mt-2 mb-3">
+              <small>Sign in with</small>
+            </div>
+            <div className="btn-wrapper text-center">
+              <Button
+                className="btn-neutral btn-icon"
+                color="default"
+                href="#pablo"
+                onClick={(e) => e.preventDefault()}
+              >
+                <span className="btn-inner--icon">
+                  <img
+                    alt="..."
+                    src={
+                      require("../../assets/img/icons/common/github.svg")
+                        .default
+                    }
+                  />
+                </span>
+                <span className="btn-inner--text">Github</span>
+              </Button>
+              <Button
+                className="btn-neutral btn-icon"
+                color="default"
+                href="#pablo"
+                onClick={(e) => e.preventDefault()}
+              >
+                <span className="btn-inner--icon">
+                  <img
+                    alt="..."
+                    src={
+                      require("../../assets/img/icons/common/google.svg")
+                        .default
+                    }
+                  />
+                </span>
+                <span className="btn-inner--text">Google</span>
+              </Button>
+            </div>
+          </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
             <div className="text-center text-muted mb-4">
-              <h3>Sign in with credentials</h3>
+              <small>Or sign in with credentials</small>
             </div>
             <Form role="form">
               <FormGroup className="mb-3">
@@ -90,7 +91,6 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                     type="email"
                     autoComplete="new-email"
@@ -101,20 +101,12 @@ const Login = () => {
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
-                      <i
-                        onClick={() => setShowPassword(!showPassword)}
-                        className={
-                          showPassword
-                            ? 'fas fa-eye-slash c-pointer'
-                            : 'fas fa-eye c-pointer'
-                        }
-                      />
+                      <i className="ni ni-lock-circle-open" />
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
-                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
-                    type={showPassword ? 'text' : 'password'}
+                    type="password"
                     autoComplete="new-password"
                   />
                 </InputGroup>
@@ -132,27 +124,37 @@ const Login = () => {
                   <span className="text-muted">Remember me</span>
                 </label>
               </div>
-              {error ? (
-                <h4 className="text-center text-danger mt-3 font-weight-400">
-                  {error}
-                </h4>
-              ) : null}
               <div className="text-center">
-                <Button
-                  onClick={login}
-                  className="my-4"
-                  color="primary"
-                  type="submit"
-                >
+                <Button className="my-4" color="primary" type="button">
                   Sign in
                 </Button>
               </div>
             </Form>
           </CardBody>
         </Card>
+        <Row className="mt-3">
+          <Col xs="6">
+            <a
+              className="text-light"
+              href="#pablo"
+              onClick={(e) => e.preventDefault()}
+            >
+              <small>Forgot password?</small>
+            </a>
+          </Col>
+          <Col className="text-right" xs="6">
+            <a
+              className="text-light"
+              href="#pablo"
+              onClick={(e) => e.preventDefault()}
+            >
+              <small>Create new account</small>
+            </a>
+          </Col>
+        </Row>
       </Col>
     </>
-  )
-}
+  );
+};
 
-export default Login
+export default Login;

@@ -1,11 +1,11 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.2.2
+* Argon Dashboard React - v1.2.3
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
@@ -28,142 +28,19 @@ import {
   Container,
   Row,
   Col,
-} from 'reactstrap'
+} from "reactstrap";
 // core components
-import UserHeader from 'components/Headers/UserHeader.js'
-import { useUserContext } from 'context/UserContext'
-import { useState, useEffect } from 'react'
-import DoctorApi from 'api/doctor'
-import PatientApi from 'api/patient'
-import Swal from 'sweetalert2'
-import AuthApi from 'api/auth'
-import { useHistory } from 'react-router-dom'
+import UserHeader from "components/Headers/UserHeader.js";
 
 const Profile = () => {
-  const { user } = useUserContext()
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [email, setEmail] = useState('')
-  const [accountType, setAccountType] = useState('')
-  const [speciality, setSpeciality] = useState('')
-  const [description, setDescription] = useState('')
-  const [username, setUsername] = useState('')
-  const history = useHistory()
-  const [price, setPrice] = useState()
-
-  useEffect(() => {
-    const fetchData = async () => {
-      await getUser()
-    }
-    fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-
-  const getUser = async () => {
-    try {
-      if (user.accountType === "DOCTOR") {
-        const response = await DoctorApi.GetDoctorById(user.id);
-        console.log(response.data)
-        setEmail(user.email)
-        setAccountType(user.accountType)
-        setUsername(response.data.username)
-        setFirstName(response.data.firstName)
-        setLastName(response.data.lastName)
-        setDescription(response.data.description)
-        setPrice(response.data.appointmentPrice)
-        setSpeciality(response.data.speciality)
-      } else if (user.accountType === 'PATIENT') {
-        const response = await PatientApi.GetPatientById(user.id);
-        console.log(response.data)
-        setEmail(user.email)
-        setAccountType(user.accountType)
-        setUsername(response.data.username)
-        setFirstName(response.data.firstName)
-        setLastName(response.data.lastName)
-        setDescription(response.data.description)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const updateProfile = async () => {
-    try {
-      const data = {
-        firstName: firstName,
-        lastName: lastName,
-        username: username,
-        description: description,
-      }
-      if (accountType === 'DOCTOR') {
-        await DoctorApi.UpdateDoctor(user.id, { updateUserDto: data, appointmentPrice: Number(price) })
-        const response = await DoctorApi.GetDoctorById(user.id);
-        console.log(response.data)
-        setUsername(response.data.username)
-        setFirstName(response.data.firstName)
-        setLastName(response.data.lastName)
-        setDescription(response.data.description)
-        setPrice(response.data.appointmentPrice)
-      } else if (accountType === 'PATIENT') {
-        await PatientApi.UpdatePatient(user.id, data)
-        const response = await PatientApi.GetPatientById(user.id);
-        setUsername(response.data.username)
-        setFirstName(response.data.firstName)
-        setLastName(response.data.lastName)
-        setDescription(response.data.description)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  const deletePopup = async () => {
-    const { value: password } = await Swal.fire({
-      title: 'Sorry to see you go',
-      text:
-        'In order to permanently delete your account, please confirm your password.',
-      icon: 'info',
-      input: 'password',
-      inputPlaceholder: 'Enter your password',
-      inputAttributes: {
-        maxlength: 30,
-        autocapitalize: 'off',
-        autocorrect: 'off',
-      },
-      confirmButtonText: 'Delete',
-      showCloseButton: true
-    })
-    if (password) {
-      try {
-        await AuthApi.Login({
-          email: user.email,
-          password: password,
-        })
-        if (user.accountType === 'DOCTOR') {
-          await DoctorApi.DeleteDoctor(user.id)
-        } else if (user.accountType === 'PATIENT') {
-          await PatientApi.DeletePatient(user.id)
-        }
-        history.push('/auth/logout')
-      } catch (error) {
-        return Swal.fire({
-          title: 'Oops',
-          text: 'Your password is wrong.',
-          icon: 'error',
-        })
-      }
-    }
-  }
-
   return (
     <>
-      <UserHeader firstName={firstName} lastName={lastName} />
+      <UserHeader />
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>
-          <Col className="order-xl-2 mb-5 mb-xl-0 d-flex" xl="4">
-            <Card className="card-profile shadow flex-fill">
+          <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
+            <Card className="card-profile shadow">
               <Row className="justify-content-center">
                 <Col className="order-lg-2" lg="3">
                   <div className="card-profile-image">
@@ -171,56 +48,98 @@ const Profile = () => {
                       <img
                         alt="..."
                         className="rounded-circle"
-                        src={require('../../assets/img/dashboard/default-avatar.jpg')}
+                        src={require("../../assets/img/theme/team-4-800x800.jpg")}
                       />
                     </a>
                   </div>
                 </Col>
               </Row>
-              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"></CardHeader>
+              <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                <div className="d-flex justify-content-between">
+                  <Button
+                    className="mr-4"
+                    color="info"
+                    href="#pablo"
+                    onClick={(e) => e.preventDefault()}
+                    size="sm"
+                  >
+                    Connect
+                  </Button>
+                  <Button
+                    className="float-right"
+                    color="default"
+                    href="#pablo"
+                    onClick={(e) => e.preventDefault()}
+                    size="sm"
+                  >
+                    Message
+                  </Button>
+                </div>
+              </CardHeader>
               <CardBody className="pt-0 pt-md-4">
                 <Row>
                   <div className="col">
+                    <div className="card-profile-stats d-flex justify-content-center mt-md-5">
+                      <div>
+                        <span className="heading">22</span>
+                        <span className="description">Friends</span>
+                      </div>
+                      <div>
+                        <span className="heading">10</span>
+                        <span className="description">Photos</span>
+                      </div>
+                      <div>
+                        <span className="heading">89</span>
+                        <span className="description">Comments</span>
+                      </div>
+                    </div>
                   </div>
                 </Row>
-                <div className="text-center mt-6">
+                <div className="text-center">
                   <h3>
-                    {firstName} {lastName}
+                    Jessica Jones
+                    <span className="font-weight-light">, 27</span>
                   </h3>
                   <div className="h5 font-weight-300">
-                    <i className="fas fa-globe mr-2" />
-                    Romania
+                    <i className="ni location_pin mr-2" />
+                    Bucharest, Romania
                   </div>
                   <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
-                    {accountType ? accountType : "No information"}
+                    Solution Manager - Creative Tim Officer
                   </div>
-                  {user.accountType === "DOCTOR" ?
                   <div>
                     <i className="ni education_hat mr-2" />
-                    {speciality ? speciality : "No information"}
-                  </div> : null}
-
+                    University of Computer Science
+                  </div>
                   <hr className="my-4" />
-                  <p>{description}</p>
+                  <p>
+                    Ryan — the name taken by Melbourne-raised, Brooklyn-based
+                    Nick Murphy — writes, performs and records all of his own
+                    music.
+                  </p>
+                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                    Show more
+                  </a>
                 </div>
               </CardBody>
             </Card>
           </Col>
-          <Col className="order-xl-1 d-flex" xl="8">
-            <Card className="bg-secondary shadow flex-fill">
+          <Col className="order-xl-1" xl="8">
+            <Card className="bg-secondary shadow">
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
-                  <Col className="text-left">
-                    <h2 className="mb-0">My account</h2>
+                  <Col xs="8">
+                    <h3 className="mb-0">My account</h3>
                   </Col>
-                  <Col className="text-right">
+                  <Col className="text-right" xs="4">
                     <Button
                       color="primary"
                       href="#pablo"
-                      onClick={updateProfile}
+                      onClick={(e) => e.preventDefault()}
+                      size="sm"
                     >
-                      Save Changes
+                      Settings
                     </Button>
                   </Col>
                 </Row>
@@ -242,11 +161,10 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue={username}
+                            defaultValue="lucky.jesse"
                             id="input-username"
                             placeholder="Username"
                             type="text"
-                            onChange={(e) => setUsername(e.target.value)}
                           />
                         </FormGroup>
                       </Col>
@@ -260,11 +178,9 @@ const Profile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue={email}
                             id="input-email"
                             placeholder="jesse@example.com"
                             type="email"
-                            style={{ pointerEvents: 'none' }}
                           />
                         </FormGroup>
                       </Col>
@@ -279,13 +195,11 @@ const Profile = () => {
                             First name
                           </label>
                           <Input
-                            maxLength={20}
                             className="form-control-alternative"
-                            defaultValue={firstName}
+                            defaultValue="Lucky"
                             id="input-first-name"
                             placeholder="First name"
                             type="text"
-                            onChange={(e) => setFirstName(e.target.value)}
                           />
                         </FormGroup>
                       </Col>
@@ -298,39 +212,93 @@ const Profile = () => {
                             Last name
                           </label>
                           <Input
-                            maxLength={20}
                             className="form-control-alternative"
-                            defaultValue={lastName}
+                            defaultValue="Jesse"
                             id="input-last-name"
                             placeholder="Last name"
                             type="text"
-                            onChange={(e) => setLastName(e.target.value)}
                           />
                         </FormGroup>
                       </Col>
                     </Row>
-                    {user.accountType === "DOCTOR" ?
-                      <Row>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-price"
-                            >
-                              Price
-                            </label>
-                            <Input
-                              max="999"
-                              className="form-control-alternative"
-                              defaultValue={price}
-                              id="input-price"
-                              placeholder="Appointment Price"
-                              type="number"
-                              onChange={(e) => setPrice(e.target.value)}
-                            />
-                          </FormGroup>
-                        </Col>
-                      </Row> : null}
+                  </div>
+                  <hr className="my-4" />
+                  {/* Address */}
+                  <h6 className="heading-small text-muted mb-4">
+                    Contact information
+                  </h6>
+                  <div className="pl-lg-4">
+                    <Row>
+                      <Col md="12">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-address"
+                          >
+                            Address
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                            id="input-address"
+                            placeholder="Home Address"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col lg="4">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-city"
+                          >
+                            City
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="New York"
+                            id="input-city"
+                            placeholder="City"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="4">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-country"
+                          >
+                            Country
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue="United States"
+                            id="input-country"
+                            placeholder="Country"
+                            type="text"
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="4">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-country"
+                          >
+                            Postal code
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            id="input-postal-code"
+                            placeholder="Postal code"
+                            type="number"
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
                   </div>
                   <hr className="my-4" />
                   {/* Description */}
@@ -342,19 +310,12 @@ const Profile = () => {
                         className="form-control-alternative"
                         placeholder="A few words about you ..."
                         rows="4"
-                        defaultValue={description}
+                        defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
+                        Open Source."
                         type="textarea"
-                        onChange={(e) => setDescription(e.target.value)}
                       />
                     </FormGroup>
                   </div>
-                  <hr className="my-4" />
-                  <h4
-                    onClick={deletePopup}
-                    className="text-left mb-0 mt-4 text-danger c-pointer"
-                  >
-                    Delete my Account
-                  </h4>
                 </Form>
               </CardBody>
             </Card>
@@ -362,7 +323,7 @@ const Profile = () => {
         </Row>
       </Container>
     </>
-  )
-}
+  );
+};
 
-export default Profile
+export default Profile;
