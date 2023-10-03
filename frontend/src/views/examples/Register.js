@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react'
 import Select from 'react-select'
 import { useNavigate } from 'react-router-dom'
 import '../../assets/css/custom.css'
-// import { useUserContext } from "context/UserContext";
+import { useUserContext } from "context/UserContext";
 
 const hasSpecialChars = (password, rule) => {
   console.log(rule.split(""))
@@ -40,7 +40,7 @@ const Register = () => {
 
   const [stepWizardRef, setStepWizardRef] = useState(null)
   const navigate = useNavigate()
-  // const { login: loginContext } = useUserContext()
+  const { login: loginContext } = useUserContext()
 
   useEffect(() => {
     setError(null)
