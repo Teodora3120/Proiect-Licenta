@@ -1,17 +1,41 @@
-import React from "react";
-import { useLocation, Route, Routes, Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, Route, Routes, Navigate, useNavigate } from "react-router-dom";
 // reactstrap components
 import { Container } from "reactstrap";
 // core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import AdminFooter from "components/Footers/AdminFooter.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
+import { useUserContext } from "context/UserContext";
 
 import routes from "routes.js";
 
 const Admin = (props) => {
+  const [paths, setPaths] = useState([])
+  const { user } = useUserContext()
+  const navigate = useNavigate()
+
   const mainContent = React.useRef(null);
   const location = useLocation();
+
+  useEffect(() => {
+    if (user && user._id) {
+      switch (String(user.type).toLowerCase()) {
+        case 'admin':
+          setPaths(routes.ADMIN)
+          break
+        case 'customer':
+          setPaths(routes.CUSTOMER)
+          break
+        case 'worker':
+          setPaths(routes.WORKER)
+          break
+        default:
+          setPaths(routes.CUSTOMER)
+          break
+      }
+    }
+  }, [navigate, user])
 
   React.useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -32,12 +56,12 @@ const Admin = (props) => {
   };
 
   const getBrandText = (path) => {
-    for (let i = 0; i < routes.length; i++) {
+    for (let i = 0; i < paths.length; i++) {
       if (
-        props?.location?.pathname.indexOf(routes[i].layout + routes[i].path) !==
+        location.pathname.indexOf(paths[i].layout + paths[i].path) !==
         -1
       ) {
-        return routes[i].name;
+        return paths[i].name;
       }
     }
     return "Brand";
@@ -47,10 +71,10 @@ const Admin = (props) => {
     <>
       <Sidebar
         {...props}
-        routes={routes}
+        routes={paths}
         logo={{
           innerLink: "/admin/index",
-          imgSrc: require("../assets/img/brand/argon-react.png"),
+          imgSrc: require("../assets/img/brand/colored_logo_transparent_background.png"),
           imgAlt: "...",
         }}
       />
@@ -60,7 +84,7 @@ const Admin = (props) => {
           brandText={getBrandText(props?.location?.pathname)}
         />
         <Routes>
-          {getRoutes(routes)}
+          {getRoutes(paths)}
           <Route path="*" element={<Navigate to="/admin/index" replace />} />
         </Routes>
         <Container fluid>

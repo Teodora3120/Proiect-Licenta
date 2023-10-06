@@ -27,7 +27,7 @@ const Auth = (props) => {
   }, [location]);
 
   const getRoutes = (routes) => {
-    return routes.map((prop, key) => {
+    return routes.CUSTOMER.map((prop, key) => {
       if (prop.layout === "/auth") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
@@ -44,11 +44,11 @@ const Auth = (props) => {
         <AuthNavbar />
         <div className="header bg-gradient-info py-7 py-lg-8">
           <Container>
-            <div className="header-body text-center mb-7">
+            <div className="header-body text-center mb-lg-3 mb-md-5 mb-sm-5 mb-xs-5">
               <Row className="justify-content-center">
                 <Col lg="5" md="6">
                   <h1 className="text-white">Welcome!</h1>
-                  <p className="text-lead text-light">
+                  <p className="text-lead text-white">
                     Feel free to use our services in order to get fast access to any services or to post your work on our platform.
                   </p>
                 </Col>

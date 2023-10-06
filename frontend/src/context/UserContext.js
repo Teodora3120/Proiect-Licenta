@@ -8,11 +8,14 @@ import React, {
 } from 'react'
 
 // create context
-const UserContext = createContext()
+const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
     // the value that will be given to the context
-    const [user, setUser] = useState(null)
+    const [user, setUser] = useState(() => {
+        const userLocal = localStorage.getItem('user');
+        return userLocal ? JSON.parse(userLocal) : null;
+    });
 
     useEffect(() => {
         fetchAndSetUser()
@@ -23,7 +26,7 @@ const UserContextProvider = ({ children }) => {
     }, [])
 
     const logout = useCallback(() => {
-        setUser(null)
+        localStorage.removeItem('user')
     }, [])
 
     const fetchAndSetUser = () => {
@@ -33,6 +36,10 @@ const UserContextProvider = ({ children }) => {
             setUser(userLocal)
         }
     }
+
+    useEffect(() => {
+        localStorage.setItem('user', JSON.stringify(user))
+    }, [user])
 
     // memoize the full context value
     const contextValue = useMemo(

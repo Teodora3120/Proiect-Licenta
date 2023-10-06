@@ -1,7 +1,7 @@
+import { useEffect, useState } from 'react'
 import {
   Button,
   Card,
-  CardHeader,
   CardBody,
   FormGroup,
   Form,
@@ -9,23 +9,55 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Row,
-  Col,
-} from "reactstrap";
+  Col
+} from 'reactstrap'
+import AuthApi from 'api/auth'
+import { json, useNavigate } from 'react-router-dom'
+import { useUserContext } from "context/UserContext";
 
 const Login = () => {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const navigate = useNavigate()
+  const { login: loginContext } = useUserContext()
+
+  useEffect(() => {
+    setError(null)
+  }, [email, password])
+
+  const login = async (e) => {
+    e.preventDefault()
+
+    if (!email || !password) {
+      return setError('Please fill in your credentials.')
+    }
+    try {
+      const credentials = {
+        email: email,
+        password: password,
+      }
+      console.log(credentials)
+      const response = await AuthApi.Login(credentials)
+      const user = response.data.user
+      localStorage.setItem('user', JSON.stringify(user))
+      loginContext();
+      navigate('/admin/index')
+    } catch (err) {
+      console.log(err)
+      return setError('There has been an error.')
+    }
+  }
+
   return (
     <>
       <Col lg="5" md="7">
         <Card className="bg-secondary shadow border-0">
-          <CardHeader>
-            <Row>
-              <Col className="text-center">
-                <h3>Sign in with credentials</h3>
-              </Col>
-            </Row>
-          </CardHeader>
           <CardBody className="px-lg-5 py-lg-5">
+            <div className="text-center text-muted mb-4">
+              <h3>Sign in with credentials</h3>
+            </div>
             <Form role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
@@ -35,6 +67,7 @@ const Login = () => {
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                     type="email"
                     autoComplete="new-email"
@@ -45,60 +78,46 @@ const Login = () => {
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
                     <InputGroupText>
-                      <i className="ni ni-lock-circle-open" />
+                      <i
+                        onClick={() => setShowPassword(!showPassword)}
+                        className={
+                          showPassword
+                            ? 'fas fa-eye-slash c-pointer'
+                            : 'fas fa-eye c-pointer'
+                        }
+                      />
                     </InputGroupText>
                   </InputGroupAddon>
                   <Input
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                   />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input
-                  className="custom-control-input"
-                  id=" customCheckLogin"
-                  type="checkbox"
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor=" customCheckLogin"
-                >
-                  <span className="text-muted">Remember me</span>
-                </label>
-              </div>
+
+              {error ? (
+                <h4 className="text-center text-danger mt-3 font-weight-400">
+                  {error}
+                </h4>
+              ) : null}
               <div className="text-center">
-                <Button className="my-4" color="primary" type="button">
+                <Button
+                  onClick={login}
+                  className="my-4"
+                  color="primary"
+                  type="submit"
+                >
                   Sign in
                 </Button>
               </div>
             </Form>
           </CardBody>
         </Card>
-        <Row className="mt-3">
-          <Col xs="6">
-            <a
-              className="text-light"
-              href="#pablo"
-              onClick={(e) => e.preventDefault()}
-            >
-              <small>Forgot password?</small>
-            </a>
-          </Col>
-          <Col className="text-right" xs="6">
-            <a
-              className="text-light"
-              href="#pablo"
-              onClick={(e) => e.preventDefault()}
-            >
-              <small>Create new account</small>
-            </a>
-          </Col>
-        </Row>
       </Col>
     </>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
 
     const { user } = useUserContext()
 
-    if (!user || !user.jwt_token) {
+    if (!user || !user.token) {
         return <Navigate to="/auth/login" replace />
     }
 
