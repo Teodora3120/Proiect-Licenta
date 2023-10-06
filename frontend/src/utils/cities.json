@@ -1,0 +1,93 @@
+[
+    {
+      "id": 1,
+      "name": "Bucharest",
+      "latitude": 44.4268,
+      "longitude": 26.1025
+    },
+    {
+      "id": 2,
+      "name": "Cluj-Napoca",
+      "latitude": 46.7712,
+      "longitude": 23.6236
+    },
+    {
+      "id": 3,
+      "name": "Timișoara",
+      "latitude": 45.7489,
+      "longitude": 21.2087
+    },
+    {
+      "id": 4,
+      "name": "Iași",
+      "latitude": 47.1585,
+      "longitude": 27.6014
+    },
+    {
+      "id": 5,
+      "name": "Constanța",
+      "latitude": 44.1806,
+      "longitude": 28.6348
+    },
+    {
+      "id": 6,
+      "name": "Craiova",
+      "latitude": 44.3302,
+      "longitude": 23.7949
+    },
+    {
+      "id": 7,
+      "name": "Oradea",
+      "latitude": 47.0458,
+      "longitude": 21.9192
+    },
+    {
+      "id": 8,
+      "name": "Brașov",
+      "latitude": 45.6556,
+      "longitude": 25.6104
+    },
+    {
+      "id": 9,
+      "name": "Arad",
+      "latitude": 46.1866,
+      "longitude": 21.3126
+    },
+    {
+      "id": 10,
+      "name": "Sibiu",
+      "latitude": 45.7983,
+      "longitude": 24.1256
+    },
+    {
+      "id": 11,
+      "name": "Ploiești",
+      "latitude": 44.9384,
+      "longitude": 26.0299
+    },
+    {
+      "id": 12,
+      "name": "Târgu Mureș",
+      "latitude": 46.5402,
+      "longitude": 24.5600
+    },
+    {
+      "id": 13,
+      "name": "Baia Mare",
+      "latitude": 47.6531,
+      "longitude": 23.5795
+    },
+    {
+      "id": 14,
+      "name": "Bacău",
+      "latitude": 46.5712,
+      "longitude": 26.9112
+    },
+    {
+      "id": 15,
+      "name": "Buzău",
+      "latitude": 45.1485,
+      "longitude": 26.8339
+    }
+  ]
+  

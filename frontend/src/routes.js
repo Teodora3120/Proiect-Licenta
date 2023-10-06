@@ -1,5 +1,7 @@
 import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
+import WProfile from "views/examples/WProfile.js";
+import CProfile from "views/examples/CProfile.js";
+
 import Maps from "views/examples/Maps.js";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
@@ -35,7 +37,7 @@ var routes = {
       path: "/my-profile",
       name: "My Profile",
       icon: "ni ni-single-02 text-yellow",
-      component: <Profile />,
+      component: <CProfile />,
       layout: "/admin",
     },
     {
@@ -96,7 +98,7 @@ var routes = {
       path: "/my-profile",
       name: "My Profile",
       icon: "ni ni-single-02 text-yellow",
-      component: <Profile />,
+      component: <WProfile />,
       layout: "/admin",
     },
     {

@@ -7,7 +7,6 @@ const Logout = () => {
     const { logout } = useUserContext()
 
     useEffect(() => {
-        localStorage.removeItem("user");
         logout();
         return navigate("/auth/login")
     }, [navigate, logout])

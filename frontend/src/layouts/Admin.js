@@ -85,7 +85,7 @@ const Admin = (props) => {
         />
         <Routes>
           {getRoutes(paths)}
-          <Route path="*" element={<Navigate to="/admin/index" replace />} />
+          {/* <Route path="*" element={<Navigate to="/admin/index" replace />} /> */}
         </Routes>
         <Container fluid>
           <AdminFooter />

@@ -11,9 +11,6 @@ router.post('/register', async (req, res) => {
         const { firstName, lastName, email, password, age, city, type } = req.body;
         // Check if the email is already taken
         const existingUser = await User.findOne({ email });
-        console.log(email)
-        console.log("existing user", existingUser)
-
         if (existingUser) {
             return res.status(403).json({ error: 'Email already exists' });
         }
@@ -36,7 +33,6 @@ const jwtSecret = process.env.JWT_SECRET;
 router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-
         // Find the user by email
         const user = await User.findOne({ email });
 

@@ -22,6 +22,8 @@ import { useNavigate } from 'react-router-dom';
 import '../../assets/css/custom.css';
 import { useUserContext } from 'context/UserContext';
 import AuthApi from '../../api/auth';
+import citiesJsonArray from '../../utils/cities.json';
+
 
 const hasSpecialChars = (password, rule) => {
   if (rule.split('').some((v) => password.includes(v))) {
@@ -29,12 +31,6 @@ const hasSpecialChars = (password, rule) => {
   }
   return false;
 };
-
-const cities = [
-  { value: 1, label: 'Alba Iulia' },
-  { value: 2, label: 'Botosani' },
-  { value: 3, label: 'Iasi' },
-];
 
 const Register = () => {
   const [userType, setUserType] = useState('');
@@ -49,6 +45,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cities, setCities] = useState([])
 
   const navigate = useNavigate();
   const { login: loginContext } = useUserContext();
@@ -56,6 +53,15 @@ const Register = () => {
   useEffect(() => {
     setError(null);
   }, [firstName, lastName, email, password, repeatPassword, age, city]);
+
+  useEffect(() => {
+    if (cities) {
+      const citiesArray = citiesJsonArray.map((city) => {
+        return { label: city.name, value: city.id }
+      })
+      setCities(citiesArray)
+    }
+  }, [citiesJsonArray])
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -227,7 +233,7 @@ const Register = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
                   type="email"
-                  autoComplete="new-email"
+                  autoComplete="email"
                 />
               </InputGroup>
             </FormGroup>
@@ -284,7 +290,7 @@ const Register = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete="new-password"
+                  autoComplete="current-password"
                 />
               </InputGroup>
             </FormGroup>

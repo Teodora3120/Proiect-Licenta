@@ -9,10 +9,12 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Col
+  Col,
+  CardHeader,
+  Row
 } from 'reactstrap'
 import AuthApi from 'api/auth'
-import { json, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useUserContext } from "context/UserContext";
 
 const Login = () => {
@@ -22,6 +24,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   const { login: loginContext } = useUserContext()
+  const { user } = useUserContext();
 
   useEffect(() => {
     setError(null)
@@ -53,12 +56,12 @@ const Login = () => {
   return (
     <>
       <Col lg="5" md="7">
-        <Card className="bg-secondary shadow border-0">
+        {!user || !user.token ? <Card className="bg-secondary shadow border-0">
           <CardBody className="px-lg-5 py-lg-5">
             <div className="text-center text-muted mb-4">
               <h3>Sign in with credentials</h3>
             </div>
-            <Form role="form">
+            <Form autoComplete='on' role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -70,7 +73,7 @@ const Login = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                     type="email"
-                    autoComplete="new-email"
+                    autoComplete="email"
                   />
                 </InputGroup>
               </FormGroup>
@@ -114,8 +117,37 @@ const Login = () => {
               </div>
             </Form>
           </CardBody>
-        </Card>
-      </Col>
+        </Card> :
+          <Card>
+            <CardHeader>
+              <Row>
+                <Col>
+                  <h3 className='text-center text-muted'>Welcome back</h3>
+                </Col>
+              </Row>
+            </CardHeader>
+            <CardBody>
+              <Row>
+                <Col className='text-center d-flex flex-column'>
+                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                    <img
+                      alt="..."
+                      className="rounded-circle img-fluid"
+                      style={{ width: "75px" }}
+                      src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
+                    />
+                  </a>
+                  <span className='mt-2 font-weight-600'>
+                    {user.firstName} {user.lastName}
+                  </span>
+                  {user.type === "customer" ? <small className='mt-2'>Find a worker for your needs </small> : user.type === "worker" ? <small className='mt-2'>Lets find some customers for you</small> : ""}
+                  <Button color="primary" className='mt-4' onClick={() => navigate("/admin/index")} > Go to dashboard <i className='fa-solid fa-arrow-right text-white ml-1' /></Button>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>}
+
+      </Col >
     </>
   )
 }

@@ -27,6 +27,7 @@ const UserContextProvider = ({ children }) => {
 
     const logout = useCallback(() => {
         localStorage.removeItem('user')
+        setUser(null)
     }, [])
 
     const fetchAndSetUser = () => {
