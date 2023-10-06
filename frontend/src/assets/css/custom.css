@@ -24,3 +24,11 @@
 .swal2-html-container {
   overflow-x: hidden !important;
 }
+
+.bg-auth-1 {
+  background-color: #87ceeb;
+}
+
+.bg-auth-2 {
+  background-color: #f5f5f5;
+}

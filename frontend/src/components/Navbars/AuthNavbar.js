@@ -13,7 +13,7 @@ import {
   Col,
 } from "reactstrap";
 
-const AdminNavbar = () => {
+const AuthNavbar = () => {
   return (
     <>
       <Navbar className="navbar-top navbar-horizontal navbar-dark" expand="md">
@@ -21,7 +21,7 @@ const AdminNavbar = () => {
           <NavbarBrand to="/" tag={Link}>
             <img
               alt="..."
-              src={require("../../assets/img/brand/black_logo_transparent_background.png")}
+              src={require("../../assets/img/brand/white_logo_transparent_background.png")}
             />
           </NavbarBrand>
           <button className="navbar-toggler" id="navbar-collapse-main">
@@ -73,4 +73,4 @@ const AdminNavbar = () => {
   );
 };
 
-export default AdminNavbar;
+export default AuthNavbar;

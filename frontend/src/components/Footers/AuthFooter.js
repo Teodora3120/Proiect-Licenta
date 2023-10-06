@@ -1,3 +1,4 @@
+
 import { Container, Row, Col } from "reactstrap";
 
 const Login = () => {
@@ -9,7 +10,7 @@ const Login = () => {
             <Col xl="6">
               <div className="copyright text-center text-xl-left text-muted">
                 © {new Date().getFullYear()}{" "}
-                Vestale Ionela-Teodora
+                <span className="text-yellow">Vestale Ionela-Teodora</span>
               </div>
             </Col>
             <Col xl="6">
