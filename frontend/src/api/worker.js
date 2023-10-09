@@ -9,8 +9,12 @@ class WorkerApi {
         return await axios.put('/worker/edit-service', data)
     }
 
+    static async DeleteService(serviceId) {
+        return await axios.delete(`/worker/delete-service/${serviceId}`)
+    }
+
     static async GetServices(userId) {
-        return await axios.get(`/worker/get-services/${userId}`,)
+        return await axios.get(`/worker/get-services/${userId}`)
     }
 }
 

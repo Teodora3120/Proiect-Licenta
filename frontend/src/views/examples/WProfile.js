@@ -36,6 +36,7 @@ const WProfile = () => {
   const [service, setService] = useState({})
   const [serviceObjectEdit, setServiceObjectEdit] = useState({})
   const [services, setServices] = useState([])
+  const [serviceObjectDeleteId, setServiceObjectDeleteId] = useState("")
   const [serviceError, setServiceError] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
@@ -85,6 +86,7 @@ const WProfile = () => {
 
   const toggleModalDelete = () => {
     setIsModalOpenDelete(!isModalOpenDelete);
+    setServiceObjectDeleteId("")
   };
 
 
@@ -143,6 +145,23 @@ const WProfile = () => {
       console.log(response)
       await getServices();
       toggleModalEdit();
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  const deleteService = async () => {
+    if (!serviceObjectDeleteId) {
+      console.log(serviceObjectDeleteId)
+      setServiceError("Service id not found.")
+      return
+    }
+    try {
+      const response = await WorkerApi.DeleteService(serviceObjectDeleteId)
+      console.log(response)
+      await getServices();
+      toggleModalDelete();
     } catch (error) {
       console.log(error)
     }
@@ -429,12 +448,17 @@ const WProfile = () => {
                                   }}>Edit</Button>
                                 </td>
                                 <td>
-                                  <Button color="danger" size="sm">Delete</Button>
+                                  <Button color="danger" size="sm" onClick={() => {
+                                    toggleModalDelete();
+                                    setServiceObjectDeleteId(service._id);
+                                  }}>Delete</Button>
                                 </td>
                               </tr>
                             }) :
                               <tr>
-                                <h4 className="font-weight-400 mt-2">There are no services to display.</h4>
+                                <td>
+                                  <h4 className="font-weight-400 mt-2">There are no services to display.</h4>
+                                </td>
                               </tr>}
 
                           </tbody>
@@ -604,6 +628,26 @@ const WProfile = () => {
           </Button>
           <Button color="secondary" size="sm" onClick={toggleModalEdit}>
             Close
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      <Modal isOpen={isModalOpenDelete} toggle={toggleModalDelete}>
+        <ModalHeader toggle={toggleModalDelete} className="bg-secondary">Delete service</ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col>
+              <h4>Are you sure that you want to delete this service?</h4>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          {serviceError ? <h4 className="text-danger font-weight-400 text-right">{serviceError}</h4> : ""}
+          <Button color="primary" size="sm" onClick={deleteService}>
+            Yes
+          </Button>
+          <Button color="secondary" size="sm" onClick={toggleModalDelete}>
+            No
           </Button>
         </ModalFooter>
       </Modal>

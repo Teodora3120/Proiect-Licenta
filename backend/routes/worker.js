@@ -75,6 +75,34 @@ router.put('/edit-service', async (req, res) => {
 });
 
 
+
+router.delete('/delete-service/:serviceId', async (req, res) => {
+    try {
+        const serviceId = req.params.serviceId;
+
+        console.log(serviceId)
+        // Check if all required fields are present in the request body
+        if (!serviceId) {
+            return res.status(400).json({ error: 'Missing service id.' });
+        }
+
+        // Find the service by its ID
+        const service = await Service.findById(serviceId);
+
+        if (!service) {
+            return res.status(404).json({ error: 'Service not found' });
+        }
+        // Delete the service from the database
+        await Service.findByIdAndRemove(serviceId);
+
+        res.status(200).json({ message: 'Service deleted successfully' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 router.get('/get-services/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
