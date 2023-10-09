@@ -80,8 +80,6 @@ router.delete('/delete-service/:serviceId', async (req, res) => {
     try {
         const serviceId = req.params.serviceId;
 
-        console.log(serviceId)
-        // Check if all required fields are present in the request body
         if (!serviceId) {
             return res.status(400).json({ error: 'Missing service id.' });
         }
@@ -92,19 +90,16 @@ router.delete('/delete-service/:serviceId', async (req, res) => {
             return res.status(404).json({ error: 'Service not found' });
         }
 
-        // Find the user associated with this service
         const userId = service.user;
 
-        // Delete the service from the database
         await Service.findByIdAndRemove(serviceId);
 
-        // Remove the service ID from the user's services array
         const user = await User.findById(userId);
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        user.services.pull(serviceId); // Remove the service ID from the array
+        user.services.pull(serviceId);
         await user.save();
 
         res.status(200).json({ message: 'Service deleted successfully' });
