@@ -1,21 +1,4 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import { Link, useHistory  } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // reactstrap components
 import {
   DropdownMenu,
@@ -25,26 +8,28 @@ import {
   Navbar,
   Nav,
   Container,
-  Media
+  Media,
 } from "reactstrap";
-import { useUserContext } from 'context/UserContext'
+import { useUserContext } from "context/UserContext";
 import { useEffect, useState } from "react";
 
 const AdminNavbar = (props) => {
-  const history = useHistory()
-  const { user } = useUserContext()
-  const [username, setUsername] = useState("")
-  useEffect(()=>{
-    if (user && user.id)
-    setUsername(user.firstName + " " + user.lastName)
-  },
-  [user])
+  const [fullName, setFullName] = useState("")
+  const navigate = useNavigate();
+  const { user } = useUserContext();
+
+  useEffect(() => {
+    if (user && user.firstName && user.lastName) {
+      setFullName(user.firstName + " " + user.lastName)
+    }
+  }, [user])
+
   return (
     <>
       <Navbar className="navbar-top navbar-dark" expand="md" id="navbar-main">
         <Container fluid>
           <Link
-            className="h2 mb-0 text-white d-none d-lg-inline-block"
+            className="h4 mb-0 text-white text-uppercase d-none d-lg-inline-block"
             to="/"
           >
             {props.brandText}
@@ -56,12 +41,12 @@ const AdminNavbar = (props) => {
                   <span className="avatar avatar-sm rounded-circle">
                     <img
                       alt="..."
-                      src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                      src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                     />
                   </span>
                   <Media className="ml-2 d-none d-lg-block">
                     <span className="mb-0 text-sm font-weight-bold">
-                     {username}
+                      {fullName}
                     </span>
                   </Media>
                 </Media>
@@ -70,16 +55,11 @@ const AdminNavbar = (props) => {
                 <DropdownItem className="noti-title" header tag="div">
                   <h6 className="text-overflow m-0">Welcome!</h6>
                 </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
+                <DropdownItem to="/admin/my-profile" tag={Link}>
                   <i className="ni ni-single-02" />
                   <span>My profile</span>
                 </DropdownItem>
-                <DropdownItem to="/admin/user-profile" tag={Link}>
-                  <i className="ni ni-settings-gear-65" />
-                  <span>Settings</span>
-                </DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem href="#pablo" onClick={() => history.push("/auth/logout")}>
+                <DropdownItem onClick={() => navigate("/auth/logout")}>
                   <i className="ni ni-user-run" />
                   <span>Logout</span>
                 </DropdownItem>

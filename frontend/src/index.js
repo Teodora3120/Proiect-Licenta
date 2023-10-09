@@ -1,23 +1,11 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from 'react'
-import { render } from 'react-dom'
+import ReactDOM from 'react-dom/client'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import './assets/css/custom.css'
 import App from './App'
 
-const root = document.getElementById('root')
-render(<App />, root)
+const rootElement = document.getElementById('root')
+
+ReactDOM.createRoot(rootElement).render(
+  <App />
+)

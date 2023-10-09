@@ -1,22 +1,3 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// reactstrap components
 import { useEffect, useState } from 'react'
 import {
   Button,
@@ -28,10 +9,12 @@ import {
   InputGroupAddon,
   InputGroupText,
   InputGroup,
-  Col
+  Col,
+  CardHeader,
+  Row
 } from 'reactstrap'
 import AuthApi from 'api/auth'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useUserContext } from "context/UserContext";
 
 const Login = () => {
@@ -39,15 +22,17 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
-  const history = useHistory()
+  const navigate = useNavigate()
   const { login: loginContext } = useUserContext()
+  const { user } = useUserContext();
 
   useEffect(() => {
     setError(null)
   }, [email, password])
 
   const login = async (e) => {
-    if (e) e.preventDefault()
+    e.preventDefault()
+
     if (!email || !password) {
       return setError('Please fill in your credentials.')
     }
@@ -56,19 +41,14 @@ const Login = () => {
         email: email,
         password: password,
       }
+      console.log(credentials)
       const response = await AuthApi.Login(credentials)
-      const user = response.data
-      localStorage.setItem(
-        'user',
-        JSON.stringify({ ...user.userDetails, jwtToken: user.jwtToken }),
-      )
+      const user = response.data.user
+      localStorage.setItem('user', JSON.stringify(user))
       loginContext();
-      return history.push('/admin/index')
+      navigate('/admin/index')
     } catch (err) {
       console.log(err)
-      if (err && err.response && err.response.data) {
-        return setError(err.response.data)
-      }
       return setError('There has been an error.')
     }
   }
@@ -76,12 +56,12 @@ const Login = () => {
   return (
     <>
       <Col lg="5" md="7">
-        <Card className="bg-secondary shadow border-0">
+        {!user || !user.token ? <Card className="bg-secondary shadow border-0">
           <CardBody className="px-lg-5 py-lg-5">
             <div className="text-center text-muted mb-4">
               <h3>Sign in with credentials</h3>
             </div>
-            <Form role="form">
+            <Form autoComplete='on' role="form">
               <FormGroup className="mb-3">
                 <InputGroup className="input-group-alternative">
                   <InputGroupAddon addonType="prepend">
@@ -93,7 +73,7 @@ const Login = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Email"
                     type="email"
-                    autoComplete="new-email"
+                    autoComplete="email"
                   />
                 </InputGroup>
               </FormGroup>
@@ -119,19 +99,7 @@ const Login = () => {
                   />
                 </InputGroup>
               </FormGroup>
-              <div className="custom-control custom-control-alternative custom-checkbox">
-                <input
-                  className="custom-control-input"
-                  id=" customCheckLogin"
-                  type="checkbox"
-                />
-                <label
-                  className="custom-control-label"
-                  htmlFor=" customCheckLogin"
-                >
-                  <span className="text-muted">Remember me</span>
-                </label>
-              </div>
+
               {error ? (
                 <h4 className="text-center text-danger mt-3 font-weight-400">
                   {error}
@@ -149,8 +117,37 @@ const Login = () => {
               </div>
             </Form>
           </CardBody>
-        </Card>
-      </Col>
+        </Card> :
+          <Card>
+            <CardHeader>
+              <Row>
+                <Col>
+                  <h3 className='text-center text-muted'>Welcome back</h3>
+                </Col>
+              </Row>
+            </CardHeader>
+            <CardBody>
+              <Row>
+                <Col className='text-center d-flex flex-column'>
+                  <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                    <img
+                      alt="..."
+                      className="rounded-circle img-fluid"
+                      style={{ width: "75px" }}
+                      src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
+                    />
+                  </a>
+                  <span className='mt-2 font-weight-600'>
+                    {user.firstName} {user.lastName}
+                  </span>
+                  {user.type === "customer" ? <small className='mt-2'>Find a worker for your needs </small> : user.type === "worker" ? <small className='mt-2'>Lets find some customers for you</small> : ""}
+                  <Button color="primary" className='mt-4' onClick={() => navigate("/admin/index")} > Go to dashboard <i className='fa-solid fa-arrow-right text-white ml-1' /></Button>
+                </Col>
+              </Row>
+            </CardBody>
+          </Card>}
+
+      </Col >
     </>
   )
 }

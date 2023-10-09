@@ -1,27 +1,27 @@
 import Axios from 'axios'
 
 const axios = Axios.create({
-  baseURL: `https://localhost:7244/api/`,
-  headers: { 'Content-Type': 'application/json' },
+    baseURL: `http://localhost:5000`,
+    headers: { 'Content-Type': 'application/json' },
 })
 
 axios.interceptors.request.use(
-  (config) => {
-    let user = localStorage.getItem('user')
-    if (user) {
-      user = JSON.parse(user)
-      if (user.jwtToken) {
-        config.headers.Authorization = user.jwtToken
-      }
-    }
-    return Promise.resolve(config)
-  },
-  (error) => Promise.reject(error),
+    (config) => {
+        let userString = localStorage.getItem('user')
+        if (userString) {
+            const user = JSON.parse(userString)
+            if (user && user.token) {
+                config.headers.Authorization = user.token
+            }
+        }
+        return Promise.resolve(config)
+    },
+    (error) => Promise.reject(error),
 )
 
 axios.interceptors.response.use(
-  (response) => Promise.resolve(response),
-  (error) => Promise.reject(error),
+    (response) => Promise.resolve(response),
+    (error) => Promise.reject(error),
 )
 
 

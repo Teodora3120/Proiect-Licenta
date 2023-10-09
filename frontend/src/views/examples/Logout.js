@@ -1,16 +1,15 @@
 import { useEffect } from "react"
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useUserContext } from "context/UserContext";
 
 const Logout = () => {
-    const history = useHistory()
+    const navigate = useNavigate()
     const { logout } = useUserContext()
 
     useEffect(() => {
-        localStorage.clear();
         logout();
-        return history.push("/auth/login")
-    }, [history, logout])
+        return navigate("/auth/login")
+    }, [navigate, logout])
 
     return null;
 

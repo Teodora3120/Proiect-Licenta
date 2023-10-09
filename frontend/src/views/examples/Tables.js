@@ -1,11 +1,11 @@
 /*!
 
 =========================================================
-* Argon Dashboard React - v1.2.2
+* Argon Dashboard React - v1.2.3
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Copyright 2023 Creative Tim (https://www.creative-tim.com)
 * Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
 
 * Coded by Creative Tim
@@ -33,7 +33,7 @@ import {
   Table,
   Container,
   Row,
-  UncontrolledTooltip
+  UncontrolledTooltip,
 } from "reactstrap";
 // core components
 import Header from "components/Headers/Header.js";
@@ -101,7 +101,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-1-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -119,7 +119,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-2-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -137,7 +137,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-3-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -155,7 +155,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -251,7 +251,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-1-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -269,7 +269,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-2-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -305,7 +305,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -453,7 +453,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -603,7 +603,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -753,7 +753,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -982,7 +982,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -1129,7 +1129,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -1277,7 +1277,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -1427,7 +1427,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip
@@ -1577,7 +1577,7 @@ const Tables = () => {
                           <img
                             alt="..."
                             className="rounded-circle"
-                            src={require("../../assets/img/theme/team-4-800x800.jpg")}
+                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
                           />
                         </a>
                         <UncontrolledTooltip

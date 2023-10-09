@@ -1,22 +1,6 @@
-/*!
 
-=========================================================
-* Argon Dashboard React - v1.2.2
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
-import { useLocation, Route, Switch, Redirect } from "react-router-dom";
+import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
 
@@ -31,9 +15,9 @@ const Auth = (props) => {
   const location = useLocation();
 
   React.useEffect(() => {
-    document.body.classList.add("bg-default");
+    document.body.classList.add("bg-auth-2");
     return () => {
-      document.body.classList.remove("bg-default");
+      document.body.classList.remove("bg-auth-2");
     };
   }, []);
   React.useEffect(() => {
@@ -43,14 +27,10 @@ const Auth = (props) => {
   }, [location]);
 
   const getRoutes = (routes) => {
-    return routes.PATIENT.map((prop, key) => {
+    return routes.CUSTOMER.map((prop, key) => {
       if (prop.layout === "/auth") {
         return (
-          <Route
-            path={prop.layout + prop.path}
-            component={prop.component}
-            key={key}
-          />
+          <Route path={prop.path} element={prop.component} key={key} exact />
         );
       } else {
         return null;
@@ -62,42 +42,27 @@ const Auth = (props) => {
     <>
       <div className="main-content" ref={mainContent}>
         <AuthNavbar />
-        <div className="header bg-gradient-info py-7 py-lg-8">
+        <div className="header bg-auth-1 py-7 py-lg-8">
           <Container>
-            <div className="header-body text-center mb-4">
+            <div className="header-body text-center mb-lg-3 mb-md-5 mb-sm-5 mb-xs-5">
               <Row className="justify-content-center">
                 <Col lg="5" md="6">
                   <h1 className="text-white">Welcome!</h1>
                   <p className="text-lead text-white">
-                    In order to use our services, you need an account.<br/>Please create one or log in.
+                    Feel free to use our services in order to get fast access to any services or to post your work on our platform.
                   </p>
                 </Col>
               </Row>
             </div>
           </Container>
-          <div className="separator separator-bottom separator-skew zindex-100">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-              version="1.1"
-              viewBox="0 0 2560 100"
-              x="0"
-              y="0"
-            >
-              <polygon
-                className="fill-default"
-                points="2560 0 2560 100 0 100"
-              />
-            </svg>
-          </div>
         </div>
         {/* Page content */}
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
-            <Switch>
+            <Routes>
               {getRoutes(routes)}
-              <Redirect from="*" to="/auth/login" />
-            </Switch>
+              <Route path="*" element={<Navigate to="/auth/login" replace />} />
+            </Routes>
           </Row>
         </Container>
       </div>
