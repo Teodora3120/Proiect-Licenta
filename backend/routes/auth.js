@@ -50,12 +50,13 @@ router.post('/login', async (req, res) => {
                 email: user.email,
             };
             // Generate a JWT token with the payload and secret key
-            const token = jwt.sign(payload, jwtSecret, { expiresIn: '1h' });
+            const token = jwt.sign(payload, jwtSecret, { expiresIn: '2h' });
             delete user._doc.password;
             delete user._doc.__v;
             // Send the JWT token in the response
             return res.status(200).json({ message: 'Login successful', user: { ...user._doc, token: token } });
         } else if (passwordMatch === false) {
+            console.log("Pass not match")
             return res.status(401).json({ error: 'Invalid credentials' });
         }
     } catch (error) {

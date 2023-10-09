@@ -43,6 +43,38 @@ router.post('/create-service', async (req, res) => {
 });
 
 
+router.put('/edit-service', async (req, res) => {
+    try {
+        const { name, description, price, _id } = req.body;
+
+        // Check if all required fields are present in the request body
+        if (!name || !description || !price || !_id) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Find the service by its ID
+        const service = await Service.findById(_id);
+
+        if (!service) {
+            return res.status(404).json({ error: 'Service not found' });
+        }
+
+        // Update the service object with the new values
+        service.name = name;
+        service.description = description;
+        service.price = price;
+
+        // Save the updated service document
+        const updatedService = await service.save();
+
+        res.status(200).json({ message: 'Service updated successfully', service: updatedService });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 router.get('/get-services/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;

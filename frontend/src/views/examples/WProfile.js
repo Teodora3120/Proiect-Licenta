@@ -99,6 +99,17 @@ const WProfile = () => {
     }
   }
 
+  const handleServiceEdit = (label, value) => {
+    setServiceError("")
+    if (label === "name") {
+      serviceObjectEdit.name = value;
+    } else if (label === "price") {
+      serviceObjectEdit.price = Number(value)
+    } else if (label === "description") {
+      serviceObjectEdit.description = value
+    }
+  }
+
   const createService = async () => {
     if (!service.name || !service.price || !service.description) {
       setServiceError("You must complete all fields.")
@@ -113,6 +124,25 @@ const WProfile = () => {
       console.log(response)
       await getServices();
       toggleModal();
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+  const editService = async () => {
+    if (!serviceObjectEdit.name || !serviceObjectEdit.price || !serviceObjectEdit.description) {
+      setServiceError("You must complete all fields.")
+      return
+    } else if (serviceObjectEdit.price < 1) {
+      setServiceError("The price must be at least 1 RON.")
+    }
+
+    try {
+      const response = await WorkerApi.EditService(serviceObjectEdit)
+      console.log(response)
+      await getServices();
+      toggleModalEdit();
     } catch (error) {
       console.log(error)
     }
@@ -486,7 +516,7 @@ const WProfile = () => {
                 </label>
                 <Input
                   className="form-control-alternative"
-                  defaultValue="None..."
+                  defaultValue=""
                   id="input-address"
                   placeholder="Describe the service..."
                   type="text"
@@ -525,7 +555,7 @@ const WProfile = () => {
                   defaultValue={serviceObjectEdit.name}
                   id="input-address"
                   type="text"
-                  onChange={(e) => handleService("name", e.target.value)}
+                  onChange={(e) => handleServiceEdit("name", e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -542,7 +572,7 @@ const WProfile = () => {
                   defaultValue={serviceObjectEdit.price}
                   id="input-address"
                   type="number"
-                  onChange={(e) => handleService("price", e.target.value)}
+                  onChange={(e) => handleServiceEdit("price", e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -561,7 +591,7 @@ const WProfile = () => {
                   defaultValue={serviceObjectEdit.description}
                   id="input-address"
                   type="text"
-                  onChange={(e) => handleService("description", e.target.value)}
+                  onChange={(e) => handleServiceEdit("description", e.target.value)}
                 />
               </FormGroup>
             </Col>
@@ -569,7 +599,7 @@ const WProfile = () => {
         </ModalBody>
         <ModalFooter>
           {serviceError ? <h4 className="text-danger font-weight-400 text-right">{serviceError}</h4> : ""}
-          <Button color="primary" size="sm" onClick={createService}>
+          <Button color="primary" size="sm" onClick={editService}>
             Edit
           </Button>
           <Button color="secondary" size="sm" onClick={toggleModalEdit}>

@@ -21,7 +21,16 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
     (response) => Promise.resolve(response),
-    (error) => Promise.reject(error),
+    (error) => {
+        if (error.response && error.response.status === 403) {
+            localStorage.removeItem("user")
+            const confirmResponse = window.confirm("Your session has expired. You will be redirected to the login page.")
+            if (confirmResponse) {
+                return window.location.href = `${window.location.origin}/auth/login`;
+            }
+        }
+        Promise.reject(error)
+    },
 )
 
 
