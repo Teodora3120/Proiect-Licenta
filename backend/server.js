@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const authRoute = require("./routes/auth")
+const workerRoute = require("./routes/worker")
+const verifyToken = require('./utils/verifyToken')
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -23,6 +25,7 @@ db.once('open', () => {
 
     //routes
     app.use('/auth', authRoute);
+    app.use('/worker', verifyToken, workerRoute)
 
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);

@@ -17,7 +17,7 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import Select from 'react-select';
+// import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/custom.css';
 import { useUserContext } from 'context/UserContext';
@@ -61,6 +61,7 @@ const Register = () => {
       })
       setCities(citiesArray)
     }
+    //eslint-disable-next-line
   }, [citiesJsonArray])
 
   const toggleModal = () => {

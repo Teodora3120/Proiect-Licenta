@@ -4,9 +4,17 @@ const jwt = require('jsonwebtoken');
 const jwtKey = process.env.JWT_SECRET;
 
 function verifyToken(req, res, next) {
-    const token = req.headers['Authorization']
-    if (!token) {
-        return res.status(401).send('Unauthorized.')
+    const authorizationHeader = req.headers.authorization;
+
+    if (!authorizationHeader) {
+        return res.status(401).send('Unauthorized.');
+    }
+
+    // Split the header to separate the "Bearer" prefix from the token
+    const [bearer, token] = authorizationHeader.split(' ');
+
+    if (bearer !== 'Bearer' || !token) {
+        return res.status(401).send('Invalid token format.');
     }
 
     jwt.verify(token, jwtKey, (err, user) => {

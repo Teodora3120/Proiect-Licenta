@@ -11,19 +11,124 @@ import {
   Container,
   Row,
   Col,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Table
 } from "reactstrap";
 import ReactStars from "react-rating-stars-component";
 // core components
 import UserHeader from "components/Headers/UserHeader.js";
 import { useUserContext } from "context/UserContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import citiesJson from '../../utils/cities.json'
+import WorkerApi from "api/worker";
 
 const WProfile = () => {
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [city, setCity] = useState("")
-  const [firstAge, setAge] = useState("")
+  const [age, setAge] = useState("")
+  const [address, setAdress] = useState("")
+  const [domain, setDomain] = useState("Unknown")
+  const [service, setService] = useState({})
+  const [serviceObjectEdit, setServiceObjectEdit] = useState({})
+  const [services, setServices] = useState([])
+  const [serviceError, setServiceError] = useState("")
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
+  const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+  const [description, setDescription] = useState("")
+  const { user } = useUserContext();
+
+
+  useEffect(() => {
+    if (user && user._id) {
+      setFirstName(user?.firstName)
+      setLastName(user?.lastName)
+      setEmail(user?.email)
+      setAge(user?.age)
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (citiesJson) {
+      const cityObj = citiesJson.find((city) => {
+        return city.id === Number(user?.city)
+      })
+      if (cityObj) {
+        setCity(cityObj.name)
+      }
+    }
+    //eslint-disable-next-line
+  }, [user, citiesJson])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getServices()
+    }
+    if (user && user._id) {
+      fetchData();
+    }
+    //eslint-disable-next-line
+  }, [user])
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const toggleModalEdit = () => {
+    setIsModalOpenEdit(!isModalOpenEdit);
+  };
+
+  const toggleModalDelete = () => {
+    setIsModalOpenDelete(!isModalOpenDelete);
+  };
+
+
+  const handleService = (label, value) => {
+    setServiceError("")
+    if (label === "name") {
+      service.name = value;
+    } else if (label === "price") {
+      service.price = Number(value)
+    } else if (label === "description") {
+      service.description = value
+    }
+  }
+
+  const createService = async () => {
+    if (!service.name || !service.price || !service.description) {
+      setServiceError("You must complete all fields.")
+      return
+    } else if (service.price < 1) {
+      setServiceError("The price must be at least 1 RON.")
+    }
+
+    try {
+      const data = { ...service, userId: user._id }
+      const response = await WorkerApi.CreateService(data)
+      console.log(response)
+      await getServices();
+      toggleModal();
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
+
+
+  const getServices = async () => {
+    try {
+      const response = await WorkerApi.GetServices(user._id)
+      setServices(response.data.services)
+    } catch (error) {
+      console.log(error)
+    }
+
+  }
 
   return (
     <>
@@ -85,21 +190,15 @@ const WProfile = () => {
                 <div className="text-center">
                   <div className="h5 font-weight-300">
                     <i className="fa-solid fa-location-dot mr-2" />
-                    Bucharest, Romania
+                    {city}, Romania
                   </div>
                   <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
-                    Solution Manager - Creative Tim Officer
-                  </div>
-                  <div>
-                    <i className="ni education_hat mr-2" />
-                    University of Computer Science
+                    {domain}
                   </div>
                   <hr className="my-4" />
                   <p>
-                    Ryan — the name taken by Melbourne-raised, Brooklyn-based
-                    Nick Murphy — writes, performs and records all of his own
-                    music.
+                    {description ? description : "No description"}
                   </p>
                 </div>
               </CardBody>
@@ -113,14 +212,6 @@ const WProfile = () => {
                     <h3 className="mb-0">My account</h3>
                   </Col>
                   <Col className="text-right" xs="4">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
-                    >
-                      Settings
-                    </Button>
                   </Col>
                 </Row>
               </CardHeader>
@@ -135,51 +226,17 @@ const WProfile = () => {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-username"
-                          >
-                            Username
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="lucky.jesse"
-                            id="input-username"
-                            placeholder="Username"
-                            type="text"
-                          />
-                        </FormGroup>
-                      </Col>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-email"
-                          >
-                            Email address
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-email"
-                            placeholder="jesse@example.com"
-                            type="email"
-                          />
-                        </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="6">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
                             htmlFor="input-first-name"
                           >
                             First name
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="Lucky"
+                            defaultValue={firstName}
                             id="input-first-name"
-                            placeholder="First name"
+                            placeholder="Your first name..."
                             type="text"
+                            disabled
                           />
                         </FormGroup>
                       </Col>
@@ -193,10 +250,49 @@ const WProfile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="Jesse"
+                            defaultValue={lastName}
                             id="input-last-name"
-                            placeholder="Last name"
+                            placeholder="Your last name"
                             type="text"
+                            onChange={(e) => setLastName(e.target.value)}
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-email"
+                          >
+                            Email address
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            id="input-email"
+                            defaultValue={email}
+                            placeholder="Your email..."
+                            type="email"
+                            disabled
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col lg="6">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-username"
+                          >
+                            Your age
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            value={age}
+                            id="input-username"
+                            placeholder="Your age..."
+                            type="number"
+                            onChange={(e) => setAge(Number(e.target.value))}
                           />
                         </FormGroup>
                       </Col>
@@ -209,7 +305,7 @@ const WProfile = () => {
                   </h6>
                   <div className="pl-lg-4">
                     <Row>
-                      <Col md="12">
+                      <Col lg="8" md="8" sm="8" xs="12">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -221,14 +317,13 @@ const WProfile = () => {
                             className="form-control-alternative"
                             defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
                             id="input-address"
-                            placeholder="Home Address"
+                            placeholder="Your address..."
                             type="text"
+                            onChange={(e) => setAdress(e.target.value)}
                           />
                         </FormGroup>
                       </Col>
-                    </Row>
-                    <Row>
-                      <Col lg="4">
+                      <Col lg="4" md="4" sm="4" xs="12">
                         <FormGroup>
                           <label
                             className="form-control-label"
@@ -238,45 +333,82 @@ const WProfile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="New York"
+                            defaultValue={city}
                             id="input-city"
-                            placeholder="City"
+                            placeholder="City..."
+                            type="text"
+                            disabled
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </div>
+                  <hr className="my-4" />
+                  <h6 className="heading-small text-muted mb-4">
+                    Your services
+                  </h6>
+                  <div className="pl-lg-4">
+                    <Row className="d-flex align-items-center">
+                      <Col lg="7">
+                        <FormGroup>
+                          <label
+                            className="form-control-label"
+                            htmlFor="input-domain"
+                          >
+                            Domain
+                          </label>
+                          <Input
+                            className="form-control-alternative"
+                            defaultValue={domain}
+                            id="input-domain"
+                            placeholder="Your domain..."
                             type="text"
                           />
                         </FormGroup>
                       </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Country
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue="United States"
-                            id="input-country"
-                            placeholder="Country"
-                            type="text"
-                          />
-                        </FormGroup>
+                      <Col lg="5">
+                        <div className="d-flex c-pointer text-center" onClick={toggleModal}>
+                          <i className="fa-solid fa-plus mt-3 ml-2"></i>
+                          <h5 className="ml-2 mt-3">Add custom service</h5>
+                        </div>
                       </Col>
-                      <Col lg="4">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-country"
-                          >
-                            Postal code
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            id="input-postal-code"
-                            placeholder="Postal code"
-                            type="number"
-                          />
-                        </FormGroup>
+                    </Row>
+                    <Row className="mt-5">
+                      <Col>
+                        <Table className="align-items-center table-flush" responsive>
+                          <thead className="thead-dark">
+                            <tr>
+                              <th scope="col" className="text-white">Name</th>
+                              <th scope="col" className="text-white">Description</th>
+                              <th scope="col" className="text-white">Price</th>
+                              <th scope="col" className="text-white">Action 1</th>
+                              <th scope="col" className="text-white">Action 2</th>
+                              <th scope="col" />
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {services && services.length ? services.map((service, index) => {
+                              return <tr key={index}>
+                                <td>{service.name}</td>
+                                <td>{service.description}</td>
+                                <td>{service.price} RON</td>
+                                <td>
+                                  <Button color="info" size="sm" onClick={() => {
+                                    toggleModalEdit();
+                                    setServiceObjectEdit(service)
+                                  }}>Edit</Button>
+                                </td>
+                                <td>
+                                  <Button color="danger" size="sm">Delete</Button>
+                                </td>
+                              </tr>
+                            }) :
+                              <tr>
+                                <h4 className="font-weight-400 mt-2">There are no services to display.</h4>
+                              </tr>}
+
+                          </tbody>
+                        </Table>
                       </Col>
                     </Row>
                   </div>
@@ -290,9 +422,9 @@ const WProfile = () => {
                         className="form-control-alternative"
                         placeholder="A few words about you ..."
                         rows="4"
-                        defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                        Open Source."
+                        defaultValue={description}
                         type="textarea"
+                        onChange={(e) => setDescription(e.target.value)}
                       />
                     </FormGroup>
                   </div>
@@ -302,6 +434,149 @@ const WProfile = () => {
           </Col>
         </Row>
       </Container>
+      <Modal isOpen={isModalOpen} toggle={toggleModal}>
+        <ModalHeader toggle={toggleModal} className="bg-secondary">Add new service</ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label
+                  className="form-control-label"
+                  htmlFor="input-service-name"
+                >
+                  Name
+                </label>
+                <Input
+                  className="form-control-alternative"
+                  defaultValue=""
+                  id="input-address"
+                  placeholder="New service..."
+                  type="text"
+                  onChange={(e) => handleService("name", e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+            <Col>
+              <FormGroup>
+                <label
+                  className="form-control-label"
+                  htmlFor="input-service-price"
+                >
+                  Price (in RON)
+                </label>
+                <Input
+                  className="form-control-alternative"
+                  defaultValue={0}
+                  id="input-address"
+                  placeholder="Cost of the service..."
+                  type="number"
+                  onChange={(e) => handleService("price", e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label
+                  className="form-control-label"
+                  htmlFor="input-service-description"
+                >
+                  Description of service
+                </label>
+                <Input
+                  className="form-control-alternative"
+                  defaultValue="None..."
+                  id="input-address"
+                  placeholder="Describe the service..."
+                  type="text"
+                  onChange={(e) => handleService("description", e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          {serviceError ? <h4 className="text-danger font-weight-400 text-right">{serviceError}</h4> : ""}
+          <Button color="primary" size="sm" onClick={createService}>
+            Add New Service
+          </Button>
+          <Button color="secondary" size="sm" onClick={toggleModal}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+
+      <Modal isOpen={isModalOpenEdit} toggle={toggleModalEdit}>
+        <ModalHeader toggle={toggleModalEdit} className="bg-secondary">Edit service</ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label
+                  className="form-control-label"
+                  htmlFor="input-service-name"
+                >
+                  Name
+                </label>
+                <Input
+                  className="form-control-alternative"
+                  defaultValue={serviceObjectEdit.name}
+                  id="input-address"
+                  type="text"
+                  onChange={(e) => handleService("name", e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+            <Col>
+              <FormGroup>
+                <label
+                  className="form-control-label"
+                  htmlFor="input-service-price"
+                >
+                  Price (in RON)
+                </label>
+                <Input
+                  className="form-control-alternative"
+                  defaultValue={serviceObjectEdit.price}
+                  id="input-address"
+                  type="number"
+                  onChange={(e) => handleService("price", e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label
+                  className="form-control-label"
+                  htmlFor="input-service-description"
+                >
+                  Description of service
+                </label>
+                <Input
+                  className="form-control-alternative"
+                  defaultValue={serviceObjectEdit.description}
+                  id="input-address"
+                  type="text"
+                  onChange={(e) => handleService("description", e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          {serviceError ? <h4 className="text-danger font-weight-400 text-right">{serviceError}</h4> : ""}
+          <Button color="primary" size="sm" onClick={createService}>
+            Edit
+          </Button>
+          <Button color="secondary" size="sm" onClick={toggleModalEdit}>
+            Close
+          </Button>
+        </ModalFooter>
+      </Modal>
     </>
   );
 };

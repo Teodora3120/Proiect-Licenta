@@ -11,7 +11,7 @@ axios.interceptors.request.use(
         if (userString) {
             const user = JSON.parse(userString)
             if (user && user.token) {
-                config.headers.Authorization = user.token
+                config.headers.Authorization = `Bearer ${user.token}`;
             }
         }
         return Promise.resolve(config)
