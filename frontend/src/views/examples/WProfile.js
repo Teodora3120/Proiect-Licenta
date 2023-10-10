@@ -46,6 +46,7 @@ const WProfile = () => {
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [description, setDescription] = useState("")
   const [isEditButtonClicked, setIsEditButtonClicked] = useState(false)
+  const [accountDetailsError, setAccountDetailsError] = useState("")
   const { user } = useUserContext();
 
 
@@ -174,6 +175,30 @@ const WProfile = () => {
       console.log(error)
     }
 
+  }
+
+
+  const saveAccountChanges = async () => {
+    if (!lastName || !age || !address || !description) {
+      setAccountDetailsError("All fields must not be null.")
+      return
+    } else if (age < 18) {
+      setAccountDetailsError("You must be older than 18.")
+      return
+    }
+    try {
+      const data = {
+        lastName: lastName,
+        age: age,
+        address: address,
+        description: description
+      }
+      const response = WorkerApi.UpdateUserAccountDetails(user._id, data)
+      console.log(response)
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
 

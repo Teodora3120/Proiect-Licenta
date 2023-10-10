@@ -16,6 +16,10 @@ class WorkerApi {
     static async GetServices(userId) {
         return await axios.get(`/worker/get-services/${userId}`)
     }
+
+    static async UpdateUserAccountDetails(userId, data) {
+        return await axios.put(`/worker/update-account-details/${userId}`, data)
+    }
 }
 
 export default WorkerApi

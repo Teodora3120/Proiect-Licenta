@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    description: {
+        type: String,
+        required: false,
+    },
     services: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Service',

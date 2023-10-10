@@ -131,4 +131,37 @@ router.get('/get-services/:userId', async (req, res) => {
     }
 });
 
+
+router.put('/update-account-details/:userId', async (req, res) => {
+    try {
+        const { lastName, age, address, description } = req.body;
+        const userId = req.params.userId;
+        // Check if all required fields are present in the request body
+        if (!lastName || !description || !age || !address || !userId) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Find the service by its ID
+        const worker = await Worker.findById(userId);
+
+        if (!worker) {
+            return res.status(404).json({ error: 'User not found.' });
+        }
+
+        // Update the service object with the new values
+        worker.lastName = lastName;
+        worker.age = age;
+        worker.address = address;
+        worker.description = description;
+
+        // Save the updated service document
+        const updatedAccount = await worker.save();
+
+        res.status(200).json({ message: 'Account details updated successfully', worker: updatedAccount });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 module.exports = router;
