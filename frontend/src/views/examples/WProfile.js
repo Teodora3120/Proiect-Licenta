@@ -60,6 +60,14 @@ const WProfile = () => {
   }, [user])
 
   useEffect(() => {
+    if (isEditButtonClicked) {
+      saveAccountChanges();
+    }
+    //eslint-disable-next-line
+  }, [isEditButtonClicked]);
+
+
+  useEffect(() => {
     if (citiesJson) {
       const cityObj = citiesJson.find((city) => {
         return city.id === Number(user?.city)
