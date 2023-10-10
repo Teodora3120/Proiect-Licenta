@@ -1,0 +1,12 @@
+[
+    { "id": 1, "name": "Construction Worker" },
+    { "id": 2, "name": "Electrician" },
+    { "id": 3, "name": "Plumber" },
+    { "id": 4, "name": "Carpenter" },
+    { "id": 5, "name": "Painter" },
+    { "id": 6, "name": "Welder" },
+    { "id": 7, "name": "Mason" },
+    { "id": 8, "name": "Roofing Specialist" },
+    { "id": 9, "name": "HVAC Technician" },
+    { "id": 10, "name": "Landscaper" }
+]

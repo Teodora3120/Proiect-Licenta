@@ -15,8 +15,11 @@ router.post('/register', async (req, res) => {
             return res.status(403).json({ error: 'Email already exists' });
         }
 
+        // Hash the password using bcrypt
+        const saltRounds = 10; // You can adjust this as needed
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
         // Create a new user
-        const newUser = new User({ firstName, lastName, email, password, age, city, type });
+        const newUser = new User({ firstName, lastName, email, password: hashedPassword, age, city, type });
 
         // Save the user to the database
         await newUser.save();
@@ -50,7 +53,7 @@ router.post('/login', async (req, res) => {
                 email: user.email,
             };
             // Generate a JWT token with the payload and secret key
-            const token = jwt.sign(payload, jwtSecret, { expiresIn: '2h' });
+            const token = jwt.sign(payload, jwtSecret, { expiresIn: '6h' });
             delete user._doc.password;
             delete user._doc.__v;
             // Send the JWT token in the response

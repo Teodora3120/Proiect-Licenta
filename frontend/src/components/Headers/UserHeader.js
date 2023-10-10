@@ -34,13 +34,6 @@ const UserHeader = () => {
                 This is your profile page. You can see your account details (and edit some of them),
                 or how many bookings did you have and other helpful information.
               </p>
-              <Button
-                color="info"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                Edit profile
-              </Button>
             </Col>
           </Row>
         </Container>

@@ -15,7 +15,8 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Table
+  Table,
+  Label
 } from "reactstrap";
 import ReactStars from "react-rating-stars-component";
 // core components
@@ -23,7 +24,9 @@ import UserHeader from "components/Headers/UserHeader.js";
 import { useUserContext } from "context/UserContext";
 import { useEffect, useState } from "react";
 import citiesJson from '../../utils/cities.json'
+import domainsJson from '../../utils/domains.json'
 import WorkerApi from "api/worker";
+import Select from 'react-select'
 
 const WProfile = () => {
   const [firstName, setFirstName] = useState("")
@@ -42,6 +45,7 @@ const WProfile = () => {
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [description, setDescription] = useState("")
+  const [isEditButtonClicked, setIsEditButtonClicked] = useState(false)
   const { user } = useUserContext();
 
 
@@ -78,6 +82,10 @@ const WProfile = () => {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const toggleEditButton = () => {
+    setIsEditButtonClicked(!isEditButtonClicked);
   };
 
   const toggleModalEdit = () => {
@@ -261,6 +269,13 @@ const WProfile = () => {
                     <h3 className="mb-0">My account</h3>
                   </Col>
                   <Col className="text-right" xs="4">
+                    <Button
+                      color={!isEditButtonClicked ? "info" : "success"}
+                      size="sm"
+                      onClick={toggleEditButton}
+                    >
+                      {!isEditButtonClicked ? "Edit profile" : "Save changes"}
+                    </Button>
                   </Col>
                 </Row>
               </CardHeader>
@@ -394,32 +409,33 @@ const WProfile = () => {
                   </div>
                   <hr className="my-4" />
                   <h6 className="heading-small text-muted mb-4">
-                    Your services
+                    Your services <small>(this changes will be saved automatically)</small>
                   </h6>
                   <div className="pl-lg-4">
                     <Row className="d-flex align-items-center">
                       <Col lg="7">
-                        <FormGroup>
-                          <label
-                            className="form-control-label"
-                            htmlFor="input-domain"
-                          >
-                            Domain
-                          </label>
-                          <Input
-                            className="form-control-alternative"
-                            defaultValue={domain}
-                            id="input-domain"
-                            placeholder="Your domain..."
-                            type="text"
-                          />
-                        </FormGroup>
+                        <Label>
+                          Domain
+                        </Label>
+                        <Select
+                          options={
+                            domainsJson.map((domainObj) => {
+                              return { value: domainObj.id, label: domainObj.name }
+                            })
+                          }
+                          defaultValue=""
+                          onChange={(e) => setDomain(e.value)}
+                          isClearable
+                        />
                       </Col>
                       <Col lg="5">
-                        <div className="d-flex c-pointer text-center" onClick={toggleModal}>
-                          <i className="fa-solid fa-plus mt-3 ml-2"></i>
-                          <h5 className="ml-2 mt-3">Add custom service</h5>
-                        </div>
+                        <Row>
+                          <Col>
+                            <Label>Service</Label>
+                          </Col>
+                        </Row>
+
+                        <Button color="primary" size="sm" onClick={toggleModal}> <i className="fa-solid fa-plus ml-2"></i> Add Custom Service</Button>
                       </Col>
                     </Row>
                     <Row className="mt-5">
