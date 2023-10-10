@@ -142,7 +142,7 @@ router.put('/update-account-details/:userId', async (req, res) => {
         }
 
         // Find the service by its ID
-        const worker = await Worker.findById(userId);
+        const worker = await User.findById(userId);
 
         if (!worker) {
             return res.status(404).json({ error: 'User not found.' });

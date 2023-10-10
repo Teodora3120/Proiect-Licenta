@@ -27,6 +27,7 @@ import citiesJson from '../../utils/cities.json'
 import domainsJson from '../../utils/domains.json'
 import WorkerApi from "api/worker";
 import Select from 'react-select'
+import AuthApi from "api/auth";
 
 const WProfile = () => {
   const [firstName, setFirstName] = useState("")
@@ -45,7 +46,7 @@ const WProfile = () => {
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
   const [description, setDescription] = useState("")
-  const [isEditButtonClicked, setIsEditButtonClicked] = useState(false)
+  const [accountChanges, setAccountChanges] = useState(false)
   const [accountDetailsError, setAccountDetailsError] = useState("")
   const { user } = useUserContext();
 
@@ -60,12 +61,8 @@ const WProfile = () => {
   }, [user])
 
   useEffect(() => {
-    if (isEditButtonClicked) {
-      saveAccountChanges();
-    }
-    //eslint-disable-next-line
-  }, [isEditButtonClicked]);
-
+    setAccountDetailsError("")
+  }, [lastName, age, address, description])
 
   useEffect(() => {
     if (citiesJson) {
@@ -82,6 +79,7 @@ const WProfile = () => {
   useEffect(() => {
     const fetchData = async () => {
       await getServices()
+      await getUser()
     }
     if (user && user._id) {
       fetchData();
@@ -91,10 +89,6 @@ const WProfile = () => {
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
-  };
-
-  const toggleEditButton = () => {
-    setIsEditButtonClicked(!isEditButtonClicked);
   };
 
   const toggleModalEdit = () => {
@@ -201,7 +195,12 @@ const WProfile = () => {
         address: address,
         description: description
       }
-      const response = WorkerApi.UpdateUserAccountDetails(user._id, data)
+      const response = await WorkerApi.UpdateUserAccountDetails(user._id, data)
+      const worker = response.data.worker;
+      setLastName(worker.lastName)
+      setAge(worker.age)
+      setAdress(worker.address)
+      setDescription(worker.description)
       console.log(response)
 
     } catch (error) {
@@ -209,6 +208,18 @@ const WProfile = () => {
     }
   }
 
+  const getUser = async () => {
+    try {
+      const response = await AuthApi.GetUserById(user._id)
+      const newUser = response.data.user;
+      setLastName(newUser?.lastName)
+      setAge(newUser?.age)
+      setAdress(newUser?.address)
+      setDescription(newUser?.description)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const getServices = async () => {
     try {
@@ -302,12 +313,13 @@ const WProfile = () => {
                     <h3 className="mb-0">My account</h3>
                   </Col>
                   <Col className="text-right" xs="4">
+                    {accountDetailsError ? <h4 className="font-width-400 text-danger">{accountDetailsError}</h4> : ""}
                     <Button
-                      color={!isEditButtonClicked ? "info" : "success"}
+                      color="info"
                       size="sm"
-                      onClick={toggleEditButton}
+                      onClick={saveAccountChanges}
                     >
-                      {!isEditButtonClicked ? "Edit profile" : "Save changes"}
+                      Save changes
                     </Button>
                   </Col>
                 </Row>
@@ -412,7 +424,7 @@ const WProfile = () => {
                           </label>
                           <Input
                             className="form-control-alternative"
-                            defaultValue="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09"
+                            defaultValue={address}
                             id="input-address"
                             placeholder="Your address..."
                             type="text"
