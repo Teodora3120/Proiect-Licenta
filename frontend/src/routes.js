@@ -1,7 +1,7 @@
 import Index from "views/Index.js";
 import WProfile from "views/examples/WProfile.js";
+import WSchedule from "views/examples/WSchedule";
 import CProfile from "views/examples/CProfile.js";
-
 import Maps from "views/examples/Maps.js";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
@@ -81,20 +81,6 @@ var routes = {
       layout: "/admin",
     },
     {
-      path: "/icons",
-      name: "Icons",
-      icon: "ni ni-planet text-blue",
-      component: <Icons />,
-      layout: "/admin",
-    },
-    {
-      path: "/maps",
-      name: "Maps",
-      icon: "ni ni-pin-3 text-orange",
-      component: <Maps />,
-      layout: "/admin",
-    },
-    {
       path: "/my-profile",
       name: "My Profile",
       icon: "ni ni-single-02 text-yellow",
@@ -102,11 +88,35 @@ var routes = {
       layout: "/admin",
     },
     {
+      path: "/my-schedule",
+      name: "My Schedule",
+      icon: "ni ni-single-02 text-info",
+      component: <WSchedule />,
+      layout: "/admin",
+    },
+    {
+      path: "/icons",
+      name: "Icons",
+      icon: "ni ni-planet text-blue",
+      component: <Icons />,
+      layout: "/admin",
+      hide: true
+    },
+    {
+      path: "/maps",
+      name: "Maps",
+      icon: "ni ni-pin-3 text-orange",
+      component: <Maps />,
+      layout: "/admin",
+      hide: true
+    },
+    {
       path: "/tables",
       name: "Tables",
       icon: "ni ni-bullet-list-67 text-red",
       component: <Tables />,
       layout: "/admin",
+      hide: true
     },
     {
       path: "/login",

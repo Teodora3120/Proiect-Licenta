@@ -211,4 +211,29 @@ router.delete('/delete-account/:userId', async (req, res) => {
     }
 });
 
+router.put('/send-schedule/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const { schedule } = req.body;
+
+        // Check if the user exists
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json('User not found');
+        }
+
+        // Update the user's schedule
+        user.schedule = schedule;
+
+        // Save the updated user document
+        const updatedUser = await user.save();
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
+
 module.exports = router;

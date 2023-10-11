@@ -28,6 +28,10 @@ class WorkerApi {
     static async DeleteAccount(userId) {
         return await axios.delete(`/worker/delete-account/${userId}`)
     }
+
+    static async SendSchedule(userId, data) {
+        return await axios.put(`/worker/send-schedule/${userId}`, data)
+    }
 }
 
 export default WorkerApi
