@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Service',
     }],
+    domain: {
+        type: Number,
+        required: false,
+    }
 });
 
 // // Hash the password before saving it to the database

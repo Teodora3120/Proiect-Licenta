@@ -141,15 +141,15 @@ const Register = () => {
         email: email,
         password: password,
       })
-      const user = userCredentials.data.user
+      const user = userCredentials.data
       localStorage.setItem('user', JSON.stringify(user))
       loginContext()
       return navigate('/admin/index')
     } catch (err) {
       console.log(err);
       setCreating(false);
-      if (err && err.message) {
-        return setError(err.message);
+      if (err && err.response.status === 401) {
+        return setError("Email already exists.");
       }
       return setError('There has been an error.');
     }

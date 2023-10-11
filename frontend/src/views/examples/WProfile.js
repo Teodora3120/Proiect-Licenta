@@ -16,7 +16,11 @@ import {
   ModalBody,
   ModalFooter,
   Table,
-  Label
+  Label,
+  CardFooter,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText
 } from "reactstrap";
 import ReactStars from "react-rating-stars-component";
 // core components
@@ -28,6 +32,7 @@ import domainsJson from '../../utils/domains.json'
 import WorkerApi from "api/worker";
 import Select from 'react-select'
 import AuthApi from "api/auth";
+import { useNavigate } from "react-router-dom";
 
 const WProfile = () => {
   const [firstName, setFirstName] = useState("")
@@ -36,7 +41,7 @@ const WProfile = () => {
   const [city, setCity] = useState("")
   const [age, setAge] = useState("")
   const [address, setAdress] = useState("")
-  const [domain, setDomain] = useState("Unknown")
+  const [domain, setDomain] = useState("")
   const [service, setService] = useState({})
   const [serviceObjectEdit, setServiceObjectEdit] = useState({})
   const [services, setServices] = useState([])
@@ -45,10 +50,16 @@ const WProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenEdit, setIsModalOpenEdit] = useState(false);
   const [isModalOpenDelete, setIsModalOpenDelete] = useState(false);
+  const [isModalOpenDeleteAccount, setIsModalOpenDeleteAccount] = useState(false);
   const [description, setDescription] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [accountChanges, setAccountChanges] = useState(false)
+  const [password, setPassword] = useState("")
+  const [deleteAccountError, setDeleteAccountError] = useState("")
+  const [errorDomain, setErrorDomain] = useState("")
   const [accountDetailsError, setAccountDetailsError] = useState("")
   const { user } = useUserContext();
+  const navigate = useNavigate();
 
 
   useEffect(() => {
@@ -63,6 +74,10 @@ const WProfile = () => {
   useEffect(() => {
     setAccountDetailsError("")
   }, [lastName, age, address, description])
+
+  useEffect(() => {
+    setDeleteAccountError("")
+  }, [password])
 
   useEffect(() => {
     if (citiesJson) {
@@ -98,6 +113,10 @@ const WProfile = () => {
   const toggleModalDelete = () => {
     setIsModalOpenDelete(!isModalOpenDelete);
     setServiceObjectDeleteId("")
+  };
+
+  const toggleModalDeleteAccount = () => {
+    setIsModalOpenDeleteAccount(!isModalOpenDeleteAccount);
   };
 
 
@@ -196,26 +215,50 @@ const WProfile = () => {
         description: description
       }
       const response = await WorkerApi.UpdateUserAccountDetails(user._id, data)
-      const worker = response.data.worker;
+      const worker = response.data;
       setLastName(worker.lastName)
       setAge(worker.age)
       setAdress(worker.address)
       setDescription(worker.description)
-      console.log(response)
+      setAccountChanges(true)
 
+      setTimeout(() => {
+        setAccountChanges(false);
+      }, 5000);
     } catch (error) {
       console.log(error)
+    }
+  }
+
+  const saveDomain = async (domain) => {
+    if (!domain.value) {
+      return
+    }
+    try {
+      const data = {
+        domain: domain.value
+      }
+      const response = await WorkerApi.SaveDomain(user._id, data);
+      const domainId = response.data
+      console.log(response, domainId)
+      if (domainId && domainsJson[domainId - 1]) {
+        setDomain(domainsJson[domainId - 1])
+      }
+    } catch (error) {
+      console.log(error)
+      setErrorDomain("Couldn't save the domain.")
     }
   }
 
   const getUser = async () => {
     try {
       const response = await AuthApi.GetUserById(user._id)
-      const newUser = response.data.user;
+      const newUser = response.data
       setLastName(newUser?.lastName)
       setAge(newUser?.age)
       setAdress(newUser?.address)
       setDescription(newUser?.description)
+      setDomain(domainsJson[newUser?.domain - 1])
     } catch (error) {
       console.log(error)
     }
@@ -224,11 +267,34 @@ const WProfile = () => {
   const getServices = async () => {
     try {
       const response = await WorkerApi.GetServices(user._id)
-      setServices(response.data.services)
+      setServices(response.data)
     } catch (error) {
       console.log(error)
     }
 
+  }
+
+  const deleteAccount = async () => {
+    if (!password) {
+      return setDeleteAccountError("Please write your password.")
+    }
+    try {
+      const data = {
+        email: user.email,
+        password: password
+      }
+      await AuthApi.Login(data);
+      await WorkerApi.DeleteAccount(user._id)
+      toggleModalDeleteAccount();
+      navigate("/auth/logout")
+    } catch (error) {
+      console.log(error)
+      if (error.response.status === 401) {
+        return setDeleteAccountError("Invalid password.")
+      } else {
+        return setDeleteAccountError("Couldn't delete your account.")
+      }
+    }
   }
 
   return (
@@ -295,7 +361,7 @@ const WProfile = () => {
                   </div>
                   <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
-                    {domain}
+                    {domain ? domain.name : "Unknown"}
                   </div>
                   <hr className="my-4" />
                   <p>
@@ -309,18 +375,11 @@ const WProfile = () => {
             <Card className="bg-secondary shadow">
               <CardHeader className="bg-white border-0">
                 <Row className="align-items-center">
-                  <Col xs="8">
+                  <Col xs="8" className="text-left">
                     <h3 className="mb-0">My account</h3>
                   </Col>
-                  <Col className="text-right" xs="4">
-                    {accountDetailsError ? <h4 className="font-width-400 text-danger">{accountDetailsError}</h4> : ""}
-                    <Button
-                      color="info"
-                      size="sm"
-                      onClick={saveAccountChanges}
-                    >
-                      Save changes
-                    </Button>
+                  <Col className="text-right">
+                    {accountChanges ? <h4 className="font-weight-400 text-nowrap text-success mb-0">Account changes saved successfully</h4> : null}
                   </Col>
                 </Row>
               </CardHeader>
@@ -453,10 +512,11 @@ const WProfile = () => {
                     </Row>
                   </div>
                   <hr className="my-4" />
-                  <h6 className="heading-small text-muted mb-4">
-                    Your services <small>(this changes will be saved automatically)</small>
+                  <h6 className="heading-small text-muted">
+                    Your services
                   </h6>
-                  <div className="pl-lg-4">
+                  <small>These changes will be saved automatically</small>
+                  <div className="pl-lg-4 mt-4">
                     <Row className="d-flex align-items-center">
                       <Col lg="7">
                         <Label>
@@ -468,12 +528,13 @@ const WProfile = () => {
                               return { value: domainObj.id, label: domainObj.name }
                             })
                           }
-                          defaultValue=""
-                          onChange={(e) => setDomain(e.value)}
+                          defaultValue={domain}
+                          onChange={(e) => saveDomain(e)}
                           isClearable
                         />
+                        {errorDomain ? <h4 className="font-weight-400 text-danger">{errorDomain}</h4> : ""}
                       </Col>
-                      <Col lg="5">
+                      <Col lg="5" className="mt-xs-5">
                         <Row>
                           <Col>
                             <Label>Service</Label>
@@ -545,6 +606,24 @@ const WProfile = () => {
                   </div>
                 </Form>
               </CardBody>
+              <CardFooter className="border-0">
+                {accountDetailsError ? <h4 className="font-width-400 text-danger text-center">{accountDetailsError}</h4> : null}
+                <Row className="align-items-center">
+                  <Col className="text-left">
+                    <p className="text-danger c-pointer font-weight-600 mb-0" onClick={toggleModalDeleteAccount}>
+                      Delete account
+                    </p>
+                  </Col>
+                  <Col className="text-right">
+                    <Button
+                      color="default"
+                      onClick={saveAccountChanges}
+                    >
+                      Save changes
+                    </Button>
+                  </Col>
+                </Row>
+              </CardFooter>
             </Card>
           </Col>
         </Row>
@@ -709,6 +788,52 @@ const WProfile = () => {
           </Button>
           <Button color="secondary" size="sm" onClick={toggleModalDelete}>
             No
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+
+      <Modal isOpen={isModalOpenDeleteAccount} toggle={toggleModalDeleteAccount}>
+        <ModalHeader toggle={toggleModalDeleteAccount} className="bg-secondary">Delete your account</ModalHeader>
+        <ModalBody>
+          <Row>
+            <Col>
+              <h4>Please write your password for confirmation</h4>
+              <FormGroup>
+                <InputGroup className="input-group-alternative">
+                  <InputGroupAddon addonType="prepend">
+                    <InputGroupText>
+                      <i
+                        onClick={() => setShowPassword(!showPassword)}
+                        className={
+                          showPassword
+                            ? 'fas fa-eye-slash c-pointer'
+                            : 'fas fa-eye c-pointer'
+                        }
+                      />
+                    </InputGroupText>
+                  </InputGroupAddon>
+                  <Input
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Password"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="new-password"
+                  />
+                </InputGroup>
+              </FormGroup>
+            </Col>
+          </Row>
+        </ModalBody>
+        <ModalFooter>
+          {deleteAccountError ? <h4 className="text-danger font-weight-400 text-right">{deleteAccountError}</h4> : ""}
+          <Button color="danger" onClick={deleteAccount}>
+            Delete
+          </Button>
+          <Button color="secondary" onClick={() => {
+            toggleModalDeleteAccount()
+            setPassword("")
+          }}>
+            Cancel
           </Button>
         </ModalFooter>
       </Modal>

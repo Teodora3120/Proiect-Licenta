@@ -20,6 +20,14 @@ class WorkerApi {
     static async UpdateUserAccountDetails(userId, data) {
         return await axios.put(`/worker/update-account-details/${userId}`, data)
     }
+
+    static async SaveDomain(userId, data) {
+        return await axios.put(`/worker/save-domain/${userId}`, data)
+    }
+
+    static async DeleteAccount(userId) {
+        return await axios.delete(`/worker/delete-account/${userId}`)
+    }
 }
 
 export default WorkerApi

@@ -29,7 +29,7 @@ axios.interceptors.response.use(
                 return window.location.href = `${window.location.origin}/auth/login`;
             }
         }
-        Promise.reject(error)
+        return Promise.reject(error)
     },
 )
 
