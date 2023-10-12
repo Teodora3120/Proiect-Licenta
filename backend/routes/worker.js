@@ -134,10 +134,10 @@ router.get('/get-services/:userId', async (req, res) => {
 
 router.put('/update-account-details/:userId', async (req, res) => {
     try {
-        const { lastName, age, address, description } = req.body;
+        const { lastName, age, address, description, telephoneNumber } = req.body;
         const userId = req.params.userId;
         // Check if all required fields are present in the request body
-        if (!lastName || !description || !age || !address || !userId) {
+        if (!lastName || !description || !age || !address || !telephoneNumber || !userId) {
             return res.status(400).json('Missing required fields');
         }
 
@@ -153,6 +153,7 @@ router.put('/update-account-details/:userId', async (req, res) => {
         worker.age = age;
         worker.address = address;
         worker.description = description;
+        worker.telephoneNumber = telephoneNumber;
 
         // Save the updated service document
         const updatedAccount = await worker.save();

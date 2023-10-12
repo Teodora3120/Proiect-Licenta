@@ -60,7 +60,9 @@ const CProfile = () => {
             setLastName(user?.lastName)
             setEmail(user?.email)
             setAge(user?.age)
-            setTelephoneNumber(String(user?.telephoneNumber))
+            if (user?.telephoneNumber) {
+                setTelephoneNumber('+' + String(user?.telephoneNumber))
+            }
         }
     }, [user])
 
@@ -136,7 +138,7 @@ const CProfile = () => {
             setLastName(customer.lastName)
             setAge(customer?.age)
             setAdress(customer?.address)
-            setTelephoneNumber(String(customer?.telephoneNumber))
+            setTelephoneNumber('+' + String(customer?.telephoneNumber))
             setAccountChanges(true)
 
             setTimeout(() => {
@@ -154,7 +156,9 @@ const CProfile = () => {
             setLastName(newUser?.lastName)
             setAge(newUser?.age)
             setAdress(newUser?.address)
-            setTelephoneNumber(String(newUser?.telephoneNumber))
+            if (newUser.telephoneNumber) {
+                setTelephoneNumber('+' + String(newUser?.telephoneNumber))
+            }
         } catch (error) {
             console.log(error)
         }

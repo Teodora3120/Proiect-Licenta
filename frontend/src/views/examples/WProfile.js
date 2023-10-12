@@ -72,7 +72,9 @@ const WProfile = () => {
       setLastName(user?.lastName)
       setEmail(user?.email)
       setAge(user?.age)
-      setTelephoneNumber(String(user?.telephoneNumber))
+      if (user?.telephoneNumber) {
+        setTelephoneNumber('+' + String(user.telephoneNumber))
+      }
     }
   }, [user])
 
@@ -248,7 +250,7 @@ const WProfile = () => {
       setAge(worker.age)
       setAdress(worker.address)
       setDescription(worker.description)
-      setTelephoneNumber(String(worker.telephoneNumber))
+      setTelephoneNumber('+' + String(worker.telephoneNumber))
       setAccountChanges(true)
 
       setTimeout(() => {
@@ -269,7 +271,6 @@ const WProfile = () => {
       }
       const response = await WorkerApi.SaveDomain(user._id, data);
       const domainId = response.data
-      console.log(response, domainId)
       if (domainId && domainsJson[domainId - 1]) {
         setDomain(domainsJson[domainId - 1])
       }
@@ -288,7 +289,10 @@ const WProfile = () => {
       setAdress(newUser?.address)
       setDescription(newUser?.description)
       setDomain(domainsJson[newUser?.domain - 1])
-      setTelephoneNumber(String(newUser?.telephoneNumber))
+      console.log(user)
+      if (newUser.telephoneNumber) {
+        setTelephoneNumber('+' + String(newUser?.telephoneNumber))
+      }
     } catch (error) {
       console.log(error)
     }
@@ -395,7 +399,7 @@ const WProfile = () => {
                   </div>
                   <div className="h5 mt-4">
                     <i className="fa-solid fa-phone mr-2" />
-                    {telephoneNumber ? telephoneNumber : "Unknown"}
+                    {telephoneNumber ? '+' + telephoneNumber : "Unknown"}
                   </div>
                   <hr className="my-4" />
                   <p>
