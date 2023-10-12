@@ -23,7 +23,7 @@ import {
   InputGroupText
 } from "reactstrap";
 import ReactStars from "react-rating-stars-component";
-// core components
+
 import UserHeader from "components/Headers/UserHeader.js";
 import { useUserContext } from "context/UserContext";
 import { useEffect, useState } from "react";
@@ -32,6 +32,8 @@ import domainsJson from '../../utils/domains.json'
 import WorkerApi from "api/worker";
 import Select from 'react-select'
 import AuthApi from "api/auth";
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 import { useNavigate } from "react-router-dom";
 
 const WProfile = () => {
@@ -58,6 +60,8 @@ const WProfile = () => {
   const [deleteAccountError, setDeleteAccountError] = useState("")
   const [errorDomain, setErrorDomain] = useState("")
   const [accountDetailsError, setAccountDetailsError] = useState("")
+  const [telephoneNumber, setTelephoneNumber] = useState("")
+  const [telephoneNumberError, setTelephoneNumberError] = useState("")
   const { user } = useUserContext();
   const navigate = useNavigate();
 
@@ -68,12 +72,18 @@ const WProfile = () => {
       setLastName(user?.lastName)
       setEmail(user?.email)
       setAge(user?.age)
+      setTelephoneNumber(String(user?.telephoneNumber))
     }
   }, [user])
 
   useEffect(() => {
+    handleTelephoneNumber(telephoneNumber)
+    //eslint-disable-next-line
+  }, [telephoneNumber])
+
+  useEffect(() => {
     setAccountDetailsError("")
-  }, [lastName, age, address, description])
+  }, [lastName, age, address, description, telephoneNumber])
 
   useEffect(() => {
     setDeleteAccountError("")
@@ -118,6 +128,23 @@ const WProfile = () => {
   const toggleModalDeleteAccount = () => {
     setIsModalOpenDeleteAccount(!isModalOpenDeleteAccount);
   };
+
+
+  const handleTelephoneNumber = (telephoneNumberString) => {
+    console.log(telephoneNumberString)
+    if (telephoneNumberString && telephoneNumberString.length >= 2 && telephoneNumberString.slice(0, 2) !== "+4") {
+      return setTelephoneNumberError("Your prefix should be for Romania.")
+    }
+    if (telephoneNumberString && telephoneNumberString.length > 4 && telephoneNumberString.slice(0, 4) !== "+407") {
+      return setTelephoneNumberError("Your phone number must start with 07.")
+    }
+    if (telephoneNumberString && telephoneNumberString.length > 12) {
+      return setTelephoneNumberError("Your phone number should have maximum 10 digits.")
+    }
+    setTelephoneNumber(telephoneNumberString)
+    setTelephoneNumberError("")
+  }
+
 
 
   const handleService = (label, value) => {
@@ -212,7 +239,8 @@ const WProfile = () => {
         lastName: lastName,
         age: age,
         address: address,
-        description: description
+        description: description,
+        telephoneNumber: telephoneNumber
       }
       const response = await WorkerApi.UpdateUserAccountDetails(user._id, data)
       const worker = response.data;
@@ -220,6 +248,7 @@ const WProfile = () => {
       setAge(worker.age)
       setAdress(worker.address)
       setDescription(worker.description)
+      setTelephoneNumber(String(worker.telephoneNumber))
       setAccountChanges(true)
 
       setTimeout(() => {
@@ -259,6 +288,7 @@ const WProfile = () => {
       setAdress(newUser?.address)
       setDescription(newUser?.description)
       setDomain(domainsJson[newUser?.domain - 1])
+      setTelephoneNumber(String(newUser?.telephoneNumber))
     } catch (error) {
       console.log(error)
     }
@@ -362,6 +392,10 @@ const WProfile = () => {
                   <div className="h5 mt-4">
                     <i className="ni business_briefcase-24 mr-2" />
                     {domain ? domain.name : "Unknown"}
+                  </div>
+                  <div className="h5 mt-4">
+                    <i className="fa-solid fa-phone mr-2" />
+                    {telephoneNumber ? telephoneNumber : "Unknown"}
                   </div>
                   <hr className="my-4" />
                   <p>
@@ -510,6 +544,19 @@ const WProfile = () => {
                         </FormGroup>
                       </Col>
                     </Row>
+                    <Row>
+                      <Col>
+                        <FormGroup>
+                          <label>Telephone number</label>
+                          <PhoneInput
+                            country="RO"
+                            placeholder="Enter phone number"
+                            value={String(telephoneNumber)}
+                            onChange={setTelephoneNumber} />
+                        </FormGroup>
+                        {telephoneNumberError ? <h4 className="font-weight-400 text-danger">{telephoneNumberError}</h4> : null}
+                      </Col>
+                    </Row>
                   </div>
                   <hr className="my-4" />
                   <h6 className="heading-small text-muted">
@@ -617,6 +664,7 @@ const WProfile = () => {
                   <Col className="text-right">
                     <Button
                       color="default"
+                      disabled={telephoneNumberError || accountDetailsError ? true : false}
                       onClick={saveAccountChanges}
                     >
                       Save changes
@@ -826,7 +874,11 @@ const WProfile = () => {
         </ModalBody>
         <ModalFooter>
           {deleteAccountError ? <h4 className="text-danger font-weight-400 text-right">{deleteAccountError}</h4> : ""}
-          <Button color="danger" onClick={deleteAccount}>
+          <Button
+            color="danger"
+            onClick={deleteAccount}
+            disabled={deleteAccountError || !password ? true : false}
+          >
             Delete
           </Button>
           <Button color="secondary" onClick={() => {

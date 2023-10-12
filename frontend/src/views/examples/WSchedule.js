@@ -25,7 +25,7 @@ import AuthApi from "api/auth";
 
 const WSchedule = () => {
     const [activeTab, setActiveTab] = useState("Monday");
-    const [scheduleChanges, setScheduleChanges] = useState("Monday");
+    const [scheduleChanges, setScheduleChanges] = useState(false);
     const [schedule, setSchedule] = useState([
         {
             dayOfWeek: "Monday",
@@ -123,8 +123,7 @@ const WSchedule = () => {
             const data = {
                 schedule: schedule
             }
-            console.log(data)
-            const response = await WorkerApi.SendSchedule(user._id, data)
+            await WorkerApi.SendSchedule(user._id, data)
             await getUser();
             setScheduleChanges(true)
 

@@ -25,6 +25,7 @@ var routes = {
       icon: "ni ni-planet text-blue",
       component: <Icons />,
       layout: "/admin",
+      hide: true,
     },
     {
       path: "/maps",
@@ -32,6 +33,7 @@ var routes = {
       icon: "ni ni-pin-3 text-orange",
       component: <Maps />,
       layout: "/admin",
+      hide: true,
     },
     {
       path: "/my-profile",
@@ -46,6 +48,7 @@ var routes = {
       icon: "ni ni-bullet-list-67 text-red",
       component: <Tables />,
       layout: "/admin",
+      hide: true
     },
     {
       path: "/login",

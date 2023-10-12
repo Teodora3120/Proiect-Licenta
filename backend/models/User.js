@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema({
             endTime: String,
         },
     ],
+    telephoneNumber: {
+        type: Number,
+        required: false,
+    },
 });
 
 const User = mongoose.model('User', userSchema);
