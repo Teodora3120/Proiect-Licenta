@@ -5,9 +5,9 @@ const Service = require('../models/Service');
 
 router.post('/create-service', async (req, res) => {
     try {
-        const { name, description, price, userId } = req.body;
+        const { name, description, price, userId, domain } = req.body;
         // Check if all required fields are present in the request body
-        if (!name || !description || !price || !userId) {
+        if (!name || !description || !price || !domain || !userId) {
             return res.status(400).json('Missing required fields');
         }
 
@@ -15,6 +15,7 @@ router.post('/create-service', async (req, res) => {
         const newService = new Service({
             name,
             description,
+            domain,
             price,
             user: userId
         });
@@ -109,6 +110,26 @@ router.delete('/delete-service/:serviceId', async (req, res) => {
     }
 });
 
+
+router.delete('/delete-all-services/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        if (!userId) {
+            return res.status(400).json('Missing user id.');
+        }
+
+        // Delete all services with the given userId
+        const result = await Service.deleteMany({ user: userId });
+
+        if (result.deletedCount > 0) {
+            return res.status(200).json('Services deleted successfully');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
 
 router.get('/get-services/:userId', async (req, res) => {
     try {

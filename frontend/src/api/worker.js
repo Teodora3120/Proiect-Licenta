@@ -32,6 +32,10 @@ class WorkerApi {
     static async SendSchedule(userId, data) {
         return await axios.put(`/worker/send-schedule/${userId}`, data)
     }
+
+    static async DeleteAllServices(userId) {
+        return await axios.delete(`/worker/delete-all-services/${userId}`)
+    }
 }
 
 export default WorkerApi

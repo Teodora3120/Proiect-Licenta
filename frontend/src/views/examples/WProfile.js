@@ -22,7 +22,6 @@ import {
   InputGroupAddon,
   InputGroupText
 } from "reactstrap";
-import ReactStars from "react-rating-stars-component";
 
 import UserHeader from "components/Headers/UserHeader.js";
 import { useUserContext } from "context/UserContext";
@@ -180,7 +179,7 @@ const WProfile = () => {
     }
 
     try {
-      const data = { ...service, userId: user._id }
+      const data = { ...service, domain: domain.id, userId: user._id }
       const response = await WorkerApi.CreateService(data)
       console.log(response)
       await getServices();
@@ -274,6 +273,8 @@ const WProfile = () => {
       if (domainId && domainsJson[domainId - 1]) {
         setDomain(domainsJson[domainId - 1])
       }
+      await WorkerApi.DeleteAllServices(user._id);
+      setServices([])
     } catch (error) {
       console.log(error)
       setErrorDomain("Couldn't save the domain.")
@@ -379,12 +380,7 @@ const WProfile = () => {
                       <h3>Your rating</h3>
                     </div>
                     <div className="d-flex justify-content-center align-items-center">
-                      <ReactStars
-                        count={5}
-                        onChange={[]}
-                        size={24}
-                        activeColor="#ffd700"
-                      />
+
                     </div>
                   </Col>
                 </Row>
@@ -399,7 +395,7 @@ const WProfile = () => {
                   </div>
                   <div className="h5 mt-4">
                     <i className="fa-solid fa-phone mr-2" />
-                    {telephoneNumber ? '+' + telephoneNumber : "Unknown"}
+                    {telephoneNumber ? telephoneNumber : "Unknown"}
                   </div>
                   <hr className="my-4" />
                   <p>
@@ -571,7 +567,11 @@ const WProfile = () => {
                     <Row className="d-flex align-items-center">
                       <Col lg="7">
                         <Label>
-                          Domain
+                          Domain (maximum one domain) <i
+                            className="fa-solid fa-circle-info text-primary ml-1"
+                            data-toggle="tooltip"
+                            data-placement="top"
+                            title="Once you change your domain, the current services will be deleted from the database." />
                         </Label>
                         <Select
                           options={
@@ -588,11 +588,11 @@ const WProfile = () => {
                       <Col lg="5" className="mt-xs-5">
                         <Row>
                           <Col>
-                            <Label>Service</Label>
+                            <Label>Service (maximum 5 services)</Label>
                           </Col>
                         </Row>
 
-                        <Button color="primary" size="sm" onClick={toggleModal}> <i className="fa-solid fa-plus ml-2"></i> Add Custom Service</Button>
+                        <Button color="primary" size="sm" onClick={toggleModal} disabled={domain && services?.length < 5 ? false : true}> <i className="fa-solid fa-plus ml-2"></i> Add Custom Service</Button>
                       </Col>
                     </Row>
                     <Row className="mt-5">
