@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const authRoute = require("./routes/auth")
 const workerRoute = require("./routes/worker")
 const customerRoute = require('./routes/customer')
+const dashboardRoute = require('./routes/dashboard')
 const verifyToken = require('./utils/verifyToken')
 const app = express();
 const port = process.env.PORT || 5000;
@@ -28,6 +29,7 @@ db.once('open', () => {
     app.use('/auth', authRoute);
     app.use('/worker', verifyToken, workerRoute)
     app.use('/customer', verifyToken, customerRoute)
+    app.use('/dashboard', verifyToken, dashboardRoute)
 
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
