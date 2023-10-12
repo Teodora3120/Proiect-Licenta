@@ -123,6 +123,7 @@ router.delete('/delete-all-services/:userId', async (req, res) => {
         const result = await Service.deleteMany({ user: userId });
 
         if (result.deletedCount > 0) {
+            await User.updateOne({ _id: userId }, { $set: { services: [] } });
             return res.status(200).json('Services deleted successfully');
         }
     } catch (error) {

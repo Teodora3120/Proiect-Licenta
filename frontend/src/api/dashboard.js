@@ -6,6 +6,9 @@ class DashboardApi {
         return await axios.get(`/dashboard/get-all-services`)
     }
 
+    static async GetAllWorkers() {
+        return await axios.get(`/dashboard/get-all-workers`)
+    }
 }
 
 export default DashboardApi

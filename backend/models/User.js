@@ -58,6 +58,10 @@ const userSchema = new mongoose.Schema({
         type: Number,
         required: false,
     },
+    rating: {
+        type: Number,
+        required: false
+    }
 });
 
 const User = mongoose.model('User', userSchema);
