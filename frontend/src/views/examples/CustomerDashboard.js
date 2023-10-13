@@ -61,6 +61,9 @@ function renderRatingStars(rating) {
     for (let i = 0; i < rating; i++) {
         stars.push(<i className="fa-solid fa-star text-yellow" />);
     }
+    for (let i = rating; i < 5; i++) {
+        stars.push(<i className="fa-solid fa-star text-light" />);
+    }
     return stars;
 }
 
@@ -193,49 +196,57 @@ const CustomerDashboard = () => {
                         </Card>
                     </Col>
                 </Row>
-                <Row>
-                    {workers?.length ? workers.map((worker, index) => {
-                        return <Col xl="6" lg="6" md="6" sm="6" xs="12" key={index}>
-                            <Card>
-                                <CardHeader>
-                                    <Row>
-                                        <Col>
-                                            <h3> {worker.firstName} {worker.lastName}</h3>
-                                        </Col>
-                                    </Row>
-                                </CardHeader>
-                                <CardBody>
-                                    <Row>
-                                        <Col xl="3" lg="3" md="3">
-                                            <a href="#profile-picture" onClick={(e) => e.preventDefault()}>
-                                                <img
-                                                    alt="..."
-                                                    className="rounded-circle img-fluid"
-                                                    src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
-                                                />
-                                            </a>
-                                        </Col>
-                                        <Col>
-                                            <h5>Domain:  <span className="font-weight-500">{domainsJson[worker.domain - 1].name}</span></h5>
-                                            <h5>Services:  <span className="font-weight-500">{concatenateServiceNames(worker._id, services)}</span></h5>
-                                            <h5>Rating: {renderRatingStars(3)}</h5>
-                                            <h5>City: <span className="font-weight-500">{citiesJson[worker.city - 1].name}</span></h5>
-                                            <h5>About: <span className="font-weight-500">{worker.description?.slice(0, 20)}...</span></h5>
-                                        </Col>
-                                    </Row>
-                                </CardBody>
-                                <CardFooter>
-                                    <Row>
-                                        <Col className="text-right">
-                                            <Button color="primary">See more...</Button>
-                                        </Col>
-                                    </Row>
-                                </CardFooter>
-                            </Card>
-                        </Col>
-                    }) : null}
+                <Card>
+                    <CardBody>
+                        <Row>
+                            {workers?.length ? workers.map((worker, index) => {
+                                return <Col xl="6" lg="6" md="6" sm="6" xs="12" key={index}>
+                                    <Card className="shadow">
+                                        <CardHeader className="py-3">
+                                            <Row>
+                                                <Col className="text-left">
+                                                    <h3 className="mb-0"> {worker.firstName} {worker.lastName}</h3>
+                                                </Col>
+                                                <Col className="text-right">
+                                                    <h4 className="mb--1">Rating:   {renderRatingStars(3)}</h4>
+                                                    <span><small>3 reviews</small></span>
+                                                </Col>
+                                            </Row>
+                                        </CardHeader>
+                                        <CardBody>
+                                            <Row>
+                                                <Col xl="3" lg="3" md="3">
+                                                    <a href="#profile-picture" onClick={(e) => e.preventDefault()}>
+                                                        <img
+                                                            alt="..."
+                                                            className="rounded-circle img-fluid"
+                                                            src={require("../../assets/img/brand/user-default-image-transparent-bg.png")}
+                                                        />
+                                                    </a>
+                                                </Col>
+                                                <Col>
+                                                    <h5>Domain:  <span className="font-weight-500">{domainsJson[worker.domain - 1].name}</span></h5>
+                                                    <h5>Services:  <span className="font-weight-500">{concatenateServiceNames(worker._id, services)}</span></h5>
+                                                    <h5>City: <span className="font-weight-500">{citiesJson[worker.city - 1].name}</span></h5>
+                                                    <h5>Phone: <span className="font-weight-500"> +{worker.telephoneNumber}</span></h5>
+                                                    <h5>About: <span className="font-weight-500">{worker.description?.slice(0, 40)}...</span></h5>
+                                                </Col>
+                                            </Row>
+                                        </CardBody>
+                                        <CardFooter className="py-3 border-0">
+                                            <Row>
+                                                <Col className="text-right">
+                                                    <Button color="primary">Book</Button>
+                                                </Col>
+                                            </Row>
+                                        </CardFooter>
+                                    </Card>
+                                </Col>
+                            }) : null}
 
-                </Row>
+                        </Row>
+                    </CardBody>
+                </Card>
             </Col>
         </Row>
     </>)
