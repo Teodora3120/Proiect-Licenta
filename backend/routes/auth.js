@@ -9,7 +9,7 @@ const jwtSecret = process.env.JWT_SECRET;
 // Route to handle user registration
 router.post('/register', async (req, res) => {
     try {
-        const { firstName, lastName, email, password, age, city, type } = req.body;
+        const { firstName, lastName, email, password, dateOfBirth, city, type, telephoneNumber } = req.body;
         // Check if the email is already taken
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -20,7 +20,7 @@ router.post('/register', async (req, res) => {
         const saltRounds = 10; // You can adjust this as needed
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         // Create a new user
-        const newUser = new User({ firstName, lastName, email, password: hashedPassword, age, city, type });
+        const newUser = new User({ firstName, lastName, email, password: hashedPassword, dateOfBirth, city, type, telephoneNumber });
 
         // Save the user to the database
         await newUser.save();

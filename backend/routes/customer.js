@@ -6,10 +6,10 @@ const Service = require('../models/Service');
 
 router.put('/update-account-details/:userId', async (req, res) => {
     try {
-        const { lastName, age, address, telephoneNumber } = req.body;
+        const { lastName, address } = req.body;
         const userId = req.params.userId;
         // Check if all required fields are present in the request body
-        if (!lastName || !telephoneNumber || !age || !address || !userId) {
+        if (!lastName || !address || !userId) {
             return res.status(400).json('Missing required fields');
         }
 
@@ -22,9 +22,7 @@ router.put('/update-account-details/:userId', async (req, res) => {
 
         // Update the service object with the new values
         customer.lastName = lastName;
-        customer.age = age;
         customer.address = address;
-        customer.telephoneNumber = telephoneNumber;
 
         // Save the updated service document
         const updatedAccount = await customer.save();

@@ -28,19 +28,16 @@ import citiesJson from '../../utils/cities.json'
 import CustomerApi from "api/customer";
 import AuthApi from "api/auth";
 import { useNavigate } from "react-router-dom";
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
 
 const CProfile = () => {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
     const [city, setCity] = useState("")
-    const [age, setAge] = useState("")
+    const [dateOfBirth, setDateOfBirth] = useState("")
     const [address, setAdress] = useState("")
     const [isModalOpenDeleteAccount, setIsModalOpenDeleteAccount] = useState(false);
     const [telephoneNumber, setTelephoneNumber] = useState("")
-    const [telephoneNumberError, setTelephoneNumberError] = useState("")
     const [showPassword, setShowPassword] = useState(false)
     const [accountChanges, setAccountChanges] = useState(false)
     const [password, setPassword] = useState("")
@@ -50,25 +47,18 @@ const CProfile = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        handleTelephoneNumber(telephoneNumber)
-        //eslint-disable-next-line
-    }, [telephoneNumber])
-
-    useEffect(() => {
         if (user && user._id) {
             setFirstName(user?.firstName)
             setLastName(user?.lastName)
             setEmail(user?.email)
-            setAge(user?.age)
-            if (user?.telephoneNumber) {
-                setTelephoneNumber('+' + String(user?.telephoneNumber))
-            }
+            setDateOfBirth(user?.dateOfBirth)
+            setTelephoneNumber('+' + String(user?.telephoneNumber))
         }
     }, [user])
 
     useEffect(() => {
         setAccountDetailsError("")
-    }, [lastName, age, address, telephoneNumber])
+    }, [lastName, address])
 
     useEffect(() => {
         setDeleteAccountError("")
@@ -102,43 +92,21 @@ const CProfile = () => {
         setIsModalOpenDeleteAccount(!isModalOpenDeleteAccount);
     };
 
-    const handleTelephoneNumber = (telephoneNumberString) => {
-        console.log(telephoneNumberString)
-        if (telephoneNumberString && telephoneNumberString.length >= 2 && telephoneNumberString.slice(0, 2) !== "+4") {
-            return setTelephoneNumberError("Your prefix should be for Romania.")
-        }
-        if (telephoneNumberString && telephoneNumberString.length > 4 && telephoneNumberString.slice(0, 4) !== "+407") {
-            return setTelephoneNumberError("Your phone number must start with 07.")
-        }
-        if (telephoneNumberString && telephoneNumberString.length > 12) {
-            return setTelephoneNumberError("Your phone number should have maximum 10 digits.")
-        }
-        setTelephoneNumber(telephoneNumberString)
-        setTelephoneNumberError("")
-    }
-
 
     const saveAccountChanges = async () => {
-        if (!lastName || !age || !address || !telephoneNumber) {
+        if (!lastName || !address) {
             setAccountDetailsError("All fields must not be null.")
-            return
-        } else if (age < 18) {
-            setAccountDetailsError("You must be older than 18.")
             return
         }
         try {
             const data = {
                 lastName: lastName,
-                age: age,
                 address: address,
-                telephoneNumber: telephoneNumber
             }
             const response = await CustomerApi.UpdateUserAccountDetails(user._id, data)
             const customer = response.data;
             setLastName(customer.lastName)
-            setAge(customer?.age)
             setAdress(customer?.address)
-            setTelephoneNumber('+' + String(customer?.telephoneNumber))
             setAccountChanges(true)
 
             setTimeout(() => {
@@ -154,11 +122,9 @@ const CProfile = () => {
             const response = await AuthApi.GetUserById(user._id)
             const newUser = response.data
             setLastName(newUser?.lastName)
-            setAge(newUser?.age)
+            setDateOfBirth(newUser?.dateOfBirth)
             setAdress(newUser?.address)
-            if (newUser.telephoneNumber) {
-                setTelephoneNumber('+' + String(newUser?.telephoneNumber))
-            }
+            setTelephoneNumber('+' + String(newUser?.telephoneNumber))
         } catch (error) {
             console.log(error)
         }
@@ -328,15 +294,14 @@ const CProfile = () => {
                                                         className="form-control-label"
                                                         htmlFor="input-username"
                                                     >
-                                                        Your age
+                                                        Your date of birth
                                                     </label>
                                                     <Input
                                                         className="form-control-alternative"
-                                                        value={age}
-                                                        id="input-username"
-                                                        placeholder="Your age..."
-                                                        type="number"
-                                                        onChange={(e) => setAge(Number(e.target.value))}
+                                                        value={dateOfBirth}
+                                                        id="input-date-of-birth"
+                                                        type="date"
+                                                        disabled
                                                     />
                                                 </FormGroup>
                                             </Col>
@@ -385,17 +350,6 @@ const CProfile = () => {
                                                     />
                                                 </FormGroup>
                                             </Col>
-                                            <Col>
-                                                <FormGroup>
-                                                    <label>Telephone number</label>
-                                                    <PhoneInput
-                                                        country="RO"
-                                                        placeholder="Enter phone number"
-                                                        value={String(telephoneNumber)}
-                                                        onChange={setTelephoneNumber} />
-                                                </FormGroup>
-                                                {telephoneNumberError ? <h4 className="font-weight-400 text-danger">{telephoneNumberError}</h4> : null}
-                                            </Col>
                                         </Row>
                                     </div>
                                 </Form>
@@ -412,7 +366,7 @@ const CProfile = () => {
                                         <Button
                                             color="default"
                                             onClick={saveAccountChanges}
-                                            disabled={telephoneNumberError || accountDetailsError ? true : false}
+                                            disabled={accountDetailsError ? true : false}
                                         >
                                             Save changes
                                         </Button>

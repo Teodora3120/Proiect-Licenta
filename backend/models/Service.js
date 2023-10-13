@@ -21,6 +21,10 @@ const serviceSchema = new mongoose.Schema({
     domain: {
         type: Number,
         required: true,
+    },
+    duration: {
+        type: Number,
+        required: true
     }
 });
 

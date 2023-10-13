@@ -19,12 +19,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    age: {
-        type: Number,
+    dateOfBirth: {
+        type: String,
         required: true,
     },
     city: {
-        type: String,
+        type: Number,
+        required: true,
+    },
+    telephoneNumber: {
+        type: Number,
         required: true,
     },
     type: {
@@ -54,10 +58,6 @@ const userSchema = new mongoose.Schema({
             endTime: String,
         },
     ],
-    telephoneNumber: {
-        type: Number,
-        required: false,
-    },
     rating: {
         type: Number,
         required: false

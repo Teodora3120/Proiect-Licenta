@@ -31,8 +31,6 @@ import domainsJson from '../../utils/domains.json'
 import WorkerApi from "api/worker";
 import Select from 'react-select'
 import AuthApi from "api/auth";
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
 import { useNavigate } from "react-router-dom";
 
 const WProfile = () => {
@@ -40,7 +38,7 @@ const WProfile = () => {
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [city, setCity] = useState("")
-  const [age, setAge] = useState("")
+  const [dateOfBirth, setDateOfBirth] = useState("")
   const [address, setAdress] = useState("")
   const [domain, setDomain] = useState("")
   const [service, setService] = useState({})
@@ -60,7 +58,6 @@ const WProfile = () => {
   const [errorDomain, setErrorDomain] = useState("")
   const [accountDetailsError, setAccountDetailsError] = useState("")
   const [telephoneNumber, setTelephoneNumber] = useState("")
-  const [telephoneNumberError, setTelephoneNumberError] = useState("")
   const { user } = useUserContext();
   const navigate = useNavigate();
 
@@ -70,21 +67,14 @@ const WProfile = () => {
       setFirstName(user?.firstName)
       setLastName(user?.lastName)
       setEmail(user?.email)
-      setAge(user?.age)
-      if (user?.telephoneNumber) {
-        setTelephoneNumber('+' + String(user.telephoneNumber))
-      }
+      setDateOfBirth(user?.dateOfBirth)
+      setTelephoneNumber('+' + String(user.telephoneNumber))
     }
   }, [user])
 
   useEffect(() => {
-    handleTelephoneNumber(telephoneNumber)
-    //eslint-disable-next-line
-  }, [telephoneNumber])
-
-  useEffect(() => {
     setAccountDetailsError("")
-  }, [lastName, age, address, description, telephoneNumber])
+  }, [lastName, address, description])
 
   useEffect(() => {
     setDeleteAccountError("")
@@ -131,22 +121,6 @@ const WProfile = () => {
   };
 
 
-  const handleTelephoneNumber = (telephoneNumberString) => {
-    console.log(telephoneNumberString)
-    if (telephoneNumberString && telephoneNumberString.length >= 2 && telephoneNumberString.slice(0, 2) !== "+4") {
-      return setTelephoneNumberError("Your prefix should be for Romania.")
-    }
-    if (telephoneNumberString && telephoneNumberString.length > 4 && telephoneNumberString.slice(0, 4) !== "+407") {
-      return setTelephoneNumberError("Your phone number must start with 07.")
-    }
-    if (telephoneNumberString && telephoneNumberString.length > 12) {
-      return setTelephoneNumberError("Your phone number should have maximum 10 digits.")
-    }
-    setTelephoneNumber(telephoneNumberString)
-    setTelephoneNumberError("")
-  }
-
-
 
   const handleService = (label, value) => {
     setServiceError("")
@@ -156,6 +130,8 @@ const WProfile = () => {
       service.price = Number(value)
     } else if (label === "description") {
       service.description = value
+    } else if (label === "duration") {
+      service.duration = value
     }
   }
 
@@ -167,21 +143,25 @@ const WProfile = () => {
       serviceObjectEdit.price = Number(value)
     } else if (label === "description") {
       serviceObjectEdit.description = value
+    } else if (label === "duration") {
+      serviceObjectEdit.duration = value
     }
   }
 
   const createService = async () => {
-    if (!service.name || !service.price || !service.description) {
+    if (!service.name || !service.price || !service.description || !service.duration) {
       setServiceError("You must complete all fields.")
       return
     } else if (service.price < 1) {
-      setServiceError("The price must be at least 1 RON.")
+      setServiceError("The price must be at least 10 RON.")
     }
 
     try {
       const data = { ...service, domain: domain.id, userId: user._id }
       const response = await WorkerApi.CreateService(data)
       console.log(response)
+      setService({ name: "", price: 0, description: "", duration: 0 });
+      setServiceError("");
       await getServices();
       toggleModal();
     } catch (error) {
@@ -191,7 +171,7 @@ const WProfile = () => {
   }
 
   const editService = async () => {
-    if (!serviceObjectEdit.name || !serviceObjectEdit.price || !serviceObjectEdit.description) {
+    if (!serviceObjectEdit.name || !serviceObjectEdit.price || !serviceObjectEdit.description || !serviceObjectEdit.duration) {
       setServiceError("You must complete all fields.")
       return
     } else if (serviceObjectEdit.price < 1) {
@@ -228,28 +208,21 @@ const WProfile = () => {
 
 
   const saveAccountChanges = async () => {
-    if (!lastName || !age || !address || !description) {
+    if (!lastName || !address || !description) {
       setAccountDetailsError("All fields must not be null.")
-      return
-    } else if (age < 18) {
-      setAccountDetailsError("You must be older than 18.")
       return
     }
     try {
       const data = {
         lastName: lastName,
-        age: age,
         address: address,
         description: description,
-        telephoneNumber: telephoneNumber
       }
       const response = await WorkerApi.UpdateUserAccountDetails(user._id, data)
       const worker = response.data;
       setLastName(worker.lastName)
-      setAge(worker.age)
       setAdress(worker.address)
       setDescription(worker.description)
-      setTelephoneNumber('+' + String(worker.telephoneNumber))
       setAccountChanges(true)
 
       setTimeout(() => {
@@ -286,14 +259,13 @@ const WProfile = () => {
       const response = await AuthApi.GetUserById(user._id)
       const newUser = response.data
       setLastName(newUser?.lastName)
-      setAge(newUser?.age)
+      setDateOfBirth(newUser?.dateOfBirth)
       setAdress(newUser?.address)
       setDescription(newUser?.description)
       setDomain(domainsJson[newUser?.domain - 1])
       console.log(user)
-      if (newUser.telephoneNumber) {
-        setTelephoneNumber('+' + String(newUser?.telephoneNumber))
-      }
+      setTelephoneNumber('+' + String(newUser?.telephoneNumber))
+
     } catch (error) {
       console.log(error)
     }
@@ -486,15 +458,14 @@ const WProfile = () => {
                             className="form-control-label"
                             htmlFor="input-username"
                           >
-                            Your age
+                            Your date of birth
                           </label>
                           <Input
                             className="form-control-alternative"
-                            value={age}
-                            id="input-username"
-                            placeholder="Your age..."
-                            type="number"
-                            onChange={(e) => setAge(Number(e.target.value))}
+                            value={dateOfBirth}
+                            id="input-date-of-birth"
+                            type="date"
+                            disabled
                           />
                         </FormGroup>
                       </Col>
@@ -542,19 +513,6 @@ const WProfile = () => {
                             disabled
                           />
                         </FormGroup>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        <FormGroup>
-                          <label>Telephone number</label>
-                          <PhoneInput
-                            country="RO"
-                            placeholder="Enter phone number"
-                            value={String(telephoneNumber)}
-                            onChange={setTelephoneNumber} />
-                        </FormGroup>
-                        {telephoneNumberError ? <h4 className="font-weight-400 text-danger">{telephoneNumberError}</h4> : null}
                       </Col>
                     </Row>
                   </div>
@@ -668,7 +626,7 @@ const WProfile = () => {
                   <Col className="text-right">
                     <Button
                       color="default"
-                      disabled={telephoneNumberError || accountDetailsError ? true : false}
+                      disabled={accountDetailsError ? true : false}
                       onClick={saveAccountChanges}
                     >
                       Save changes
@@ -741,6 +699,29 @@ const WProfile = () => {
               </FormGroup>
             </Col>
           </Row>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label className="form-control-label" htmlFor="input-service-duration">
+                  Service Duration
+                </label>
+                <Select
+                  options={[
+                    { value: '1', label: '1 hour' },
+                    { value: '2', label: '2 hours' },
+                    { value: '3', label: '3 hours' },
+                    { value: '4', label: '4 hours' },
+                    { value: '5', label: '5 hours' },
+                    { value: '6', label: '6 hours' },
+                    { value: '7', label: '7 hours' },
+                    { value: '8', label: '8 hours' },
+                  ]}
+                  isClearable
+                  onChange={(e) => handleService("duration", e.value)}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
         </ModalBody>
         <ModalFooter>
           {serviceError ? <h4 className="text-danger font-weight-400 text-right">{serviceError}</h4> : ""}
@@ -808,6 +789,30 @@ const WProfile = () => {
                   id="input-address"
                   type="text"
                   onChange={(e) => handleServiceEdit("description", e.target.value)}
+                />
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <FormGroup>
+                <label className="form-control-label" htmlFor="input-service-duration">
+                  Service Duration
+                </label>
+                <Select
+                  defaultValue={{ label: `${serviceObjectEdit.duration} h`, value: serviceObjectEdit.duration }}
+                  options={[
+                    { value: '1', label: '1 hour' },
+                    { value: '2', label: '2 hours' },
+                    { value: '3', label: '3 hours' },
+                    { value: '4', label: '4 hours' },
+                    { value: '5', label: '5 hours' },
+                    { value: '6', label: '6 hours' },
+                    { value: '7', label: '7 hours' },
+                    { value: '8', label: '8 hours' },
+                  ]}
+                  isClearable
+                  onChange={(e) => handleServiceEdit("duration", e.value)}
                 />
               </FormGroup>
             </Col>
