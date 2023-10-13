@@ -61,7 +61,11 @@ const userSchema = new mongoose.Schema({
     rating: {
         type: Number,
         required: false
-    }
+    },
+    orders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+    }],
 });
 
 const User = mongoose.model('User', userSchema);

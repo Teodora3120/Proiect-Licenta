@@ -9,6 +9,10 @@ class DashboardApi {
     static async GetAllWorkers() {
         return await axios.get(`/dashboard/get-all-workers`)
     }
+
+    static async GetScheduleForADay(data, userId) {
+        return await axios.get(`/dashboard/get-schedule-for-a-day/${userId}`, { params: data })
+    }
 }
 
 export default DashboardApi
