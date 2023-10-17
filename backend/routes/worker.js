@@ -2,159 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Service = require('../models/Service');
-
-router.post('/create-service', async (req, res) => {
-    try {
-        const { name, description, price, userId, domain, duration } = req.body;
-        // Check if all required fields are present in the request body
-        if (!name || !description || !price || !domain || !duration || !userId) {
-            return res.status(400).json('Missing required fields');
-        }
-
-        // Create a new service document
-        const newService = new Service({
-            name,
-            description,
-            domain,
-            price,
-            duration,
-            user: userId
-        });
-
-        // Save the service document to the services collection
-        const savedService = await newService.save();
-
-        // Find the user by userId and update their services array
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.status(404).json('User not found');
-        }
-
-        // Add the service's _id to the user's services array
-        user.services.push(savedService._id);
-
-        // Save the updated user document
-        await user.save();
-
-        res.status(201).json('Service created and added to user');
-    } catch (error) {
-        console.error(error);
-        res.status(500).json('Internal Server Error');
-    }
-});
-
-
-router.put('/edit-service', async (req, res) => {
-    try {
-        const { name, description, price, duration, _id } = req.body;
-
-        // Check if all required fields are present in the request body
-        if (!name || !description || !price || !duration || !_id) {
-            return res.status(400).json('Missing required fields');
-        }
-
-        // Find the service by its ID
-        const service = await Service.findById(_id);
-
-        if (!service) {
-            return res.status(404).json('Service not found');
-        }
-
-        // Update the service object with the new values
-        service.name = name;
-        service.description = description;
-        service.price = price;
-        service.duration = duration;
-
-        // Save the updated service document
-        const updatedService = await service.save();
-
-        res.status(200).json(updatedService);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json('Internal Server Error');
-    }
-});
-
-
-
-router.delete('/delete-service/:serviceId', async (req, res) => {
-    try {
-        const serviceId = req.params.serviceId;
-
-        if (!serviceId) {
-            return res.status(400).json('Missing service id.');
-        }
-
-        const service = await Service.findById(serviceId);
-
-        if (!service) {
-            return res.status(404).json('Service not found');
-        }
-
-        const userId = service.user;
-
-        await Service.findByIdAndRemove(serviceId);
-
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json('User not found');
-        }
-
-        user.services.pull(serviceId);
-        await user.save();
-
-        res.status(200).json('Service deleted successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).json('Internal Server Error');
-    }
-});
-
-
-router.delete('/delete-all-services/:userId', async (req, res) => {
-    try {
-        const userId = req.params.userId;
-
-        if (!userId) {
-            return res.status(400).json('Missing user id.');
-        }
-
-        // Delete all services with the given userId
-        const result = await Service.deleteMany({ user: userId });
-
-        if (result.deletedCount > 0) {
-            await User.updateOne({ _id: userId }, { $set: { services: [] } });
-            return res.status(200).json('Services deleted successfully');
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json('Internal Server Error');
-    }
-});
-
-router.get('/get-services/:userId', async (req, res) => {
-    try {
-        const userId = req.params.userId;
-
-        // Find the user by userId
-        const user = await User.findById(userId);
-
-        if (!user) {
-            return res.status(404).json('User not found');
-        }
-
-        // Find services with the user's ID in the 'user' field
-        const services = await Service.find({ user: userId });
-
-        res.status(200).json(services);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json('Internal Server Error');
-    }
-});
-
+const Order = require('../models/Order')
 
 router.put('/update-account-details/:userId', async (req, res) => {
     try {
@@ -252,6 +100,130 @@ router.put('/send-schedule/:userId', async (req, res) => {
         // Save the updated user document
         const updatedUser = await user.save();
         res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
+router.get('/get-schedule-for-a-day/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const date = req.query.date;
+        const day = req.query.day;
+        const serviceId = req.query.serviceId;
+        const worker = await User.findById(userId);
+
+        if (!worker) {
+            return res.status(404).json('User not found');
+        }
+
+        // Get the user's schedule for the specified day
+        const scheduleForDay = worker.schedule.find(schedule => schedule.dayOfWeek === day);
+
+        if (!scheduleForDay) {
+            return res.status(404).json(`Worker doesn't have a schedule set for the selected day.`);
+        }
+
+        // Get the user's orders for the specified day
+        const ordersForDay = await Order.find({
+            workerId: userId,
+            date: date,
+        });
+
+        const service = await Service.findById(serviceId);
+
+        const availableTimeSlots = [];
+
+        // Convert schedule start and end times to Date objects
+        const scheduleStartTime = scheduleForDay.startTime;
+        const scheduleEndTime = scheduleForDay.endTime;
+
+        if (!ordersForDay.length) {
+            // Calculate the initial gap before the first order (if any)
+            const initialGap = {
+                startTime: scheduleStartTime,
+                endTime: scheduleEndTime,
+            };
+
+            const startTime = parseInt(initialGap.startTime.replace(":", ""), 10);
+            const endTime = parseInt(initialGap.endTime.replace(":", ""), 10);
+            const availableHours = [];
+
+            let currentTime = startTime;
+            while (currentTime < endTime) {
+                const formattedTime = `${String(currentTime).padStart(4, '0').slice(0, 2)}:${String(currentTime).padStart(4, '0').slice(-2)}`;
+                availableHours.push(formattedTime);
+
+                // Increment currentTime by one hour (in the format HHMM)
+                currentTime += 100;
+            }
+
+            return res.status(200).json(availableHours);
+        }
+
+        // Create an array to store occupied hours
+        const occupiedHours = [];
+
+        // Calculate available time slots
+        for (let i = 0; i < ordersForDay.length; i++) {
+            const order = ordersForDay[i];
+            const orderStartTime = order.start;
+            const serviceOrder = await Service.findById(order.serviceId);
+            const serviceOrderDuration = serviceOrder.duration;
+
+            // Split the orderStartTime into hours and minutes
+            const orderHour = orderStartTime.split(":")[0];
+
+            // Calculate the orderEndTime
+            let orderEndHour = Number(orderHour) + serviceOrderDuration;
+
+            // Add the occupied hours to the occupiedHours array
+            for (let j = Number(orderHour); j < orderEndHour; j++) {
+                occupiedHours.push(j);
+            }
+        }
+
+        // Calculate the gap after the last order (if any)
+        const finalGap = {
+            startTime: scheduleStartTime,
+            endTime: scheduleEndTime,
+        };
+
+        // Filter the available hours to exclude occupied hours
+        const availableHours = [];
+
+        const startTime = parseInt(scheduleStartTime.split(":")[0]);
+        const endTime = parseInt(scheduleEndTime.split(":")[0]);
+
+        let currentTime = String(startTime).padStart(2, '0'); // Initialize as a string in "HH" format
+
+        while (currentTime < endTime) {
+            console.log(currentTime, occupiedHours.includes(parseInt(currentTime, 10)));
+            if (!occupiedHours.includes(parseInt(currentTime, 10))) {
+                const formattedTime = `${currentTime}:00`;
+                availableHours.push(formattedTime);
+            }
+            // Increment currentTime by one hour (in the format HH)
+            const nextHour = parseInt(currentTime, 10) + 1;
+            currentTime = String(nextHour).padStart(2, '0');
+        }
+
+        availableTimeSlots.push(finalGap);
+
+        return res.status(200).json(availableHours);
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
+
+router.get('/get-all-workers', async (req, res) => {
+    try {
+        const workers = await User.find({ type: "worker" });
+        res.status(200).json(workers);
     } catch (error) {
         console.error(error);
         res.status(500).json('Internal Server Error');

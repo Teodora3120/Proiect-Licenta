@@ -29,6 +29,7 @@ import { useEffect, useState } from "react";
 import citiesJson from '../../utils/cities.json'
 import domainsJson from '../../utils/domains.json'
 import WorkerApi from "api/worker";
+import ServiceApi from "api/service";
 import Select from 'react-select'
 import AuthApi from "api/auth";
 import { useNavigate } from "react-router-dom";
@@ -158,7 +159,7 @@ const WProfile = () => {
 
     try {
       const data = { ...service, domain: domain.id, userId: user._id }
-      const response = await WorkerApi.CreateService(data)
+      const response = await ServiceApi.CreateService(data)
       console.log(response)
       setService({ name: "", price: 0, description: "", duration: 0 });
       setServiceError("");
@@ -179,7 +180,7 @@ const WProfile = () => {
     }
 
     try {
-      const response = await WorkerApi.EditService(serviceObjectEdit)
+      const response = await ServiceApi.EditService(serviceObjectEdit)
       console.log(response)
       await getServices();
       toggleModalEdit();
@@ -196,7 +197,7 @@ const WProfile = () => {
       return
     }
     try {
-      const response = await WorkerApi.DeleteService(serviceObjectDeleteId)
+      const response = await ServiceApi.DeleteService(serviceObjectDeleteId)
       console.log(response)
       await getServices();
       toggleModalDelete();
@@ -246,7 +247,7 @@ const WProfile = () => {
       if (domainId && domainsJson[domainId - 1]) {
         setDomain(domainsJson[domainId - 1])
       }
-      await WorkerApi.DeleteAllServices(user._id);
+      await ServiceApi.DeleteAllServices(user._id);
       setServices([])
     } catch (error) {
       console.log(error)
@@ -273,7 +274,7 @@ const WProfile = () => {
 
   const getServices = async () => {
     try {
-      const response = await WorkerApi.GetServices(user._id)
+      const response = await ServiceApi.GetServices(user._id)
       setServices(response.data)
     } catch (error) {
       console.log(error)

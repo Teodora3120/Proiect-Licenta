@@ -27,7 +27,10 @@ import {
 import domainsJson from '../../utils/domains.json'
 import citiesJson from '../../utils/cities.json'
 import { useUserContext } from "context/UserContext";
-import DashboardApi from "api/dashboard";
+import ServiceApi from "api/service";
+import WorkerApi from "api/worker";
+import Select from 'react-select'
+import OrderApi from "api/order";
 
 const ratingOptions = [
     {
@@ -85,7 +88,6 @@ const CustomerDashboard = () => {
     const [rating, setRating] = useState({});
     const [errorDomain, setErrorDomain] = useState("");
     const [service, setService] = useState({});
-    const [serviceBook, setServiceBook] = useState({});
     const [services, setServices] = useState([]);
     const [searchWorkerValue, setSearchWorkerValue] = useState("");
     const [workers, setWorkers] = useState([]);
@@ -96,7 +98,6 @@ const CustomerDashboard = () => {
     const [domainDropdownOpen, setDomainDropdownOpen] = useState(false);
     const [ratingDropdownOpen, setRatingDropdownOpen] = useState(false);
     const [isModalOpenBook, setIsModalOpenBook] = useState(false);
-    const [selectedDate, setSelectedDate] = useState("");
     const [workerToBook, setWorkerToBook] = useState({})
 
     useEffect(() => {
@@ -138,7 +139,7 @@ const CustomerDashboard = () => {
 
     const getServices = async () => {
         try {
-            const response = await DashboardApi.GetAllServices();
+            const response = await ServiceApi.GetAllServices();
             setServices(response.data);
         } catch (error) {
             console.log(error);
@@ -147,33 +148,12 @@ const CustomerDashboard = () => {
 
     const getWorkers = async () => {
         try {
-            const response = await DashboardApi.GetAllWorkers();
+            const response = await WorkerApi.GetAllWorkers();
             setWorkers(response.data);
         } catch (error) {
             console.log(error);
         }
     };
-
-    const getScheduleForADay = async () => {
-        try {
-            const data = {
-                date: selectedDate,
-                day: getDayName(selectedDate),
-                serviceBook: serviceBook
-            }
-            const response = await DashboardApi.GetScheduleForADay(data, workerToBook._id)
-            console.log(response)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
-    useEffect(() => {
-        if (selectedDate) {
-            getScheduleForADay()
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedDate])
 
     return (
         <>
@@ -345,8 +325,7 @@ const CustomerDashboard = () => {
                         toggleModalBook={toggleModalBook}
                         workerToBook={workerToBook}
                         services={services}
-                        selectedDate={selectedDate}
-                        setSelectedDate={setSelectedDate}
+                        customer={user}
                     />
                 </Col>
             </Row>
@@ -356,15 +335,49 @@ const CustomerDashboard = () => {
 
 export default CustomerDashboard;
 
-const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, selectedDate, setSelectedDate }) => {
+const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, customer }) => {
     const [workerServices, setWorkerServices] = useState([]);
     const [selectedService, setSelectedService] = useState(null);
-
-    console.log(workerToBook)
+    const [selectedDate, setSelectedDate] = useState("");
+    const [selectedStartTime, setSelectedStartTime] = useState({})
+    const [bookError, setBookError] = useState("")
+    const [selectServiceError, setSelectServiceError] = useState("")
+    const [paid, setPaid] = useState(false)
 
     useEffect(() => {
         setWorkerServices(services.filter(item => item.user === workerToBook._id));
     }, [services, workerToBook._id]);
+
+    useEffect(() => {
+        setBookError("")
+    }, [selectedService, selectedStartTime, paid, selectedDate])
+
+    const createOrder = async () => {
+        try {
+            if (!selectedService._id || !selectedDate || !selectedStartTime) {
+                return setBookError("You must select the service, the day and the start hour.")
+            }
+            console.log(selectedDate)
+            const data = {
+                workerId: workerToBook._id,
+                customerId: customer._id,
+                serviceId: selectedService._id,
+                date: selectedDate,
+                start: selectedStartTime?.value,
+                paid: paid
+            }
+            console.log(data)
+            const response = await OrderApi.CreateOrder(data)
+            console.log(response)
+            setSelectedDate("")
+            setSelectedStartTime({})
+            setSelectedService(null)
+            setPaid(false)
+            toggleModalBook();
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <>
@@ -381,6 +394,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, s
                                     <tr>
                                         <th scope="col">Name</th>
                                         <th scope="col">Description</th>
+                                        <th scope="col">Duration</th>
                                         <th scope="col">Price</th>
                                     </tr>
                                 </thead>
@@ -389,6 +403,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, s
                                         return <tr onClick={() => setSelectedService(service)} className={`c-pointer ${service._id === selectedService?._id ? "selected-service" : ""}`} key={index}>
                                             <td>{service.name}</td>
                                             <td>{service.description}</td>
+                                            <td>{service.duration} h</td>
                                             <td>{service.price} RON</td>
                                         </tr>
                                     }) :
@@ -404,11 +419,15 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, s
                     <Row>
                         <Col>
                             <Label>2. Select the date that you're available on</Label>
+                            {selectServiceError ? <h4 className="text-danger font-weigth-400">{selectServiceError}</h4> : ""}
                             <Input
                                 type="date"
                                 value={selectedDate ? selectedDate : new Date().toISOString().split('T')[0]}
                                 min={new Date().toISOString().split('T')[0]}
                                 onChange={(e) => {
+                                    if (!selectedService) {
+                                        return setSelectServiceError("Select the service first.")
+                                    }
                                     setSelectedDate(e.target.value)
                                 }}
                             />
@@ -416,9 +435,33 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, s
                     </Row>
                     <Row>
                         <Col>
-                            <WorkerAvailableHours worker={workerToBook} selectedDate={selectedDate} />
+                            <WorkerAvailableHours worker={workerToBook} selectedDate={selectedDate} selectedService={selectedService} selectedStartTime={selectedStartTime} setSelectedStartTime={setSelectedStartTime} />
                         </Col>
                     </Row>
+                    <Row>
+                        <Col>
+                            <Label>2. Select how you want to pay the service</Label>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <FormGroup check>
+                                <Label check>
+                                    <Input type="radio" name="paymentOption" onClick={() => setPaid(true)} />{' '}
+                                    Pay Online (by card)
+                                </Label>
+                            </FormGroup>
+                        </Col>
+                        <Col>
+                            <FormGroup check>
+                                <Label check>
+                                    <Input type="radio" name="paymentOption" onClick={() => setPaid(false)} />{' '}
+                                    Pay In-Person (cash)
+                                </Label>
+                            </FormGroup>
+                        </Col>
+                    </Row>
+
                 </ModalBody>
                 <ModalFooter className="px-1">
                     <Row className="w-100 align-items-center">
@@ -426,7 +469,8 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, s
                             <p className="mb-0 c-pointer font-weight-600 text-sm" onClick={toggleModalBook}>Cancel</p>
                         </Col>
                         <Col className="text-right text-nowrap">
-                            <Button outline color="primary">
+                            {bookError ? <h4 className="text-danger font-weight-400 text-right">{bookError}</h4> : null}
+                            <Button outline color="primary" onClick={createOrder} disabled={bookError || selectServiceError ? true : false}>
                                 Book worker
                             </Button>
                         </Col>
@@ -437,46 +481,67 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, s
     )
 }
 
-const WorkerAvailableHours = ({ worker, selectedDate }) => {
-    const selectedDayOfWeek = new Date(selectedDate).toLocaleDateString("en-US", { weekday: "long" });
+const WorkerAvailableHours = ({ worker, selectedDate, selectedService, setSelectedStartTime, selectedStartTime }) => {
 
-    const scheduleForDay = worker.schedule.find(
-        (item) => item.dayOfWeek.toLowerCase() === selectedDayOfWeek.toLowerCase()
-    );
+    const [schedule, setSchedule] = useState([])
 
-    const availableHours = [];
+    useEffect(() => {
+        if (selectedDate && selectedService && selectedService._id) {
+            getScheduleForADay()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedDate, selectedService])
 
-    if (scheduleForDay) {
-        const startTime = scheduleForDay.startTime.split(":");
-        const endTime = scheduleForDay.endTime.split(":");
 
-        const startHour = parseInt(startTime[0], 10);
-        const endHour = parseInt(endTime[0], 10);
-
-        for (let hour = startHour; hour <= endHour; hour++) {
-            availableHours.push(`${hour}:00`);
+    const getScheduleForADay = async () => {
+        try {
+            const data = {
+                date: selectedDate,
+                day: getDayName(selectedDate),
+                serviceId: selectedService._id
+            }
+            console.log(data)
+            const response = await WorkerApi.GetScheduleForADay(data, worker._id)
+            console.log(response)
+            const scheduleArr = response.data;
+            let parsedSchedule = []
+            if (scheduleArr?.length) {
+                parsedSchedule = scheduleArr.map((hour) => ({
+                    value: hour,
+                    label: hour,
+                }));
+            }
+            setSchedule(parsedSchedule)
+        } catch (error) {
+            console.log(error)
         }
     }
 
     return (
-        <Row>
+        <Row className="mt-3">
             <Col xl="12">
                 <Card className="mb-3">
                     <CardBody>
                         <CardTitle tag="h5" className="text-center">
-                            Available Hours on {selectedDayOfWeek}
+                            {selectedDate ? `Available Hours on ${getDayName(selectedDate)}` : "Select a date"}
+
                         </CardTitle>
-                        {availableHours.length > 0 ? (
-                            <ul className="list-unstyled">
-                                {availableHours.map((hour, index) => (
-                                    <li key={index} className="text-center">
-                                        {hour}
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
-                            <p className="text-center">No available hours on this day.</p>
-                        )}
+                        <Row className="align-items-center justify-content-center">
+                            <Col xl="6" lg="6" md="6" sm="12" xs="12">
+                                {schedule.length > 0 ? (
+                                    <Select
+                                        onChange={(e) => setSelectedStartTime(e)}
+                                        placeholder="Start time"
+                                        type="select"
+                                        value={selectedStartTime ?? schedule[0]}
+                                        defaultValue={selectedStartTime ?? schedule[0]}
+                                        options={schedule}
+                                    />
+                                ) : (
+                                    <p className="text-center">No available hours on this day.</p>
+                                )}
+                            </Col>
+                        </Row>
                     </CardBody>
                 </Card>
             </Col>
