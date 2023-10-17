@@ -61,6 +61,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.7.7",
     "react-step-wizard": "^5.3.11",
+    "react-stripe-elements": "^6.1.2",
     "reactstrap": "8.10.0",
     "sass": "1.62.1"
   },

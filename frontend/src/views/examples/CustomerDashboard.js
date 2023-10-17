@@ -341,8 +341,8 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
     const [selectedDate, setSelectedDate] = useState("");
     const [selectedStartTime, setSelectedStartTime] = useState({})
     const [bookError, setBookError] = useState("")
-    const [selectServiceError, setSelectServiceError] = useState("")
-    const [paid, setPaid] = useState(false)
+    const [selectServiceError, setServiceError] = useState("")
+    const [paid, setPaid] = useState(null)
 
     useEffect(() => {
         setWorkerServices(services.filter(item => item.user === workerToBook._id));
@@ -352,12 +352,17 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
         setBookError("")
     }, [selectedService, selectedStartTime, paid, selectedDate])
 
+    useEffect(() => {
+        setServiceError("")
+    }, [selectedService])
+
+
     const createOrder = async () => {
         try {
-            if (!selectedService._id || !selectedDate || !selectedStartTime) {
-                return setBookError("You must select the service, the day and the start hour.")
+            if (!selectedService._id || !selectedDate || !selectedStartTime.value || paid === null) {
+                console.log(selectedService._id, selectedDate, selectedStartTime.value, paid)
+                return setBookError("You must complete all the fields.")
             }
-            console.log(selectedDate)
             const data = {
                 workerId: workerToBook._id,
                 customerId: customer._id,
@@ -366,9 +371,8 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
                 start: selectedStartTime?.value,
                 paid: paid
             }
-            console.log(data)
-            const response = await OrderApi.CreateOrder(data)
-            console.log(response)
+            await OrderApi.CreateOrder(data)
+
             setSelectedDate("")
             setSelectedStartTime({})
             setSelectedService(null)
@@ -426,7 +430,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
                                 min={new Date().toISOString().split('T')[0]}
                                 onChange={(e) => {
                                     if (!selectedService) {
-                                        return setSelectServiceError("Select the service first.")
+                                        return setServiceError("Select the service first.")
                                     }
                                     setSelectedDate(e.target.value)
                                 }}
