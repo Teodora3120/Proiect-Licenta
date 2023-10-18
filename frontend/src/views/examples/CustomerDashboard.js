@@ -27,6 +27,7 @@ import {
 import domainsJson from '../../utils/domains.json'
 import citiesJson from '../../utils/cities.json'
 import { useUserContext } from "context/UserContext";
+import { useNavigate } from "react-router-dom";
 import ServiceApi from "api/service";
 import WorkerApi from "api/worker";
 import Select from 'react-select'
@@ -343,6 +344,9 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
     const [bookError, setBookError] = useState("")
     const [selectServiceError, setServiceError] = useState("")
     const [paid, setPaid] = useState("")
+    const [showSeeOrdersButton, setShowSeeOrdersButton] = useState(false);
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         setWorkerServices(services.filter(item => item.user === workerToBook._id));
@@ -373,11 +377,15 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
             }
             await OrderApi.CreateOrder(data)
 
-            setSelectedDate("")
-            setSelectedStartTime({})
-            setSelectedService(null)
-            setPaid("")
-            toggleModalBook();
+            setShowSeeOrdersButton(true);
+            setTimeout(() => {
+                setShowSeeOrdersButton(false);
+                setSelectedDate("");
+                setSelectedStartTime({});
+                setSelectedService(null);
+                setPaid("");
+                toggleModalBook();
+            }, 5000);
         } catch (error) {
             console.log(error)
         }
@@ -426,7 +434,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
                             {selectServiceError ? <h4 className="text-danger font-weigth-400">{selectServiceError}</h4> : ""}
                             <Input
                                 type="date"
-                                value={selectedDate ? selectedDate : new Date().toISOString().split('T')[0]}
+                                value={selectedDate ? selectedDate : null}
                                 min={new Date().toISOString().split('T')[0]}
                                 onChange={(e) => {
                                     if (!selectedService) {
@@ -474,9 +482,17 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
                         </Col>
                         <Col className="text-right text-nowrap">
                             {bookError ? <h4 className="text-danger font-weight-400 text-right">{bookError}</h4> : null}
-                            <Button outline color="primary" onClick={createOrder} disabled={bookError || selectServiceError ? true : false}>
-                                Book worker
-                            </Button>
+                            {showSeeOrdersButton ? (
+                                <Button color="success" onClick={() => {
+                                    navigate("/admin/my-orders")
+                                }}>
+                                    See my orders
+                                </Button>
+                            ) : (
+                                <Button outline color="primary" onClick={createOrder} disabled={bookError || selectServiceError ? true : false}>
+                                    Book worker
+                                </Button>
+                            )}
                         </Col>
                     </Row>
                 </ModalFooter>

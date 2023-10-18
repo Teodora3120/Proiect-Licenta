@@ -118,7 +118,7 @@ const CustomerOrders = () => {
                                                     return <tr key={index}>
                                                         <td>{service.name}</td>
                                                         <td>{worker.firstName} {worker.lastName}</td>
-                                                        <td>{formatDate(order.date)}</td>
+                                                        <td>{formatDate(order.date)}, {order.start} </td>
                                                         <td>{service.price} RON</td>
                                                         <td>{order.finished ? "Finished" : "On going"}</td>
                                                         <td>
