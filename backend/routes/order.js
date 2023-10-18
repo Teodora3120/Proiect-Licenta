@@ -3,6 +3,8 @@ const router = express.Router();
 const Order = require('../models/Order')
 const User = require('../models/User')
 const Service = require('../models/Service')
+const { userConnections } = require('../socketConnections');
+
 
 
 router.post('/create-order', async (req, res) => {
@@ -45,6 +47,13 @@ router.post('/create-order', async (req, res) => {
         // Add the service's _id to the user's services array
         await worker.updateOne({ $push: { orders: savedOrder._id } })
 
+        if (userConnections.has(customerId)) {
+            userConnections.get(customerId).emit('orderCreated', savedOrder);
+        }
+        if (userConnections.has(workerId)) {
+            userConnections.get(workerId).emit('orderCreated', savedOrder);
+        }
+
         res.status(201).json(savedOrder);
     } catch (error) {
         console.error(error);
@@ -81,6 +90,24 @@ router.get('/get-orders/:userId', async (req, res) => {
     }
 });
 
+router.delete('/delete-order/:orderId', async (req, res) => {
+    const orderId = req.params.orderId;
+
+    // Delete the order from the database
+    const deletedOrder = await Order.findByIdAndDelete(orderId);
+
+    if (deletedOrder) {
+        if (userConnections.has(deletedOrder.customerId)) {
+            userConnections.get(deletedOrder.customerId).emit('orderDeleted', deletedOrder);
+        }
+        if (userConnections.has(deletedOrder.workerId)) {
+            userConnections.get(deletedOrder.workerId).emit('orderDeleted', deletedOrder);
+        }
+        res.status(200).json('Order deleted successfully');
+    } else {
+        res.status(404).json('Order not found');
+    }
+});
 
 
 module.exports = router;

@@ -434,7 +434,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
                             {selectServiceError ? <h4 className="text-danger font-weigth-400">{selectServiceError}</h4> : ""}
                             <Input
                                 type="date"
-                                value={selectedDate ? selectedDate : null}
+                                value={selectedDate ? selectedDate : ""}
                                 min={new Date().toISOString().split('T')[0]}
                                 onChange={(e) => {
                                     if (!selectedService) {

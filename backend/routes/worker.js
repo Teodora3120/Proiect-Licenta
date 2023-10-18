@@ -199,7 +199,7 @@ router.get('/get-schedule-for-a-day/:userId', async (req, res) => {
         let currentTime = String(startTime).padStart(2, '0'); // Initialize as a string in "HH" format
 
         while (currentTime < endTime) {
-            console.log(currentTime, occupiedHours.includes(parseInt(currentTime, 10)));
+
             if (!occupiedHours.includes(parseInt(currentTime, 10))) {
                 const formattedTime = `${currentTime}:00`;
                 availableHours.push(formattedTime);

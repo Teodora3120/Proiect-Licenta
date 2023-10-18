@@ -48,9 +48,7 @@ const CustomerOrders = () => {
     const getOrders = async () => {
         try {
             const response = await OrderApi.GetOrders(user._id)
-            console.log("Orders", response.data)
             setOrders(response.data)
-
         } catch (error) {
             console.log(error)
         }
@@ -59,7 +57,6 @@ const CustomerOrders = () => {
     const getAllServices = async (workerId) => {
         try {
             const response = await ServiceApi.GetAllServices()
-            console.log("Services", response.data)
             setServices(response.data)
         } catch (error) {
             console.log(error)
@@ -69,7 +66,6 @@ const CustomerOrders = () => {
     const getAllWorkers = async () => {
         try {
             const response = await WorkerApi.GetAllWorkers()
-            console.log("Workers", response.data)
             setWorkers(response.data)
         } catch (error) {
             console.log(error)
@@ -110,11 +106,9 @@ const CustomerOrders = () => {
                                                     const service = services?.length ? services.find((serviceObj) => {
                                                         return serviceObj._id === order.serviceId
                                                     }) : {}
-                                                    console.log(service)
                                                     const worker = workers?.length ? workers.find((workerObj) => {
                                                         return workerObj._id === order.workerId
                                                     }) : {}
-                                                    console.log(service)
                                                     return <tr key={index}>
                                                         <td>{service.name}</td>
                                                         <td>{worker.firstName} {worker.lastName}</td>
