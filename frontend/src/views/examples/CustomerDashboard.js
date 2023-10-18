@@ -35,23 +35,23 @@ import OrderApi from "api/order";
 const ratingOptions = [
     {
         value: 1,
-        label: `O stea`
+        label: `One star`
     },
     {
         value: 2,
-        label: "Doua stele"
+        label: "Two stars"
     },
     {
         value: 3,
-        label: "Trei stele"
+        label: "Three stars"
     },
     {
         value: 4,
-        label: "Patru stele"
+        label: "Four stars"
     },
     {
         value: 5,
-        label: "Cinci stele"
+        label: "Five stars"
     }
 ];
 
@@ -342,7 +342,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
     const [selectedStartTime, setSelectedStartTime] = useState({})
     const [bookError, setBookError] = useState("")
     const [selectServiceError, setServiceError] = useState("")
-    const [paid, setPaid] = useState(null)
+    const [paid, setPaid] = useState("")
 
     useEffect(() => {
         setWorkerServices(services.filter(item => item.user === workerToBook._id));
@@ -359,7 +359,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
 
     const createOrder = async () => {
         try {
-            if (!selectedService._id || !selectedDate || !selectedStartTime.value || paid === null) {
+            if (!selectedService._id || !selectedDate || !selectedStartTime.value || !paid) {
                 console.log(selectedService._id, selectedDate, selectedStartTime.value, paid)
                 return setBookError("You must complete all the fields.")
             }
@@ -376,7 +376,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
             setSelectedDate("")
             setSelectedStartTime({})
             setSelectedService(null)
-            setPaid(false)
+            setPaid("")
             toggleModalBook();
         } catch (error) {
             console.log(error)
@@ -451,16 +451,16 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
                         <Col>
                             <FormGroup check>
                                 <Label check>
-                                    <Input type="radio" name="paymentOption" onClick={() => setPaid(true)} />{' '}
-                                    Pay Online (by card)
+                                    <Input type="radio" name="paymentOption" onClick={() => setPaid("card")} />{' '}
+                                    Pay by Card (in person)
                                 </Label>
                             </FormGroup>
                         </Col>
                         <Col>
                             <FormGroup check>
                                 <Label check>
-                                    <Input type="radio" name="paymentOption" onClick={() => setPaid(false)} />{' '}
-                                    Pay In-Person (cash)
+                                    <Input type="radio" name="paymentOption" onClick={() => setPaid("cash")} />{' '}
+                                    Pay Cash (in person)
                                 </Label>
                             </FormGroup>
                         </Col>

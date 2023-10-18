@@ -8,6 +8,7 @@ import Login from "views/examples/Login.js";
 import Tables from "views/examples/Tables.js";
 import Icons from "views/examples/Icons.js";
 import Logout from "views/examples/Logout";
+import CustomerOrders from "views/examples/CustomerOrders";
 
 var routes = {
   ADMIN: [],
@@ -40,6 +41,13 @@ var routes = {
       name: "My Profile",
       icon: "ni ni-single-02 text-yellow",
       component: <CProfile />,
+      layout: "/admin",
+    },
+    {
+      path: "/my-orders",
+      name: "My Orders",
+      icon: "ni ni-single-02 text-yellow",
+      component: <CustomerOrders />,
       layout: "/admin",
     },
     {

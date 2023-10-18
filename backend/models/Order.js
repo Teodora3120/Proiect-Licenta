@@ -23,7 +23,7 @@ const orderSchema = new mongoose.Schema({
         required: true,
     },
     paid: {
-        type: Boolean,
+        type: String,
         required: false,
     },
     finished: {
