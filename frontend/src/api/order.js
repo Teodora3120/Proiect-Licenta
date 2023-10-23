@@ -9,6 +9,10 @@ class OrderApi {
     static async GetOrders(userId) {
         return await axios.get(`/order/get-orders/${userId}`)
     }
+
+    static async DeleteOrder(userId) {
+        return await axios.delete(`/order/delete-order/${userId}`)
+    }
 }
 
 export default OrderApi

@@ -25,7 +25,6 @@ export const WebSocketProvider = ({ children }) => {
         })
 
         socketInstance.on('orderCreated', (data) => {
-            console.log(data)
             setMessage(data);
         });
 

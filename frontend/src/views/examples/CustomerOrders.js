@@ -72,6 +72,15 @@ const CustomerOrders = () => {
         }
     }
 
+    const deleteOrder = async (orderId) => {
+        try {
+            await OrderApi.DeleteOrder(orderId)
+            getOrders();
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
     return (
         <>
@@ -116,7 +125,7 @@ const CustomerOrders = () => {
                                                         <td>{service.price} RON</td>
                                                         <td>{order.finished ? "Finished" : "On going"}</td>
                                                         <td>
-                                                            <Button color="danger" size="sm">Cancel</Button>
+                                                            <Button color="danger" size="sm" onClick={() => deleteOrder(order._id)}>Cancel</Button>
                                                         </td>
                                                     </tr>
                                                 }) :

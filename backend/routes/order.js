@@ -3,6 +3,7 @@ const router = express.Router();
 const Order = require('../models/Order')
 const User = require('../models/User')
 const Service = require('../models/Service')
+const Notification = require('../models/Notification')
 const { userConnections } = require('../socketConnections');
 
 
@@ -44,8 +45,16 @@ router.post('/create-order', async (req, res) => {
             return res.status(404).json('Worker not found');
         }
 
-        // Add the service's _id to the user's services array
         await worker.updateOne({ $push: { orders: savedOrder._id } })
+
+        const notification = new Notification({
+            sender: customerId,
+            receiver: workerId,
+            message: `${customer.firstName} booked one of your services.`,
+            read: false,
+        });
+
+        await notification.save();
 
         if (userConnections.has(customerId)) {
             userConnections.get(customerId).emit('orderCreated', savedOrder);
@@ -97,6 +106,23 @@ router.delete('/delete-order/:orderId', async (req, res) => {
     const deletedOrder = await Order.findByIdAndDelete(orderId);
 
     if (deletedOrder) {
+
+        const customerNotification = new Notification({
+            receiver: deletedOrder.customerId,
+            message: 'One of your appointments has been canceled.',
+            read: false,
+        });
+
+        await customerNotification.save();
+
+        const workerNotification = new Notification({
+            receiver: deletedOrder.workerId,
+            message: 'One of your appointments has been canceled.',
+            read: false,
+        });
+
+        await workerNotification.save();
+
         if (userConnections.has(deletedOrder.customerId)) {
             userConnections.get(deletedOrder.customerId).emit('orderDeleted', deletedOrder);
         }
