@@ -159,8 +159,7 @@ const WProfile = () => {
 
     try {
       const data = { ...service, domain: domain.id, userId: user._id }
-      const response = await ServiceApi.CreateService(data)
-      console.log(response)
+      await ServiceApi.CreateService(data)
       setService({ name: "", price: 0, description: "", duration: 0 });
       setServiceError("");
       await getServices();
@@ -180,8 +179,7 @@ const WProfile = () => {
     }
 
     try {
-      const response = await ServiceApi.EditService(serviceObjectEdit)
-      console.log(response)
+      await ServiceApi.EditService(serviceObjectEdit)
       await getServices();
       toggleModalEdit();
     } catch (error) {
@@ -192,13 +190,11 @@ const WProfile = () => {
 
   const deleteService = async () => {
     if (!serviceObjectDeleteId) {
-      console.log(serviceObjectDeleteId)
       setServiceError("Service id not found.")
       return
     }
     try {
-      const response = await ServiceApi.DeleteService(serviceObjectDeleteId)
-      console.log(response)
+      await ServiceApi.DeleteService(serviceObjectDeleteId)
       await getServices();
       toggleModalDelete();
     } catch (error) {
@@ -264,7 +260,6 @@ const WProfile = () => {
       setAdress(newUser?.address)
       setDescription(newUser?.description)
       setDomain(domainsJson[newUser?.domain - 1])
-      console.log(user)
       setTelephoneNumber('+' + String(newUser?.telephoneNumber))
 
     } catch (error) {

@@ -21,4 +21,28 @@ router.get('/get-notifications-by-user/:userId', async (req, res) => {
     }
 });
 
+router.put('/set-read-notification/:notificationId', async (req, res) => {
+    try {
+        const notificationId = req.params.notificationId;
+        if (!notificationId) {
+            return res.status(400).json('Missing required fields');
+        }
+
+        const notification = await Notification.findById(notificationId);
+
+        if (!notification) {
+            return res.status(404).json('Notification not found');
+        }
+
+        notification.read = true;
+
+        const updatedNotification = await notification.save();
+
+        res.status(200).json(updatedNotification);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+})
+
 module.exports = router;

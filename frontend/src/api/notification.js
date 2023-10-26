@@ -6,8 +6,8 @@ class NotificationApi {
         return await axios.get(`/notification/get-notifications-by-user/${userId}`)
     }
 
-    static async SetReadNotification(data) {
-        return await axios.put('/notification/set-read-notification', data)
+    static async SetReadNotification(notificationId) {
+        return await axios.put(`/notification/set-read-notification/${notificationId}`)
     }
 
     static async DeleteNotification(notificationId) {

@@ -48,3 +48,11 @@
 .selected-service {
   background-color: #e5e5e5;
 }
+
+.unread-notification {
+  background-color: #a31e1e;
+}
+
+.bg-header {
+  background-color: #5e72e4;
+}

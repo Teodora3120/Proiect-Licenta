@@ -17,12 +17,10 @@ import { useEffect, useState } from "react"
 import NotificationApi from "api/notification";
 
 
-
-
 const AdminNavbar = (props) => {
   const [fullName, setFullName] = useState("")
   const [notifications, setNotifications] = useState([])
-  const [unreadNotifications, setUnreadNotifications] = useState([])
+  const [unreadNotifications, setUnreadNotifications] = useState(0)
   const navigate = useNavigate();
   const { user } = useUserContext();
   const { message } = useWebSocket();
@@ -55,18 +53,34 @@ const AdminNavbar = (props) => {
   const getNotifications = async () => {
     try {
       const response = await NotificationApi.GetAllNotifications(user._id);
+      console.log(response)
       const notificationArr = response.data;
-      let unreadNotif = [];
+      let unreadNotif = 0;
       if (notificationArr?.length) {
         for (const notification of notificationArr) {
           if (!notification.read) {
-            unreadNotif = unreadNotif.push(notification);
+            unreadNotif = unreadNotif + 1;
           }
         }
         setUnreadNotifications(unreadNotif)
+        console.log(unreadNotif)
       }
 
       setNotifications(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const readNotification = async (notificationId) => {
+    try {
+      await NotificationApi.SetReadNotification(notificationId)
+      if (user.type === "customer") {
+        navigate("/admin/my-orders")
+      } else {
+        navigate("/admin/index")
+      }
+      getNotifications()
     } catch (error) {
       console.log(error)
     }
@@ -86,17 +100,16 @@ const AdminNavbar = (props) => {
             {/* Notification Bell and Dropdown */}
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav>
-                <i className={`ni ni-bell-55 text-lg mt-2 text-white`} />
-                {unreadNotifications && unreadNotifications.length > 0 && (
-                  <Badge color="danger" pill className="mb-3">
-                    {unreadNotifications.length}
-                  </Badge>
-                )}
+                <i className={`fa-solid fa-bell text-lg mt-2 ${unreadNotifications > 0 ? "text-danger" : "text-white"}`} />
               </DropdownToggle>
               <DropdownMenu className="dropdown-menu-arrow" right>
+                <DropdownItem className="noti-title mb--4 text-lowercase" header tag="div">
+                  <h4 className="text-left text-muted font-weight-600 py-0 mb--4 mt-1">You have <span className="text-danger">{unreadNotifications}</span> notifications.</h4>
+                  <hr />
+                </DropdownItem>
                 {notifications && notifications.length > 0 ? (
                   notifications.map((notification, index) => (
-                    <DropdownItem key={index} className="mb-3">
+                    <DropdownItem key={index} onClick={() => readNotification(notification._id)} className="mb-2">
                       <div className="d-flex align-items-center">
                         <span className="avatar avatar-sm rounded-circle">
                           <img
@@ -105,7 +118,11 @@ const AdminNavbar = (props) => {
                           />
                         </span>
                         <span className="ml-2">{notification.message}</span>
+                        {notification.read === false ? <span>
+                          <i className="fa-solid fa-circle text-danger ml-2"></i>
+                        </span> : null}
                       </div>
+                      <hr />
                     </DropdownItem>
                   ))
                 ) : (

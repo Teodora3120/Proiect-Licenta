@@ -16,6 +16,8 @@ import Header from "components/Headers/Header";
 import { useUserContext } from "context/UserContext";
 import moment from "moment";
 import WorkerApi from "api/worker";
+import { Rating } from 'react-simple-star-rating'
+
 
 function formatDate(inputDate) {
     // Parse the input date string
@@ -27,10 +29,19 @@ function formatDate(inputDate) {
     return formattedDate;
 }
 
+function isAtLeastOneDayDifference(providedDateStr) {
+    const providedDate = moment(providedDateStr);
+    const currentDate = moment();
+    const dayDifference = currentDate.diff(providedDate, 'days');
+    console.log(dayDifference)
+    return dayDifference >= 1;
+}
+
 const CustomerOrders = () => {
     const [orders, setOrders] = useState([])
     const [services, setServices] = useState([])
     const [workers, setWorkers] = useState([])
+    const [rating, setRating] = useState(0)
     const { user } = useUserContext();
 
     useEffect(() => {
@@ -72,13 +83,17 @@ const CustomerOrders = () => {
         }
     }
 
-    const deleteOrder = async (orderId) => {
+    const deleteOrder = async (orderId, userId) => {
         try {
-            await OrderApi.DeleteOrder(orderId)
+            await OrderApi.DeleteOrder(orderId, userId)
             getOrders();
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const handleRating = (rate) => {
+        setRating(rate)
     }
 
 
@@ -107,6 +122,7 @@ const CustomerOrders = () => {
                                                     <th scope="col">Date</th>
                                                     <th scope="col">Price</th>
                                                     <th scope="col">Status</th>
+                                                    <th scope="col">Contact info</th>
                                                     <th scope="col">Action</th>
                                                 </tr>
                                             </thead>
@@ -123,9 +139,28 @@ const CustomerOrders = () => {
                                                         <td>{worker.firstName} {worker.lastName}</td>
                                                         <td>{formatDate(order.date)}, {order.start} </td>
                                                         <td>{service.price} RON</td>
-                                                        <td>{order.finished ? "Finished" : "On going"}</td>
                                                         <td>
-                                                            <Button color="danger" size="sm" onClick={() => deleteOrder(order._id)}>Cancel</Button>
+                                                            {isAtLeastOneDayDifference(order.date) ?
+                                                                <h5 className="text-success font-weight-400">Done</h5>
+                                                                :
+                                                                <h5 className="text-info font-weight-400">On going</h5>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <h6>{worker.email}</h6>
+                                                            <h6>+{worker.telephoneNumber}</h6>
+                                                            {worker.telephoneNumer}
+                                                            {/* <Button size="sm" color="primary" onClick={}>See more...</Button> */}
+                                                        </td>
+                                                        <td>
+                                                            {isAtLeastOneDayDifference(order.date) ?
+                                                                <Rating
+                                                                    onClick={handleRating}
+                                                                    size={"20"}
+                                                                />
+                                                                :
+                                                                <Button color="danger" size="sm" onClick={() => deleteOrder(order._id, user._id)}>Cancel</Button>
+                                                            }
                                                         </td>
                                                     </tr>
                                                 }) :
@@ -134,6 +169,7 @@ const CustomerOrders = () => {
                                                             <h4 className="font-weight-400 mt-2">There are no orders to display.</h4>
                                                         </td>
                                                     </tr>}
+
                                             </tbody>
                                         </Table>
                                     </Col>

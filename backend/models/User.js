@@ -66,7 +66,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order',
     }],
-});
+},
+    {
+        timestamps: true // Automatically add createdAt and updatedAt fields
+    });
 
 const User = mongoose.model('User', userSchema);
 

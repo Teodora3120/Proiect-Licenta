@@ -142,7 +142,6 @@ const WSchedule = () => {
             if (newUser.schedule.length) {
                 setSchedule(newUser.schedule)
             }
-            console.log(newUser)
         } catch (error) {
             console.log(error)
         }

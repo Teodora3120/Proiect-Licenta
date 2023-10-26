@@ -60,6 +60,7 @@
     "react-router-dom": "6.11.1",
     "react-scripts": "5.0.1",
     "react-select": "^5.7.7",
+    "react-simple-star-rating": "^5.1.7",
     "react-step-wizard": "^5.3.11",
     "reactstrap": "8.10.0",
     "sass": "1.62.1",

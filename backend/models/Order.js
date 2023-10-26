@@ -30,7 +30,10 @@ const orderSchema = new mongoose.Schema({
         type: Boolean,
         required: false,
     },
-});
+},
+    {
+        timestamps: true // Automatically add createdAt and updatedAt fields
+    });
 
 // Create the 'Order' model
 const Order = mongoose.model('Order', orderSchema);
