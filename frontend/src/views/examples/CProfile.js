@@ -119,7 +119,7 @@ const CProfile = () => {
 
     const getUser = async () => {
         try {
-            const response = await AuthApi.GetUserById(user._id)
+            const response = await CustomerApi.GetUserById(user._id)
             const newUser = response.data
             setLastName(newUser?.lastName)
             setDateOfBirth(newUser?.dateOfBirth)

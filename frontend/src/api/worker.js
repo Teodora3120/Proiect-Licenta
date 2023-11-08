@@ -25,6 +25,10 @@ class WorkerApi {
     static async GetAllWorkers() {
         return await axios.get(`/worker/get-all-workers`)
     }
+
+    static async GetUserById(userId) {
+        return await axios.get(`/worker/get-worker-by-id/${userId}`)
+    }
 }
 
 export default WorkerApi

@@ -253,7 +253,7 @@ const WProfile = () => {
 
   const getUser = async () => {
     try {
-      const response = await AuthApi.GetUserById(user._id)
+      const response = await WorkerApi.GetUserById(user._id)
       const newUser = response.data
       setLastName(newUser?.lastName)
       setDateOfBirth(newUser?.dateOfBirth)

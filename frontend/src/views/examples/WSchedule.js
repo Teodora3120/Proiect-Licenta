@@ -137,7 +137,7 @@ const WSchedule = () => {
 
     const getUser = async () => {
         try {
-            const response = await AuthApi.GetUserById(user._id)
+            const response = await WorkerApi.GetUserById(user._id)
             const newUser = response.data
             if (newUser.schedule.length) {
                 setSchedule(newUser.schedule)

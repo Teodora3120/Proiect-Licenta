@@ -33,7 +33,6 @@ function isAtLeastOneDayDifference(providedDateStr) {
     const providedDate = moment(providedDateStr);
     const currentDate = moment();
     const dayDifference = currentDate.diff(providedDate, 'days');
-    console.log(dayDifference)
     return dayDifference >= 1;
 }
 
@@ -41,8 +40,8 @@ const CustomerOrders = () => {
     const [orders, setOrders] = useState([])
     const [services, setServices] = useState([])
     const [workers, setWorkers] = useState([])
-    const [rating, setRating] = useState(0)
     const { user } = useUserContext();
+
 
     useEffect(() => {
         if (user._id) {
@@ -92,8 +91,8 @@ const CustomerOrders = () => {
         }
     }
 
-    const handleRating = (rate) => {
-        setRating(rate)
+    const handleRating = (rate, worker) => {
+        console.log(rate, worker)
     }
 
 
@@ -155,7 +154,7 @@ const CustomerOrders = () => {
                                                         <td>
                                                             {isAtLeastOneDayDifference(order.date) ?
                                                                 <Rating
-                                                                    onClick={handleRating}
+                                                                    onClick={(e) => handleRating(e, worker)}
                                                                     size={"20"}
                                                                 />
                                                                 :

@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
-const Service = require('../models/Service');
-
 
 router.put('/update-account-details/:userId', async (req, res) => {
     try {
@@ -49,6 +47,35 @@ router.delete('/delete-account/:userId', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
+router.get('/get-all-customers', async (req, res) => {
+    try {
+        const customers = await User.find({ type: "customer" });
+        res.status(200).json(customers);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
+router.get('/get-customer-by-id/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Find the user by userId
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json('Customer not found');
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
     }
 });
 

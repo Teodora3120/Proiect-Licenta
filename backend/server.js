@@ -10,6 +10,7 @@ const customerRoute = require('./routes/customer')
 const serviceRoute = require('./routes/service')
 const orderRoute = require('./routes/order')
 const notificationRoute = require('./routes/notification')
+const ratingRoute = require('./routes/rating')
 const verifyToken = require('./utils/verifyToken')
 const app = express();
 const port = process.env.PORT || 5000;
@@ -48,6 +49,7 @@ db.once('open', () => {
     app.use('/service', verifyToken, serviceRoute)
     app.use('/order', verifyToken, orderRoute)
     app.use('/notification', verifyToken, notificationRoute)
+    app.use('/rating', verifyToken, ratingRoute)
 
     io.on('connection', (socket) => {
         const userId = socket.handshake.query.userId;

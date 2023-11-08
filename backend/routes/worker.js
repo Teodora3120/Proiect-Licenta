@@ -231,4 +231,23 @@ router.get('/get-all-workers', async (req, res) => {
 });
 
 
+router.get('/get-worker-by-id/:userId', async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        // Find the user by userId
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json('Worker not found');
+        }
+
+        res.status(200).json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
+
 module.exports = router;

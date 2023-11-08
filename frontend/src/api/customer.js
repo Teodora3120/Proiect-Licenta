@@ -10,6 +10,13 @@ class CustomerApi {
         return await axios.delete(`/customer/delete-account/${userId}`)
     }
 
+    static async GetAllCustomers() {
+        return await axios.get(`/customer/get-all-customers`)
+    }
+
+    static async GetUserById(userId) {
+        return await axios.get(`/customer/get-customer-by-id/${userId}`)
+    }
 }
 
 export default CustomerApi
