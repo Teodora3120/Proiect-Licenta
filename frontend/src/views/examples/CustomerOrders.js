@@ -10,14 +10,25 @@ import {
     Container
 } from "reactstrap";
 import ServiceApi from "api/service";
-import Select from 'react-select'
 import OrderApi from "api/order";
 import Header from "components/Headers/Header";
 import { useUserContext } from "context/UserContext";
 import moment from "moment";
 import WorkerApi from "api/worker";
 import { Rating } from 'react-simple-star-rating'
+import RatingApi from "api/rating";
 
+
+function renderRatingStars(rating) {
+    const stars = [];
+    for (let i = 0; i < rating; i++) {
+        stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+    }
+    for (let i = rating; i < 5; i++) {
+        stars.push(<i className="fa-solid fa-star text-light" key={i} />);
+    }
+    return stars;
+}
 
 function formatDate(inputDate) {
     // Parse the input date string
@@ -91,8 +102,19 @@ const CustomerOrders = () => {
         }
     }
 
-    const handleRating = (rate, worker) => {
-        console.log(rate, worker)
+    const handleRating = async (rate, worker, order) => {
+        try {
+            const data = {
+                workerId: worker._id,
+                customerId: user._id,
+                orderId: order._id,
+                stars: rate
+            }
+            const response = await RatingApi.CreateRating(data)
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
     }
 
 
@@ -149,16 +171,17 @@ const CustomerOrders = () => {
                                                             <h6>{worker.email}</h6>
                                                             <h6>+{worker.telephoneNumber}</h6>
                                                             {worker.telephoneNumer}
-                                                            {/* <Button size="sm" color="primary" onClick={}>See more...</Button> */}
                                                         </td>
                                                         <td>
-                                                            {isAtLeastOneDayDifference(order.date) ?
-                                                                <Rating
-                                                                    onClick={(e) => handleRating(e, worker)}
-                                                                    size={"20"}
-                                                                />
-                                                                :
-                                                                <Button color="danger" size="sm" onClick={() => deleteOrder(order._id, user._id)}>Cancel</Button>
+                                                            {isAtLeastOneDayDifference(order.date) && order.rating ?
+                                                                <h4>{renderRatingStars(order.rating)}</h4> :
+                                                                isAtLeastOneDayDifference(order.date) && !order.rating ?
+                                                                    <Rating
+                                                                        onClick={(e) => handleRating(e, worker, order)}
+                                                                        size={"20"}
+                                                                    />
+                                                                    :
+                                                                    <Button color="danger" size="sm" onClick={() => deleteOrder(order._id, user._id)}>Cancel</Button>
                                                             }
                                                         </td>
                                                     </tr>

@@ -22,6 +22,10 @@ const orderSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    rating: {
+        type: Number,
+        required: false,
+    },
     paid: {
         type: String,
         required: false,

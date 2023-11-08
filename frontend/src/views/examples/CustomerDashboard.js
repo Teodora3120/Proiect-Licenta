@@ -32,6 +32,7 @@ import ServiceApi from "api/service";
 import WorkerApi from "api/worker";
 import Select from 'react-select'
 import OrderApi from "api/order";
+import RatingApi from "api/rating";
 
 const ratingOptions = [
     {
@@ -113,12 +114,13 @@ const CustomerDashboard = () => {
     }, [user]);
 
     useEffect(() => {
-        // Filter workers based on the searchWorkerValue
-        const filtered = workers.filter((worker) => {
-            const fullName = `${worker.firstName} ${worker.lastName}`;
-            return fullName.toLowerCase().includes(searchWorkerValue.toLowerCase());
-        });
-        setFilteredWorkers(filtered);
+        if (searchWorkerValue) {
+            const filtered = workers.filter((worker) => {
+                const fullName = `${worker.firstName} ${worker.lastName}`;
+                return fullName.toLowerCase().includes(searchWorkerValue.toLowerCase());
+            });
+            setFilteredWorkers(filtered);
+        }
     }, [searchWorkerValue, workers]);
 
     useEffect(() => {
@@ -150,11 +152,21 @@ const CustomerDashboard = () => {
     const getWorkers = async () => {
         try {
             const response = await WorkerApi.GetAllWorkers();
-            setWorkers(response.data);
+            const workersArr = response.data.filter(worker => worker.schedule.length && worker.services.length);
+            setWorkers(workersArr);
         } catch (error) {
             console.log(error);
         }
     };
+
+    // const getWorkersRatings = async () => {
+    //     try {
+    //         const response = await RatingApi.GetWorkersRatings();
+    //         console.log(response)
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
 
     return (
         <>
@@ -276,7 +288,7 @@ const CustomerDashboard = () => {
                                                         <h3 className="mb-0"> {worker.firstName} {worker.lastName}</h3>
                                                     </Col>
                                                     <Col className="text-right">
-                                                        <h4 className="mb--1">Rating:   {renderRatingStars(3)}</h4>
+                                                        <h4 className="mb--1">Rating:   {renderRatingStars()}</h4>
                                                         <span><small>3 reviews</small></span>
                                                     </Col>
                                                 </Row>
@@ -313,9 +325,14 @@ const CustomerDashboard = () => {
                                             </CardFooter>
                                         </Card>
                                     </Col>
-                                }) : <Col className="text-center" key="no-result">
-                                    <h3 className="font-weight-500 text-muted">{`No results found for ${searchWorkerValue ? searchWorkerValue : city && city.name ? city.name : domain && domain.name ? domain.name : service && service.name ? service.name : rating && rating.label ? rating.label : ""}.`}</h3>
-                                </Col>
+                                }) : filteredWorkers.length === 0 && !searchWorkerValue && !city.id && !domain.id && !rating.label && !service.name ?
+                                    <Col className="text-center" key="no-result-0">
+                                        <h3 className="font-weight-500 text-muted">We don't have any workers registered at this moment.</h3>
+                                    </Col>
+                                    :
+                                    <Col className="text-center" key="no-result">
+                                        <h3 className="font-weight-500 text-muted">{`No results found for ${searchWorkerValue ? searchWorkerValue : city && city.name ? city.name : domain && domain.name ? domain.name : service && service.name ? service.name : rating && rating.label ? rating.label : ""}.`}</h3>
+                                    </Col>
                                 }
                             </Row>
                         </CardBody>

@@ -59,6 +59,7 @@ const WProfile = () => {
   const [errorDomain, setErrorDomain] = useState("")
   const [accountDetailsError, setAccountDetailsError] = useState("")
   const [telephoneNumber, setTelephoneNumber] = useState("")
+  const [scheduleExists, setScheduleExists] = useState(false)
   const { user } = useUserContext();
   const navigate = useNavigate();
 
@@ -80,6 +81,10 @@ const WProfile = () => {
   useEffect(() => {
     setDeleteAccountError("")
   }, [password])
+
+  useEffect(() => {
+    console.log(user)
+  }, [user])
 
   useEffect(() => {
     if (citiesJson) {
@@ -261,7 +266,9 @@ const WProfile = () => {
       setDescription(newUser?.description)
       setDomain(domainsJson[newUser?.domain - 1])
       setTelephoneNumber('+' + String(newUser?.telephoneNumber))
-
+      if (newUser.schedule.length > 0) {
+        setScheduleExists(true)
+      }
     } catch (error) {
       console.log(error)
     }
@@ -379,9 +386,12 @@ const WProfile = () => {
                 <Row className="align-items-center">
                   <Col xs="8" className="text-left">
                     <h3 className="mb-0">My account</h3>
+                    {!scheduleExists === 0 || services.length === 0 ?
+                      <h4 className="font-weight-400 text-nowrap text-danger mb-0">You must add you schedule and services in order to be active on this platform.</h4> : null}
                   </Col>
                   <Col className="text-right">
-                    {accountChanges ? <h4 className="font-weight-400 text-nowrap text-success mb-0">Account changes saved successfully</h4> : null}
+                    {accountChanges ? <h4 className="font-weight-400 text-nowrap text-success mb-0">Account changes saved successfully</h4> :
+                      null}
                   </Col>
                 </Row>
               </CardHeader>

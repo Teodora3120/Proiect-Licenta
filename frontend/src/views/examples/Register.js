@@ -183,7 +183,7 @@ const Register = () => {
       const user = userCredentials.data
       localStorage.setItem('user', JSON.stringify(user))
       loginContext()
-      return navigate('/admin/index')
+      return navigate('/admin/my-profile')
     } catch (err) {
       console.log(err);
       setCreating(false);

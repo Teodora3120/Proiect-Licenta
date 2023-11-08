@@ -12,6 +12,10 @@ class RatingApi {
     static async GetCustomerNumberOfRatings(customerId) {
         return await axios.get(`/rating/customer-ratings/${customerId}`)
     }
+
+    static async GetWorkersRatings() {
+        return await axios.get(`/rating/workers-ratings`)
+    }
 }
 
 export default RatingApi
