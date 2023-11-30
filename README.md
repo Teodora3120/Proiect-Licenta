@@ -26,8 +26,8 @@ Schedule Mate is a platform that connects workers and customers, allowing worker
 - **Backend**: Express.js
 - **Database**: MongoDB
 - **Authentication**: JSON Web Tokens (JWT)
-- **Styling**: CSS and Bootstrap (or any styling framework of your choice)
-- **Other Dependencies**: Reactstrap, .dotenv, socket.io
+- **Styling**: CSS and Bootstrap
+- **Other Dependencies**: Reactstrap, .dotenv, socket.io, moment, axios, font-awesome
 
 ## Getting Started
 
