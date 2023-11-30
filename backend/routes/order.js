@@ -97,17 +97,49 @@ router.get('/get-orders/:userId', async (req, res) => {
     }
 });
 
-router.patch('/update-status', async (req, res) => {
-    const orderId = req.body.orderId;
-    const userId = req.body.userId;
-    const status = req.body.status;
+router.patch('/update-order', async (req, res) => {
+    const { orderId, status, userId } = req.body;
 
     try {
-        const order = await Order.findByIdAndUpdate(orderId);
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { $set: { status } },
+            { new: true }
+        );
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+
+        const cancellerId = userId.toString() === order.customerId.toString() ? order.customerId : order.workerId;
+        const cancellerRole = userId.toString() === order.customerId.toString() ? 'customer' : 'worker';
+
+        if (status === 'Canceled') {
+            console.log(`${cancellerRole} deleted the order`);
+
+            const notification = new Notification({
+                sender: userId,
+                receiver: cancellerId === order.customerId ? order.workerId : order.customerId,
+                message: 'One of your appointments has been canceled.',
+                read: false,
+            });
+            await notification.save();
+
+            if (userConnections.has(order.customerId)) {
+                userConnections.get(order.customerId).emit('orderDeleted', order);
+            }
+
+            if (userConnections.has(order.workerId)) {
+                userConnections.get(order.workerId).emit('orderDeleted', order);
+            }
+        }
+
+        res.status(200).send('Order status updated successfully');
     } catch (error) {
         console.error(error);
+        res.status(500).json('Internal Server Error');
     }
-})
+});
 
 router.delete('/delete-order/:orderId/:userId', async (req, res) => {
     try {

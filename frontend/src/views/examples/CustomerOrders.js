@@ -40,13 +40,6 @@ function formatDate(inputDate) {
     return formattedDate;
 }
 
-function isAtLeastOneDayDifference(providedDateStr) {
-    const providedDate = moment(providedDateStr);
-    const currentDate = moment();
-    const dayDifference = currentDate.diff(providedDate, 'days');
-    return dayDifference >= 1;
-}
-
 const CustomerOrders = () => {
     const [orders, setOrders] = useState([])
     const [services, setServices] = useState([])
@@ -93,9 +86,13 @@ const CustomerOrders = () => {
         }
     }
 
-    const deleteOrder = async (orderId, userId) => {
+    const cancelOrder = async (orderId, userId) => {
         try {
-            await OrderApi.DeleteOrder(orderId, userId)
+            await OrderApi.UpdateOrder({
+                orderId,
+                userId,
+                status: 'Canceled'
+            });
             getOrders();
         } catch (error) {
             console.log(error)
@@ -148,7 +145,7 @@ const CustomerOrders = () => {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                {orders && orders.length ? orders.map((order, index) => {
+                                                {orders && orders.length ? orders.sort((a, b) => new Date(b.date) - new Date(a.date)).map((order, index) => {
                                                     const service = services?.length ? services.find((serviceObj) => {
                                                         return serviceObj._id === order.serviceId
                                                     }) : {}
@@ -161,11 +158,11 @@ const CustomerOrders = () => {
                                                         <td>{formatDate(order.date)}, {order.start} </td>
                                                         <td>{service.price} RON</td>
                                                         <td>
-                                                            {isAtLeastOneDayDifference(order.date) ?
-                                                                <h5 className="text-success font-weight-400">Done</h5>
-                                                                :
-                                                                <h5 className="text-info font-weight-400">On going</h5>
-                                                            }
+                                                            <span className={`${order.status === 'Completed' ? 'text-success' :
+                                                                order.status === 'Canceled' ? 'text-danger' : ''
+                                                                }`}>
+                                                                {order.status}
+                                                            </span>
                                                         </td>
                                                         <td>
                                                             <h6>{worker.email}</h6>
@@ -173,16 +170,19 @@ const CustomerOrders = () => {
                                                             {worker.telephoneNumer}
                                                         </td>
                                                         <td>
-                                                            {isAtLeastOneDayDifference(order.date) && order.rating ?
-                                                                <h4>{renderRatingStars(order.rating)}</h4> :
-                                                                isAtLeastOneDayDifference(order.date) && !order.rating ?
-                                                                    <Rating
-                                                                        onClick={(e) => handleRating(e, worker, order)}
-                                                                        size={"20"}
-                                                                    />
-                                                                    :
-                                                                    <Button color="danger" size="sm" onClick={() => deleteOrder(order._id, user._id)}>Cancel</Button>
-                                                            }
+                                                            {order.status === 'On going' ? (
+                                                                <Button color="danger" size="sm" onClick={() => cancelOrder(order._id, user._id)}>
+                                                                    Cancel
+                                                                </Button>
+                                                            ) : order.status === 'Completed' ? (
+                                                                order.rating ? (
+                                                                    <h4>{renderRatingStars(order.rating)}</h4>
+                                                                ) : (
+                                                                    <Rating onClick={(e) => handleRating(e, worker, order)} size="20" />
+                                                                )
+                                                            ) : (
+                                                                '-'
+                                                            )}
                                                         </td>
                                                     </tr>
                                                 }) :

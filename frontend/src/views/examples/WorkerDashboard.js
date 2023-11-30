@@ -25,20 +25,11 @@ function formatDate(inputDate) {
     return formattedDate;
 }
 
-function isAtLeastOneDayDifference(providedDateStr) {
-    const providedDate = moment(providedDateStr);
-    const currentDate = moment();
-    const dayDifference = currentDate.diff(providedDate, 'days');
-    console.log(dayDifference)
-    return dayDifference >= 1;
-}
-
 const WorkerDashboard = () => {
     const [orders, setOrders] = useState([])
     const [services, setServices] = useState([])
     const [customers, setCustomers] = useState([])
     const { user } = useUserContext();
-
 
     useEffect(() => {
         if (user._id) {
@@ -79,15 +70,38 @@ const WorkerDashboard = () => {
         }
     }
 
-    const deleteOrder = async (orderId, userId) => {
+    const cancelOrder = async (orderId, userId) => {
         try {
-            await OrderApi.DeleteOrder(orderId, userId)
+            await OrderApi.UpdateOrder({
+                orderId,
+                userId,
+                status: 'Canceled'
+            });
             getOrders();
         } catch (error) {
             console.log(error)
         }
     }
 
+    const completeOrder = async (orderId, userId) => {
+        try {
+            await OrderApi.UpdateOrder({
+                orderId,
+                userId,
+                status: 'Completed'
+            });
+            getOrders();
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    function isAtLeastOneDayDifference(providedDateStr) {
+        const providedDate = moment(providedDateStr);
+        const currentDate = moment();
+        const dayDifference = currentDate.diff(providedDate, 'days');
+        return dayDifference >= 1;
+    }
 
     return (<>
         <Row>
@@ -116,7 +130,7 @@ const WorkerDashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {orders && orders.length ? orders.map((order, index) => {
+                                        {orders && orders.length ? orders.sort((a, b) => new Date(b.date) - new Date(a.date)).map((order, index) => {
                                             const service = services?.length ? services.find((serviceObj) => {
                                                 return serviceObj._id === order.serviceId
                                             }) : {}
@@ -129,11 +143,11 @@ const WorkerDashboard = () => {
                                                 <td>{formatDate(order.date)}, {order.start} </td>
                                                 <td>{service.price} RON</td>
                                                 <td>
-                                                    {isAtLeastOneDayDifference(order.date) ?
-                                                        <h5 className="text-success font-weight-400">Done</h5>
-                                                        :
-                                                        <h5 className="text-info font-weight-400">On going</h5>
-                                                    }
+                                                    <span className={`${order.status === 'Completed' ? 'text-success' :
+                                                        order.status === 'Canceled' ? 'text-danger' : ''
+                                                        }`}>
+                                                        {order.status}
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     <h6>{customer.email}</h6>
@@ -141,12 +155,19 @@ const WorkerDashboard = () => {
                                                     {customer.telephoneNumer}
                                                 </td>
                                                 <td>
-                                                    {new Date().getTime() >= new Date(order.date).getTime()
-                                                        ?
-                                                        <Button color="danger" size="sm" disabled={!isAtLeastOneDayDifference} onClick={() => deleteOrder(order._id, user._id)}>Cancel</Button>
-                                                        :
+                                                    {order.status === 'Canceled' || order.status === 'Completed' ? (
                                                         '-'
-                                                    }
+                                                    ) : isAtLeastOneDayDifference(order.date) ? (
+                                                        <Button color="success" size="sm" onClick={() => completeOrder(order._id, user._id)}>
+                                                            Complete
+                                                        </Button>
+                                                    ) : order.status === 'On going' ? (
+                                                        <Button color="danger" size="sm" onClick={() => cancelOrder(order._id, user._id)}>
+                                                            Cancel
+                                                        </Button>
+                                                    ) : (
+                                                        '-'
+                                                    )}
                                                 </td>
                                             </tr>
                                         }) :
