@@ -7,11 +7,10 @@ import React, {
     useMemo,
 } from 'react'
 
-// create context
 const UserContext = createContext();
 
 const UserContextProvider = ({ children }) => {
-    // the value that will be given to the context
+
     const [user, setUser] = useState(() => {
         const userLocal = localStorage.getItem('user');
         return userLocal ? JSON.parse(userLocal) : null;

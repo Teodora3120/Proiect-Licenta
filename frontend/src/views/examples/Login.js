@@ -41,14 +41,17 @@ const Login = () => {
         email: email,
         password: password,
       }
-      console.log(credentials)
+
       const response = await AuthApi.Login(credentials)
-      const user = response.data.user
+      const user = response.data;
       localStorage.setItem('user', JSON.stringify(user))
       loginContext();
       navigate('/admin/index')
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+      console.log(error)
+      if (error.response.status === 401) {
+        return setError("Invalid credentials.")
+      }
       return setError('There has been an error.')
     }
   }

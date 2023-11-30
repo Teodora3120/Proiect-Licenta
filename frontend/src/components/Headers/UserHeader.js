@@ -1,4 +1,4 @@
-import { Button, Container, Row, Col } from "reactstrap";
+import { Container, Row, Col } from "reactstrap";
 import { useUserContext } from "context/UserContext";
 import { useEffect, useState } from "react";
 
@@ -34,13 +34,6 @@ const UserHeader = () => {
                 This is your profile page. You can see your account details (and edit some of them),
                 or how many bookings did you have and other helpful information.
               </p>
-              <Button
-                color="info"
-                href="#pablo"
-                onClick={(e) => e.preventDefault()}
-              >
-                Edit profile
-              </Button>
             </Col>
           </Row>
         </Container>

@@ -1,59 +1,158 @@
-/*!
+import { Card, CardBody, Container, Row, Col } from "reactstrap";
+import "../../assets/css//custom.css"
+import { useUserContext } from "context/UserContext";
+import { useState } from "react";
+import CustomerApi from "api/customer";
+import WorkerApi from "api/worker";
+import { useEffect } from "react";
+import OrderApi from "api/order";
+import moment from "moment";
+import RatingApi from "api/rating";
 
-=========================================================
-* Argon Dashboard React - v1.2.3
-=========================================================
+function renderRatingStars(rating) {
+  const stars = [];
+  const integerPart = Math.floor(rating);
+  const fractionalPart = rating - integerPart;
 
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
+  console.log(integerPart, fractionalPart)
 
-* Coded by Creative Tim
+  if (fractionalPart > 0.9) {
+    for (let i = 0; i < Math.ceil(rating); i++) {
+      stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+    }
+  } else if (fractionalPart > 0 && fractionalPart < 0.9) {
+    for (let i = 0; i < integerPart; i++) {
+      stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+    }
 
-=========================================================
+    stars.push(<i className="fa-regular fa-star-half-stroke text-yellow" key={integerPart} />);
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  } else {
+    for (let i = 0; i < integerPart; i++) {
+      stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+    }
+  }
+  const remainingStars = 5 - stars.length;
 
-*/
+  for (let i = 0; i < remainingStars; i++) {
+    stars.push(<i className="fa-solid fa-star text-light" key={integerPart + i + 1} />);
+  }
+  return stars;
+}
 
-// reactstrap components
-import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
 const Header = () => {
+  const { user } = useUserContext();
+  const [updatedUser, setUpdatedUser] = useState({})
+  const [userPastOrders, setUserPastOrders] = useState(0)
+  const [userFutureOrders, setUserFutureOrders] = useState(0)
+  const [customerRatings, setCustomerRatings] = useState(0)
+  const [workerReviews, setWorkerReviews] = useState(0)
+  const [workerRating, setWorkerRating] = useState(0)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      await getUpdatedUser();
+      await getUserOrders();
+      if (user.type === "customer") {
+        await getCustomerRatings();
+      } else if (user.type === "worker") {
+        await getWorkerRatings();
+      }
+    }
+    if (user && user._id) {
+      fetchData();
+    }
+    //eslint-disable-next-line
+  }, [user]);
+
+  const getUpdatedUser = async () => {
+    try {
+      if (user.type === "customer") {
+        const response = await CustomerApi.GetUserById(user._id);
+        setUpdatedUser(response.data)
+      } else if (user.type === "worker") {
+        const response = await WorkerApi.GetUserById(user._id);
+        setUpdatedUser(response.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getWorkerRatings = async () => {
+    try {
+      const response = await RatingApi.GetWorkerRating(user._id);
+      setWorkerReviews(response.data?.reviews)
+      setWorkerRating(response.data?.rating)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getCustomerRatings = async () => {
+    try {
+      const response = await RatingApi.GetCustomerNumberOfRatings(user._id);
+      setCustomerRatings(response.data.nrOfRatings);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getUserOrders = async () => {
+    try {
+      const response = await OrderApi.GetOrders(user._id);
+      const orders = response.data;
+
+      const today = moment();
+
+      const formattedDate = today.format('YYYY-MM-DD');
+
+      const pastOrdersArr = [];
+      const futureOrdersArr = [];
+
+      orders.forEach((order) => {
+        const orderDate = moment(order.date)
+
+        if (orderDate.isBefore(formattedDate, 'day')) {
+          pastOrdersArr.push(order);
+        } else {
+          futureOrdersArr.push(order);
+        }
+      });
+
+      setUserPastOrders(pastOrdersArr?.length);
+      setUserFutureOrders(futureOrdersArr?.length);
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <>
-      <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
+      <div className="header bg-header pb-8 pt-5 pt-md-8">
         <Container fluid>
           <div className="header-body">
-            {/* Card stats */}
             <Row>
               <Col lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
                     <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          Traffic
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">
-                          350,897
+                      <Col>
+                        <h5 className="card-title text-uppercase text-muted mb-0">Past Orders</h5>
+                        <span className="h2 font-weight-bold mb-0">{userPastOrders ? userPastOrders + " orders" : "No orders yet"}</span>
+                      </Col>
+                      <Col className="col-auto">
+                        <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                          <i className="fa-solid fa-chart-line"></i>
+                        </div>
+                      </Col>
+                      <p className="mt-3 mb-0 ml-2 text-sm">
+                        <span className={userPastOrders > 0 ? `text-success mr-2` : `text-danger mr-2`}>
+                          <i className={userPastOrders > 0 ? `fa-solid fa-arrow-up` : 'fa-solid fa-arrow-down'}></i>
                         </span>
-                      </div>
-                      <Col className="col-auto">
-                        <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
-                          <i className="fas fa-chart-bar" />
-                        </div>
-                      </Col>
+                        <span className="text-nowrap">since you joined our platform.</span>
+                      </p>
                     </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
-                        <i className="fa fa-arrow-up" /> 3.48%
-                      </span>{" "}
-                      <span className="text-nowrap">Since last month</span>
-                    </p>
                   </CardBody>
                 </Card>
               </Col>
@@ -61,83 +160,97 @@ const Header = () => {
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
                     <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          New users
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">2,356</span>
-                      </div>
+                      <Col>
+                        <h5 className="card-title text-uppercase text-muted mb-0">Future Orders</h5>
+                        <span className="h2 font-weight-bold mb-0">{userFutureOrders ? userFutureOrders + " orders" : "No orders yet"}</span>
+                      </Col>
                       <Col className="col-auto">
-                        <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
-                          <i className="fas fa-chart-pie" />
+                        <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                          <i className="fa-solid fa-chart-line"></i>
                         </div>
                       </Col>
+                      <p className="mt-3 mb-0 ml-2 text-sm">
+                        <span className={userFutureOrders > 0 ? `text-success mr-2` : `text-danger mr-2`}>
+                          <i className={userFutureOrders > 0 ? `fa-solid fa-arrow-up` : 'fa-solid fa-arrow-down'}></i>
+                        </span>
+                        <span className="text-nowrap">since you joined our platform.</span>
+                      </p>
                     </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-danger mr-2">
-                        <i className="fas fa-arrow-down" /> 3.48%
-                      </span>{" "}
-                      <span className="text-nowrap">Since last week</span>
-                    </p>
                   </CardBody>
                 </Card>
               </Col>
+              {user.type === "worker" ? <Col lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0">
+                  <CardBody>
+                    <Row>
+                      <Col>
+                        <h5 className="card-title text-uppercase text-muted mb-0">Your rating</h5>
+                        <span className="h2 font-weight-bold mb-0">
+                          {renderRatingStars(workerRating)}
+                        </span>
+                      </Col>
+                      <Col className="col-auto">
+                        <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                          <i className="fa-solid fa-star"></i>
+                        </div>
+                      </Col>
+                      <p className="mt-3 mb-0 ml-2 text-sm">
+                        <span className={workerRating > 3 ? `text-success mr-2` : workerRating === 3 ? `text-yellow mr-2` : `text-danger mr-2`}>
+                          <i className={workerRating > 3 ? `fa-solid fa-arrow-up` : `fa-solid fa-arrow-down`}></i>
+                        </span>
+                        <span className="text-nowrap">{workerReviews > 0 && workerRating > 3 ? "your rating is very good" : workerReviews > 0 && workerRating === 3 ? "your rating is good" : workerReviews > 0 && workerRating < 3 ? "try to improve you services" : "no ratings yet"}</span>
+                      </p>
+                    </Row>
+                  </CardBody>
+                </Card>
+              </Col> :
+                <Col lg="6" xl="3">
+                  <Card className="card-stats mb-4 mb-xl-0">
+                    <CardBody>
+                      <Row>
+                        <Col>
+                          <h5 className="card-title text-uppercase text-muted mb-0">Given reviews</h5>
+                          <span className="h2 font-weight-bold mb-0">
+                            {customerRatings > 0 ? customerRatings + " reviews" : "No reviews yet"}
+                          </span>
+                        </Col>
+                        <Col className="col-auto">
+                          <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                            <i className="fa-solid fa-star"></i>
+                          </div>
+                        </Col>
+                        <p className="mt-3 mb-0 ml-2 text-sm">
+                          <span className={customerRatings > 0 ? `text-success mr-2` : `text-danger mr-2`}>
+                            <i className={customerRatings > 0 ? `fa-solid fa-arrow-up` : `fa-solid fa-arrow-down`}></i>
+                          </span>
+                          <span className="text-nowrap">since you joined our platform.</span>
+                        </p>
+                      </Row>
+                    </CardBody>
+                  </Card>
+                </Col>}
               <Col lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0">
                   <CardBody>
                     <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          Sales
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">924</span>
-                      </div>
+                      <Col>
+                        <h5 className="card-title text-uppercase text-muted mb-0">History</h5>
+                        <span className="h2 font-weight-bold mb-0">
+                          {moment(updatedUser.createdAt).format("YYYY-MM-DD")}
+                        </span>
+                      </Col>
                       <Col className="col-auto">
-                        <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
-                          <i className="fas fa-users" />
+                        <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                          <i className="fa-solid fa-registered"></i>
                         </div>
                       </Col>
+                      <p className="mt-3 mb-0 ml-2 text-sm">
+                        <span className="text-primary mr-2">
+                          <i className="fa-regular fa-calendar"></i>
+                        </span>
+                        <span className="text-nowrap">your register date on this platform</span>
+                      </p>
                     </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-warning mr-2">
-                        <i className="fas fa-arrow-down" /> 1.10%
-                      </span>{" "}
-                      <span className="text-nowrap">Since yesterday</span>
-                    </p>
-                  </CardBody>
-                </Card>
-              </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <div className="col">
-                        <CardTitle
-                          tag="h5"
-                          className="text-uppercase text-muted mb-0"
-                        >
-                          Performance
-                        </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">49,65%</span>
-                      </div>
-                      <Col className="col-auto">
-                        <div className="icon icon-shape bg-info text-white rounded-circle shadow">
-                          <i className="fas fa-percent" />
-                        </div>
-                      </Col>
-                    </Row>
-                    <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> 12%
-                      </span>{" "}
-                      <span className="text-nowrap">Since last month</span>
-                    </p>
                   </CardBody>
                 </Card>
               </Col>

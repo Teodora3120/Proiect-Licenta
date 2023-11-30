@@ -17,12 +17,13 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/custom.css';
 import { useUserContext } from 'context/UserContext';
 import AuthApi from '../../api/auth';
 import citiesJsonArray from '../../utils/cities.json';
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 
 const hasSpecialChars = (password, rule) => {
@@ -32,6 +33,18 @@ const hasSpecialChars = (password, rule) => {
   return false;
 };
 
+const calculateAge = (dateOfBirth) => {
+  const dob = new Date(dateOfBirth);
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+
+  if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) {
+    age--;
+  }
+
+  return age;
+};
+
 const Register = () => {
   const [userType, setUserType] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -39,20 +52,22 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
-  const [age, setAge] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [city, setCity] = useState('');
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [creating, setCreating] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cities, setCities] = useState([])
+  const [telephoneNumber, setTelephoneNumber] = useState("")
+  const [telephoneNumberError, setTelephoneNumberError] = useState("")
 
   const navigate = useNavigate();
   const { login: loginContext } = useUserContext();
 
   useEffect(() => {
     setError(null);
-  }, [firstName, lastName, email, password, repeatPassword, age, city]);
+  }, [firstName, lastName, email, password, repeatPassword, dateOfBirth, city]);
 
   useEffect(() => {
     if (cities) {
@@ -61,6 +76,7 @@ const Register = () => {
       })
       setCities(citiesArray)
     }
+    //eslint-disable-next-line
   }, [citiesJsonArray])
 
   const toggleModal = () => {
@@ -86,7 +102,7 @@ const Register = () => {
       setError('Your email does not look valid.');
       return true;
     }
-    if (age < 18) {
+    if (calculateAge(dateOfBirth) < 18) {
       setError('You must be older than 18.')
       return true;
     }
@@ -96,7 +112,8 @@ const Register = () => {
       !email ||
       !password ||
       !repeatPassword ||
-      !age ||
+      !telephoneNumber ||
+      !dateOfBirth ||
       !city ||
       !userType
     ) {
@@ -119,6 +136,24 @@ const Register = () => {
     return false;
   };
 
+  const handleTelephoneNumber = (telephoneNumberString) => {
+    if (telephoneNumberString && telephoneNumberString.length >= 2 && telephoneNumberString.slice(0, 2) !== "+4") {
+      return setTelephoneNumberError("Your prefix should be for Romania.")
+    }
+    if (telephoneNumberString && telephoneNumberString.length > 4 && telephoneNumberString.slice(0, 4) !== "+407") {
+      return setTelephoneNumberError("Your phone number must start with 07.")
+    }
+    if (telephoneNumberString && telephoneNumberString.length > 12) {
+      return setTelephoneNumberError("Your phone number should have maximum 10 digits.")
+    }
+    setTelephoneNumber(telephoneNumberString)
+    setTelephoneNumberError("")
+  }
+
+  useEffect(() => {
+    handleTelephoneNumber(telephoneNumber)
+  }, [telephoneNumber])
+
   const register = async () => {
     try {
       const error = verifyCredentials();
@@ -131,24 +166,25 @@ const Register = () => {
         lastName: lastName,
         email: email,
         password: password,
-        age: age,
+        dateOfBirth: dateOfBirth,
         city: city,
-        type: userType
+        type: userType,
+        telephoneNumber: telephoneNumber
       };
       await AuthApi.Register(credentials);
       const userCredentials = await AuthApi.Login({
         email: email,
         password: password,
       })
-      const user = userCredentials.data.user
+      const user = userCredentials.data
       localStorage.setItem('user', JSON.stringify(user))
       loginContext()
-      return navigate('/admin/index')
-    } catch (err) {
-      console.log(err);
+      return navigate('/admin/my-profile')
+    } catch (error) {
+      console.log(error);
       setCreating(false);
-      if (err && err.message) {
-        return setError(err.message);
+      if (error && error.response.status === 401) {
+        return setError("Email already exists.");
       }
       return setError('There has been an error.');
     }
@@ -238,16 +274,23 @@ const Register = () => {
               </InputGroup>
             </FormGroup>
             <FormGroup>
+              <PhoneInput
+                country="RO"
+                placeholder="Enter phone number"
+                value={String(telephoneNumber)}
+                onChange={setTelephoneNumber} />
+            </FormGroup>
+            <FormGroup>
               <InputGroup className="input-group-alternative mb-3">
                 <InputGroupAddon addonType="prepend">
                   <InputGroupText>
-                    <i className="fa-regular fa-list-ol" />
+                    <i className="fa-solid fa-cake-candles" />
                   </InputGroupText>
                 </InputGroupAddon>
                 <Input
-                  onChange={(e) => setAge(e.target.value)}
-                  placeholder="Age"
-                  type="number"
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  placeholder="Date of birth"
+                  type="date"
                   autoComplete="new-age"
                 />
               </InputGroup>
@@ -290,7 +333,7 @@ const Register = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                 />
               </InputGroup>
             </FormGroup>
@@ -321,13 +364,18 @@ const Register = () => {
                 {error}
               </h4>
             ) : null}
+            {telephoneNumberError ? (
+              <h4 className="text-center text-danger mt-3 font-weight-400">
+                {telephoneNumberError}
+              </h4>
+            ) : null}
             <div className="text-center">
               <Button
                 onClick={register}
                 className="mt-3"
                 color="primary"
                 type="button"
-                disabled={creating}
+                disabled={creating || telephoneNumberError}
               >
                 {creating ? <Spinner size="sm" /> : 'Create account'}
               </Button>

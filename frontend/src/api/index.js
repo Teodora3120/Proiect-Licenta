@@ -11,17 +11,29 @@ axios.interceptors.request.use(
         if (userString) {
             const user = JSON.parse(userString)
             if (user && user.token) {
-                config.headers.Authorization = user.token
+                config.headers.Authorization = `Bearer ${user.token}`;
             }
         }
         return Promise.resolve(config)
     },
     (error) => Promise.reject(error),
 )
-
+let isAlertShown = false;
 axios.interceptors.response.use(
     (response) => Promise.resolve(response),
-    (error) => Promise.reject(error),
+    (error) => {
+        if (error.response && error.response.status === 403 && !isAlertShown) {
+            isAlertShown = true;
+
+            localStorage.removeItem("user")
+
+            const confirmResponse = window.confirm("Your session has expired. You will be redirected to the login page.")
+            if (confirmResponse) {
+                return window.location.href = `${window.location.origin}/auth/login`;
+            }
+        }
+        return Promise.reject(error)
+    },
 )
 
 

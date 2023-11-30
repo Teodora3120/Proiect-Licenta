@@ -1,13 +1,11 @@
 import Index from "views/Index.js";
 import WProfile from "views/examples/WProfile.js";
+import WSchedule from "views/examples/WSchedule";
 import CProfile from "views/examples/CProfile.js";
-
-import Maps from "views/examples/Maps.js";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
-import Tables from "views/examples/Tables.js";
-import Icons from "views/examples/Icons.js";
 import Logout from "views/examples/Logout";
+import CustomerOrders from "views/examples/CustomerOrders";
 
 var routes = {
   ADMIN: [],
@@ -20,20 +18,6 @@ var routes = {
       layout: "/admin",
     },
     {
-      path: "/icons",
-      name: "Icons",
-      icon: "ni ni-planet text-blue",
-      component: <Icons />,
-      layout: "/admin",
-    },
-    {
-      path: "/maps",
-      name: "Maps",
-      icon: "ni ni-pin-3 text-orange",
-      component: <Maps />,
-      layout: "/admin",
-    },
-    {
       path: "/my-profile",
       name: "My Profile",
       icon: "ni ni-single-02 text-yellow",
@@ -41,10 +25,10 @@ var routes = {
       layout: "/admin",
     },
     {
-      path: "/tables",
-      name: "Tables",
-      icon: "ni ni-bullet-list-67 text-red",
-      component: <Tables />,
+      path: "/my-orders",
+      name: "My Orders",
+      icon: "ni ni-cart text-info",
+      component: <CustomerOrders />,
       layout: "/admin",
     },
     {
@@ -81,20 +65,6 @@ var routes = {
       layout: "/admin",
     },
     {
-      path: "/icons",
-      name: "Icons",
-      icon: "ni ni-planet text-blue",
-      component: <Icons />,
-      layout: "/admin",
-    },
-    {
-      path: "/maps",
-      name: "Maps",
-      icon: "ni ni-pin-3 text-orange",
-      component: <Maps />,
-      layout: "/admin",
-    },
-    {
       path: "/my-profile",
       name: "My Profile",
       icon: "ni ni-single-02 text-yellow",
@@ -102,10 +72,10 @@ var routes = {
       layout: "/admin",
     },
     {
-      path: "/tables",
-      name: "Tables",
-      icon: "ni ni-bullet-list-67 text-red",
-      component: <Tables />,
+      path: "/my-schedule",
+      name: "My Schedule",
+      icon: "ni ni-single-02 text-info",
+      component: <WSchedule />,
       layout: "/admin",
     },
     {

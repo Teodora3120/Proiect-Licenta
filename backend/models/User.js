@@ -19,12 +19,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    age: {
-        type: Number,
+    dateOfBirth: {
+        type: String,
         required: true,
     },
     city: {
-        type: String,
+        type: Number,
+        required: true,
+    },
+    telephoneNumber: {
+        type: Number,
         required: true,
     },
     type: {
@@ -35,19 +39,37 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
-});
-
-// Hash the password before saving it to the database
-userSchema.pre('save', async function (next) {
-    try {
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(this.password, salt);
-        this.password = hashedPassword;
-        next();
-    } catch (error) {
-        next(error);
-    }
-});
+    description: {
+        type: String,
+        required: false,
+    },
+    services: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Service',
+    }],
+    domain: {
+        type: Number,
+        required: false,
+    },
+    schedule: [
+        {
+            dayOfWeek: String,
+            startTime: String,
+            endTime: String,
+        },
+    ],
+    rating: {
+        type: Number,
+        required: false
+    },
+    orders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order',
+    }],
+},
+    {
+        timestamps: true // Automatically add createdAt and updatedAt fields
+    });
 
 const User = mongoose.model('User', userSchema);
 
