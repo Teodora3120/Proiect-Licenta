@@ -4,8 +4,6 @@ import {
     Card,
     CardHeader,
     CardBody,
-    FormGroup,
-    Form,
     Container,
     Row,
     Col,
@@ -21,7 +19,6 @@ import Header from "components/Headers/Header.js";
 import { useUserContext } from "context/UserContext";
 import Select from "react-select";
 import WorkerApi from "api/worker";
-import AuthApi from "api/auth";
 
 const WSchedule = () => {
     const [activeTab, setActiveTab] = useState("Monday");

@@ -177,9 +177,7 @@ const CustomerDashboard = () => {
             const workersArr = response.data.filter(worker => worker.schedule.length && worker.services.length);
             const workersRatingsResponse = await RatingApi.GetWorkersRatings();
             const workersRatingsArr = workersRatingsResponse.data;
-            console.log("Ratings", workersRatingsArr);
             const workersWithRatings = workersArr.map((worker) => {
-                console.log(typeof workersRatingsArr)
                 const matchingRating = workersRatingsArr.find((rating) => rating.workerId === worker._id);
                 return {
                     ...worker,
@@ -187,7 +185,6 @@ const CustomerDashboard = () => {
                     reviews: matchingRating ? matchingRating.reviews : 0,
                 };
             });
-            console.log("Workers with ratings", workersWithRatings)
             setWorkers(workersWithRatings);
         } catch (error) {
             console.log(error);
@@ -408,7 +405,6 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
     const createOrder = async () => {
         try {
             if (!selectedService._id || !selectedDate || !selectedStartTime.value || !paid) {
-                console.log(selectedService._id, selectedDate, selectedStartTime.value, paid)
                 return setBookError("You must complete all the fields.")
             }
             const data = {
@@ -564,9 +560,7 @@ const WorkerAvailableHours = ({ worker, selectedDate, selectedService, setSelect
                 day: getDayName(selectedDate),
                 serviceId: selectedService._id
             }
-            console.log(data)
             const response = await WorkerApi.GetScheduleForADay(data, worker._id)
-            console.log(response)
             const scheduleArr = response.data;
             let parsedSchedule = []
             if (scheduleArr?.length) {

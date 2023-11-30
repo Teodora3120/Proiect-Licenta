@@ -1,7 +1,6 @@
 
 import React from "react";
 import { useLocation, Route, Routes, Navigate } from "react-router-dom";
-// reactstrap components
 import { Container, Row, Col } from "reactstrap";
 
 // core components

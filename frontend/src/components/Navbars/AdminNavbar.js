@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from "react-router-dom";
-// reactstrap components
 import {
   DropdownMenu,
   DropdownItem,

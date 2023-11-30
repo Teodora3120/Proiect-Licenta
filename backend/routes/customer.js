@@ -6,23 +6,20 @@ router.put('/update-account-details/:userId', async (req, res) => {
     try {
         const { lastName, address } = req.body;
         const userId = req.params.userId;
-        // Check if all required fields are present in the request body
+
         if (!lastName || !address || !userId) {
             return res.status(400).json('Missing required fields');
         }
 
-        // Find the service by its ID
         const customer = await User.findById(userId);
 
         if (!customer) {
             return res.status(404).json('User not found.');
         }
 
-        // Update the service object with the new values
         customer.lastName = lastName;
         customer.address = address;
 
-        // Save the updated service document
         const updatedAccount = await customer.save();
 
         res.status(200).json(updatedAccount);
@@ -65,7 +62,6 @@ router.get('/get-customer-by-id/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
 
-        // Find the user by userId
         const user = await User.findById(userId);
 
         if (!user) {

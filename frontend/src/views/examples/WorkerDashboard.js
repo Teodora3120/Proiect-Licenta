@@ -7,6 +7,9 @@ import {
     Row,
     Col,
     Table,
+    Pagination,
+    PaginationItem,
+    PaginationLink
 } from "reactstrap";
 import { useUserContext } from "context/UserContext";
 import ServiceApi from "api/service";
@@ -29,7 +32,18 @@ const WorkerDashboard = () => {
     const [orders, setOrders] = useState([])
     const [services, setServices] = useState([])
     const [customers, setCustomers] = useState([])
+    const [currentPage, setCurrentPage] = useState(1);
     const { user } = useUserContext();
+    const itemsPerPage = 10;
+
+    const totalPages = Math.ceil(orders.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
 
     useEffect(() => {
         if (user._id) {
@@ -130,47 +144,49 @@ const WorkerDashboard = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {orders && orders.length ? orders.sort((a, b) => new Date(b.date) - new Date(a.date)).map((order, index) => {
-                                            const service = services?.length ? services.find((serviceObj) => {
-                                                return serviceObj._id === order.serviceId
-                                            }) : {}
-                                            const customer = customers?.length ? customers.find((customerObj) => {
-                                                return customerObj._id === order.customerId
-                                            }) : {}
-                                            return <tr key={index}>
-                                                <td>{customer.firstName} {customer.lastName}</td>
-                                                <td>{service.name}</td>
-                                                <td>{formatDate(order.date)}, {order.start} </td>
-                                                <td>{service.price} RON</td>
-                                                <td>
-                                                    <span className={`${order.status === 'Completed' ? 'text-success' :
-                                                        order.status === 'Canceled' ? 'text-danger' : ''
-                                                        }`}>
-                                                        {order.status}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <h6>{customer.email}</h6>
-                                                    <h6>+{customer.telephoneNumber}</h6>
-                                                    {customer.telephoneNumer}
-                                                </td>
-                                                <td>
-                                                    {order.status === 'Canceled' || order.status === 'Completed' ? (
-                                                        '-'
-                                                    ) : isAtLeastOneDayDifference(order.date) ? (
-                                                        <Button color="success" size="sm" onClick={() => completeOrder(order._id, user._id)}>
-                                                            Complete
-                                                        </Button>
-                                                    ) : order.status === 'On going' ? (
-                                                        <Button color="danger" size="sm" onClick={() => cancelOrder(order._id, user._id)}>
-                                                            Cancel
-                                                        </Button>
-                                                    ) : (
-                                                        '-'
-                                                    )}
-                                                </td>
-                                            </tr>
-                                        }) :
+                                        {orders && orders.length ? orders.sort((a, b) => new Date(b.date) - new Date(a.date))
+                                            .slice(startIndex, endIndex)
+                                            .map((order, index) => {
+                                                const service = services?.length ? services.find((serviceObj) => {
+                                                    return serviceObj._id === order.serviceId
+                                                }) : {}
+                                                const customer = customers?.length ? customers.find((customerObj) => {
+                                                    return customerObj._id === order.customerId
+                                                }) : {}
+                                                return <tr key={index}>
+                                                    <td>{customer.firstName} {customer.lastName}</td>
+                                                    <td>{service.name}</td>
+                                                    <td>{formatDate(order.date)}, {order.start} </td>
+                                                    <td>{service.price} RON</td>
+                                                    <td>
+                                                        <span className={`${order.status === 'Completed' ? 'text-success' :
+                                                            order.status === 'Canceled' ? 'text-danger' : ''
+                                                            }`}>
+                                                            {order.status}
+                                                        </span>
+                                                    </td>
+                                                    <td>
+                                                        <h6>{customer.email}</h6>
+                                                        <h6>+{customer.telephoneNumber}</h6>
+                                                        {customer.telephoneNumer}
+                                                    </td>
+                                                    <td>
+                                                        {order.status === 'Canceled' || order.status === 'Completed' ? (
+                                                            '-'
+                                                        ) : isAtLeastOneDayDifference(order.date) ? (
+                                                            <Button color="success" size="sm" onClick={() => completeOrder(order._id, user._id)}>
+                                                                Complete
+                                                            </Button>
+                                                        ) : order.status === 'On going' ? (
+                                                            <Button color="danger" size="sm" onClick={() => cancelOrder(order._id, user._id)}>
+                                                                Cancel
+                                                            </Button>
+                                                        ) : (
+                                                            '-'
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            }) :
                                             <tr>
                                                 <td>
                                                     <h4 className="font-weight-400 mt-2">There are no orders to display.</h4>
@@ -179,6 +195,25 @@ const WorkerDashboard = () => {
 
                                     </tbody>
                                 </Table>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col className="d-flex justify-content-center align-items-center">
+                                <Pagination className="mt-3">
+                                    <PaginationItem disabled={currentPage === 1}>
+                                        <PaginationLink previous onClick={() => handlePageChange(currentPage - 1)} />
+                                    </PaginationItem>
+                                    {[...Array(totalPages)].map((_, index) => (
+                                        <PaginationItem key={index} active={currentPage === index + 1}>
+                                            <PaginationLink onClick={() => handlePageChange(index + 1)}>
+                                                {index + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    ))}
+                                    <PaginationItem disabled={currentPage === totalPages}>
+                                        <PaginationLink next onClick={() => handlePageChange(currentPage + 1)} />
+                                    </PaginationItem>
+                                </Pagination>
                             </Col>
                         </Row>
                     </CardBody>

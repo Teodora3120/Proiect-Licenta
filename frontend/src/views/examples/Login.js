@@ -47,9 +47,9 @@ const Login = () => {
       localStorage.setItem('user', JSON.stringify(user))
       loginContext();
       navigate('/admin/index')
-    } catch (err) {
-      console.log(err)
-      if (err.response.status === 401) {
+    } catch (error) {
+      console.log(error)
+      if (error.response.status === 401) {
         return setError("Invalid credentials.")
       }
       return setError('There has been an error.')

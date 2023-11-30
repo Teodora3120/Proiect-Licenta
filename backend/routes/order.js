@@ -26,17 +26,14 @@ router.post('/create-order', async (req, res) => {
 
         const savedOrder = await newOrder.save();
 
-        // Find the user by userId and update their services array
         const customer = await User.findById(customerId);
 
         if (!customer) {
             return res.status(404).json('Customer not found');
         }
 
-        // Add the service's _id to the user's services array
         await customer.updateOne({ $push: { orders: savedOrder._id } });
 
-        // Find the user by userId and update their services array
         const worker = await User.findById(workerId);
 
         if (!worker) {
@@ -75,7 +72,7 @@ router.get('/get-orders/:userId', async (req, res) => {
         if (!userId) {
             return res.status(400).json('Missing required fields');
         }
-        // Find the user by userId
+
         const user = await User.findById(userId);
 
         if (!user) {
@@ -115,7 +112,6 @@ router.patch('/update-order', async (req, res) => {
         const cancellerRole = userId.toString() === order.customerId.toString() ? 'customer' : 'worker';
 
         if (status === 'Canceled') {
-            console.log(`${cancellerRole} deleted the order`);
 
             const notification = new Notification({
                 sender: userId,
@@ -145,12 +141,11 @@ router.delete('/delete-order/:orderId/:userId', async (req, res) => {
     try {
         const orderId = req.params.orderId;
         const userId = req.params.userId;
-        // Delete the order from the database
+
         const deletedOrder = await Order.findByIdAndDelete(orderId);
         const userWhoDeletedTheOrder = await User.findById(userId)
         if (deletedOrder) {
             if (userWhoDeletedTheOrder._id.equals(deletedOrder.customerId)) {
-                console.log("Customer deleted the order")
                 const notification = new Notification({
                     sender: userId,
                     receiver: deletedOrder.workerId,
@@ -166,7 +161,6 @@ router.delete('/delete-order/:orderId/:userId', async (req, res) => {
                     userConnections.get(deletedOrder.workerId).emit('orderDeleted', deletedOrder);
                 }
             } else if (userWhoDeletedTheOrder._id.equals(deletedOrder.workerId)) {
-                console.log("Worker deleted the order")
                 const notification = new Notification({
                     sender: userId,
                     receiver: deletedOrder.customerId,

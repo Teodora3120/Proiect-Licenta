@@ -10,7 +10,6 @@ function verifyToken(req, res, next) {
         return res.status(401).send('Unauthorized.');
     }
 
-    // Split the header to separate the "Bearer" prefix from the token
     const [bearer, token] = authorizationHeader.split(' ');
 
     if (bearer !== 'Bearer' || !token) {

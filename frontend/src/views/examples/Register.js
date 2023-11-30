@@ -17,7 +17,6 @@ import {
   ModalBody,
   ModalFooter,
 } from 'reactstrap';
-// import Select from 'react-select';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/custom.css';
 import { useUserContext } from 'context/UserContext';
@@ -39,7 +38,6 @@ const calculateAge = (dateOfBirth) => {
   const today = new Date();
   let age = today.getFullYear() - dob.getFullYear();
 
-  // Check if the birthday has occurred this year already
   if (today.getMonth() < dob.getMonth() || (today.getMonth() === dob.getMonth() && today.getDate() < dob.getDate())) {
     age--;
   }
@@ -139,7 +137,6 @@ const Register = () => {
   };
 
   const handleTelephoneNumber = (telephoneNumberString) => {
-    console.log(telephoneNumberString)
     if (telephoneNumberString && telephoneNumberString.length >= 2 && telephoneNumberString.slice(0, 2) !== "+4") {
       return setTelephoneNumberError("Your prefix should be for Romania.")
     }
@@ -174,7 +171,6 @@ const Register = () => {
         type: userType,
         telephoneNumber: telephoneNumber
       };
-      console.log(credentials)
       await AuthApi.Register(credentials);
       const userCredentials = await AuthApi.Login({
         email: email,
@@ -184,10 +180,10 @@ const Register = () => {
       localStorage.setItem('user', JSON.stringify(user))
       loginContext()
       return navigate('/admin/my-profile')
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log(error);
       setCreating(false);
-      if (err && err.response.status === 401) {
+      if (error && error.response.status === 401) {
         return setError("Email already exists.");
       }
       return setError('There has been an error.');
