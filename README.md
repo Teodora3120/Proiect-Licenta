@@ -39,22 +39,18 @@ To get a local copy of the project up and running, follow these steps:
 
 ```bash
 git clone https://github.com/Teodora3120/Proiect-Licenta.git
-cd frontend
-npm install
-cd backend
-npm install
 ```
 
 ## Configuration
 
 1. Create .env files in the root directory and add the necessary configuration variables.
 
-# Example .env file for the backend
+### Example .env file for the backend
 
 PORT=5000
 JWT_SECRET=
 
-# Example .env file for the frontend
+### Example .env file for the frontend
 
 REACT_APP_SERVER_URL=http://localhost:5000/
 
@@ -64,6 +60,7 @@ REACT_APP_SERVER_URL=http://localhost:5000/
 
 ```bash
 cd backend
+npm install
 npm run dev
 ```
 
@@ -71,5 +68,6 @@ npm run dev
 
 ```bash
 cd frontend
+npm install
 npm run start
 ```
