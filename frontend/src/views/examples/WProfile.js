@@ -32,7 +32,42 @@ import WorkerApi from "api/worker";
 import ServiceApi from "api/service";
 import Select from 'react-select'
 import AuthApi from "api/auth";
+import OrderApi from "api/order";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
+import RatingApi from "api/rating";
+
+function renderRatingStars(rating) {
+  const stars = [];
+
+  const integerPart = Math.floor(rating);
+  const fractionalPart = rating - integerPart;
+
+  if (fractionalPart > 0.9) {
+    for (let i = 0; i < Math.ceil(rating); i++) {
+      stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+    }
+  } else if (fractionalPart > 0 && fractionalPart < 9) {
+    for (let i = 0; i < integerPart; i++) {
+      stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+    }
+
+    stars.push(<i className="fa-regular fa-star-half-stroke text-yellow" key={integerPart} />);
+
+  } else {
+    for (let i = 0; i < integerPart; i++) {
+      stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+    }
+  }
+  const remainingStars = 5 - stars.length;
+
+  for (let i = 0; i < remainingStars; i++) {
+    stars.push(<i className="fa-solid fa-star text-light" key={integerPart + i + 1} />);
+  }
+
+  return stars;
+}
+
 
 const WProfile = () => {
   const [firstName, setFirstName] = useState("")
@@ -60,6 +95,10 @@ const WProfile = () => {
   const [accountDetailsError, setAccountDetailsError] = useState("")
   const [telephoneNumber, setTelephoneNumber] = useState("")
   const [scheduleExists, setScheduleExists] = useState(false)
+  const [userPastOrders, setUserPastOrders] = useState(0);
+  const [userFutureOrders, setUserFutureOrders] = useState(0);
+  const [workerReviews, setWorkerReviews] = useState(0);
+  const [workerRating, setWorkerRating] = useState(0);
   const { user } = useUserContext();
   const navigate = useNavigate();
 
@@ -83,10 +122,6 @@ const WProfile = () => {
   }, [password])
 
   useEffect(() => {
-    console.log(user)
-  }, [user])
-
-  useEffect(() => {
     if (citiesJson) {
       const cityObj = citiesJson.find((city) => {
         return city.id === Number(user?.city)
@@ -102,6 +137,8 @@ const WProfile = () => {
     const fetchData = async () => {
       await getServices()
       await getUser()
+      await getUserOrders();
+      await getWorkerRatings();
     }
     if (user && user._id) {
       fetchData();
@@ -307,6 +344,46 @@ const WProfile = () => {
     }
   }
 
+  const getWorkerRatings = async () => {
+    try {
+      const response = await RatingApi.GetWorkerRating(user._id);
+      setWorkerReviews(response.data?.reviews)
+      setWorkerRating(response.data?.rating)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getUserOrders = async () => {
+    try {
+      const response = await OrderApi.GetOrders(user._id);
+      const orders = response.data;
+
+      const today = moment();
+
+      const formattedDate = today.format('YYYY-MM-DD');
+
+      const pastOrdersArr = [];
+      const futureOrdersArr = [];
+
+      orders.forEach((order) => {
+        const orderDate = moment(order.date)
+
+        if (orderDate.isBefore(formattedDate, 'day')) {
+          pastOrdersArr.push(order);
+        } else {
+          futureOrdersArr.push(order);
+        }
+      });
+
+      setUserPastOrders(pastOrdersArr?.length);
+      setUserFutureOrders(futureOrdersArr?.length);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
   return (
     <>
       <UserHeader />
@@ -335,15 +412,15 @@ const WProfile = () => {
                   <div className="col">
                     <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                       <div>
-                        <span className="heading">21</span>
+                        <span className="heading">{userPastOrders}</span>
                         <span className="description text-nowrap">Past bookings</span>
                       </div>
                       <div>
-                        <span className="heading">1</span>
+                        <span className="heading">{workerReviews}</span>
                         <span className="description">Reviews</span>
                       </div>
                       <div>
-                        <span className="heading">3</span>
+                        <span className="heading">{userFutureOrders}</span>
                         <span className="description text-nowrap">Coming booking</span>
                       </div>
                     </div>
@@ -353,6 +430,7 @@ const WProfile = () => {
                   <Col className="text-center mb-4">
                     <div className="mb--2">
                       <h3>Your rating</h3>
+                      {renderRatingStars(workerRating)}
                     </div>
                     <div className="d-flex justify-content-center align-items-center">
 

@@ -19,14 +19,35 @@ import { Rating } from 'react-simple-star-rating'
 import RatingApi from "api/rating";
 
 
+
 function renderRatingStars(rating) {
     const stars = [];
-    for (let i = 0; i < rating; i++) {
-        stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+
+    const integerPart = Math.floor(rating);
+    const fractionalPart = rating - integerPart;
+
+    if (fractionalPart > 0.9) {
+        for (let i = 0; i < Math.ceil(rating); i++) {
+            stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+        }
+    } else if (fractionalPart > 0 && fractionalPart < 9) {
+        for (let i = 0; i < integerPart; i++) {
+            stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+        }
+
+        stars.push(<i className="fa-regular fa-star-half-stroke text-yellow" key={integerPart} />);
+
+    } else {
+        for (let i = 0; i < integerPart; i++) {
+            stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
+        }
     }
-    for (let i = rating; i < 5; i++) {
-        stars.push(<i className="fa-solid fa-star text-light" key={i} />);
+    const remainingStars = 5 - stars.length;
+
+    for (let i = 0; i < remainingStars; i++) {
+        stars.push(<i className="fa-solid fa-star text-light" key={integerPart + i + 1} />);
     }
+
     return stars;
 }
 

@@ -70,7 +70,7 @@ router.get('/worker-rating/:workerId', async (req, res) => {
         const totalStars = ratings.reduce((sum, rating) => sum + rating.stars, 0);
         const averageStars = totalStars / ratings.length;
 
-        res.status(200).json({ averageStars });
+        res.status(200).json({ rating: averageStars, reviews: ratings.length });
     } catch (error) {
         console.error(error);
         res.status(500).json('Internal Server Error');

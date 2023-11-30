@@ -26,8 +26,11 @@ import { useUserContext } from "context/UserContext";
 import { useEffect, useState } from "react";
 import citiesJson from '../../utils/cities.json'
 import CustomerApi from "api/customer";
+import OrderApi from "api/order";
 import AuthApi from "api/auth";
+import RatingApi from "api/rating";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const CProfile = () => {
     const [firstName, setFirstName] = useState("")
@@ -42,7 +45,10 @@ const CProfile = () => {
     const [accountChanges, setAccountChanges] = useState(false)
     const [password, setPassword] = useState("")
     const [deleteAccountError, setDeleteAccountError] = useState("")
-    const [accountDetailsError, setAccountDetailsError] = useState("")
+    const [accountDetailsError, setAccountDetailsError] = useState("");
+    const [userPastOrders, setUserPastOrders] = useState(0);
+    const [userFutureOrders, setUserFutureOrders] = useState(0);
+    const [customerRatings, setCustomerRatings] = useState(0);
     const { user } = useUserContext();
     const navigate = useNavigate();
 
@@ -83,6 +89,8 @@ const CProfile = () => {
         }
         if (user && user._id) {
             fetchData();
+            getUserOrders();
+            getCustomerRatings();
         }
         //eslint-disable-next-line
     }, [user])
@@ -91,7 +99,6 @@ const CProfile = () => {
     const toggleModalDeleteAccount = () => {
         setIsModalOpenDeleteAccount(!isModalOpenDeleteAccount);
     };
-
 
     const saveAccountChanges = async () => {
         if (!lastName || !address) {
@@ -130,6 +137,43 @@ const CProfile = () => {
         }
     }
 
+    const getUserOrders = async () => {
+        try {
+            const response = await OrderApi.GetOrders(user._id);
+            const orders = response.data;
+
+            const today = moment();
+
+            const formattedDate = today.format('YYYY-MM-DD');
+
+            const pastOrdersArr = [];
+            const futureOrdersArr = [];
+
+            orders.forEach((order) => {
+                const orderDate = moment(order.date)
+
+                if (orderDate.isBefore(formattedDate, 'day')) {
+                    pastOrdersArr.push(order);
+                } else {
+                    futureOrdersArr.push(order);
+                }
+            });
+
+            setUserPastOrders(pastOrdersArr?.length);
+            setUserFutureOrders(futureOrdersArr?.length);
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    const getCustomerRatings = async () => {
+        try {
+            const response = await RatingApi.GetCustomerNumberOfRatings(user._id);
+            setCustomerRatings(response.data.nrOfRatings);
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const deleteAccount = async () => {
         if (!password) {
@@ -182,16 +226,16 @@ const CProfile = () => {
                                     <div className="col">
                                         <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                                             <div>
-                                                <span className="heading">21</span>
+                                                <span className="heading">{userPastOrders}</span>
                                                 <span className="description text-nowrap">Past bookings</span>
                                             </div>
                                             <div>
-                                                <span className="heading">1</span>
+                                                <span className="heading">{customerRatings}</span>
                                                 <span className="description">Reviews</span>
                                             </div>
                                             <div>
-                                                <span className="heading">3</span>
-                                                <span className="description text-nowrap">Coming booking</span>
+                                                <span className="heading">{userFutureOrders}</span>
+                                                <span className="description text-nowrap">Coming bookings</span>
                                             </div>
                                         </div>
                                     </div>
