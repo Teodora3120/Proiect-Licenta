@@ -1,28 +1,24 @@
 {
-  "name": "argon-dashboard-react",
+  "name": "Schedule Mate",
   "version": "1.2.3",
-  "description": "React version of Argon Dashboard by Creative Tim",
+  "description": "Worlwide platform created for workers and customers.",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/creativetimofficial/argon-dashboard-react.git"
+    "url": "git+https://github.com/Teodora3120/Proiect-Licenta/tree/main"
   },
   "keywords": [
     "react",
     "reactjs",
-    "argon",
-    "argon-react",
-    "dashboard",
-    "dashboard-react",
-    "argon-dashboard",
-    "argon-dashboard-react"
+    "schedule",
+    "schedule-mate"
   ],
-  "author": "Creative Tim",
+  "author": "Vestale Ionela-Teodora",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/creativetimofficial/argon-dashboard-react/issues"
+    "url": "https://github.com/Teodora3120/Proiect-Licenta/issues"
   },
-  "homepage": "https://demos.creative-tim.com/argon-dashboard-react/",
+  "homepage": "http://localhost:3000/",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
