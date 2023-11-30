@@ -97,19 +97,17 @@ const AdminNavbar = (props) => {
             {props.brandText}
           </Link>
           <Nav className="align-items-center d-none d-md-flex" navbar>
-            {/* Notification Bell and Dropdown */}
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav>
                 <i className={`fa-solid fa-bell text-lg mt-2 ${unreadNotifications > 0 ? "text-danger" : "text-white"}`} />
               </DropdownToggle>
-              <DropdownMenu className="dropdown-menu-arrow" right>
-                <DropdownItem className="noti-title mb--4 text-lowercase" header tag="div">
-                  <h4 className="text-left text-muted font-weight-600 py-0 mb--4 mt-1">You have <span className="text-danger">{unreadNotifications}</span> notifications.</h4>
-                  <hr />
+              <DropdownMenu className="dropdown-menu-arrow" right style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                <DropdownItem className="noti-title text-lowercase" header tag="div">
+                  <h4 className="text-left text-muted font-weight-600 py-0 mb-4 mt-1">You have <span className="text-danger">{unreadNotifications}</span> new notifications.</h4>
                 </DropdownItem>
                 {notifications && notifications.length > 0 ? (
                   notifications.reverse().map((notification, index) => (
-                    <DropdownItem key={index} onClick={() => readNotification(notification._id)} className="mb-2">
+                    <DropdownItem key={index} onClick={() => readNotification(notification._id)} className="mb-3">
                       <div className="d-flex align-items-center">
                         <span className="avatar avatar-sm rounded-circle">
                           <img
@@ -118,11 +116,12 @@ const AdminNavbar = (props) => {
                           />
                         </span>
                         <span className="ml-2">{notification.message}</span>
-                        {notification.read === false ? <span>
-                          <i className="fa-solid fa-circle text-danger ml-2"></i>
-                        </span> : null}
+                        {notification.read === false ? (
+                          <span>
+                            <i className="fa-solid fa-circle text-danger ml-2"></i>
+                          </span>
+                        ) : null}
                       </div>
-                      <hr />
                     </DropdownItem>
                   ))
                 ) : (
