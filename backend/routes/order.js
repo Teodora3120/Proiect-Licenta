@@ -2,11 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order')
 const User = require('../models/User')
-const Service = require('../models/Service')
 const Notification = require('../models/Notification')
 const { userConnections } = require('../socketConnections');
-
-
 
 router.post('/create-order', async (req, res) => {
     try {
@@ -23,7 +20,8 @@ router.post('/create-order', async (req, res) => {
             date,
             start,
             paid,
-            finished: false
+            finished: false,
+            status: "On going"
         });
 
         const savedOrder = await newOrder.save();
@@ -98,6 +96,18 @@ router.get('/get-orders/:userId', async (req, res) => {
         res.status(500).json('Internal Server Error');
     }
 });
+
+router.patch('/update-status', async (req, res) => {
+    const orderId = req.body.orderId;
+    const userId = req.body.userId;
+    const status = req.body.status;
+
+    try {
+        const order = await Order.findByIdAndUpdate(orderId);
+    } catch (error) {
+        console.error(error);
+    }
+})
 
 router.delete('/delete-order/:orderId/:userId', async (req, res) => {
     try {

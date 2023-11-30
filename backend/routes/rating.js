@@ -96,23 +96,22 @@ router.get('/customer-ratings/:customerId', async (req, res) => {
 
 router.get('/workers-ratings', async (req, res) => {
     try {
-
         const workers = await User.find();
 
-        const result = workers.map(async (worker) => {
+        const resultPromises = workers.map(async (worker) => {
             const workerRatings = await Rating.find({ workerId: worker._id });
             const totalStars = workerRatings.reduce((sum, rating) => sum + rating.stars, 0);
-            const averageStars = totalStars / workerRatings.length;
+            const averageStars = workerRatings.length > 0 ? totalStars / workerRatings.length : 0;
             return {
                 workerId: worker._id,
                 rating: averageStars,
                 reviews: workerRatings.length
-            }
+            };
         });
 
-        return console.log("dsdxsddsxsdsew", result)
+        const result = await Promise.all(resultPromises);
 
-        res.status(200).json({ result });
+        res.status(200).json(result);
     } catch (error) {
         console.error(error);
         res.status(500).json('Internal Server Error');

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link, useNavigate } from "react-router-dom";
 // reactstrap components
 import {
@@ -9,7 +10,6 @@ import {
   Nav,
   Container,
   Media,
-  Badge,
 } from "reactstrap";
 import { useUserContext } from "context/UserContext";
 import { useWebSocket } from "context/WebsocketContext";
@@ -108,7 +108,7 @@ const AdminNavbar = (props) => {
                   <hr />
                 </DropdownItem>
                 {notifications && notifications.length > 0 ? (
-                  notifications.map((notification, index) => (
+                  notifications.reverse().map((notification, index) => (
                     <DropdownItem key={index} onClick={() => readNotification(notification._id)} className="mb-2">
                       <div className="d-flex align-items-center">
                         <span className="avatar avatar-sm rounded-circle">

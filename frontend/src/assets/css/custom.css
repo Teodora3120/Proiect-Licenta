@@ -49,6 +49,10 @@
   background-color: #e5e5e5;
 }
 
+.hover-service:hover {
+  background-color: #f4f0f0;
+}
+
 .unread-notification {
   background-color: #a31e1e;
 }

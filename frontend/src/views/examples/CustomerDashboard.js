@@ -88,7 +88,6 @@ const CustomerDashboard = () => {
     const [domain, setDomain] = useState({});
     const [city, setCity] = useState({});
     const [rating, setRating] = useState({});
-    const [errorDomain, setErrorDomain] = useState("");
     const [service, setService] = useState({});
     const [services, setServices] = useState([]);
     const [searchWorkerValue, setSearchWorkerValue] = useState("");
@@ -120,6 +119,8 @@ const CustomerDashboard = () => {
                 return fullName.toLowerCase().includes(searchWorkerValue.toLowerCase());
             });
             setFilteredWorkers(filtered);
+        } else {
+            setFilteredWorkers(workers);
         }
     }, [searchWorkerValue, workers]);
 
@@ -153,20 +154,25 @@ const CustomerDashboard = () => {
         try {
             const response = await WorkerApi.GetAllWorkers();
             const workersArr = response.data.filter(worker => worker.schedule.length && worker.services.length);
-            setWorkers(workersArr);
+            const workersRatingsResponse = await RatingApi.GetWorkersRatings();
+            const workersRatingsArr = workersRatingsResponse.data;
+            console.log("Ratings", workersRatingsArr);
+            const workersWithRatings = workersArr.map((worker) => {
+                console.log(typeof workersRatingsArr)
+                const matchingRating = workersRatingsArr.find((rating) => rating.workerId === worker._id);
+                return {
+                    ...worker,
+                    rating: matchingRating ? matchingRating.rating : 0,
+                    reviews: matchingRating ? matchingRating.reviews : 0,
+                };
+            });
+            console.log("Workers with ratings", workersWithRatings)
+            setWorkers(workersWithRatings);
         } catch (error) {
             console.log(error);
         }
     };
 
-    // const getWorkersRatings = async () => {
-    //     try {
-    //         const response = await RatingApi.GetWorkersRatings();
-    //         console.log(response)
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
 
     return (
         <>
@@ -199,7 +205,7 @@ const CustomerDashboard = () => {
                                                 </InputGroupAddon>
                                             </InputGroup>
                                         </Col>
-                                        <Col sm="12" xs="12" className="text-right">
+                                        <Col sm="12" xs="12" md="12" lg="8" xl="8" className="text-right">
                                             <div className="d-flex flex-wrap align-items-center justify-content-end">
                                                 <FormGroup>
                                                     <Dropdown isOpen={cityDropdownOpen} direction="right" toggle={() => setCityDropdownOpen(!cityDropdownOpen)}>
@@ -288,8 +294,8 @@ const CustomerDashboard = () => {
                                                         <h3 className="mb-0"> {worker.firstName} {worker.lastName}</h3>
                                                     </Col>
                                                     <Col className="text-right">
-                                                        <h4 className="mb--1">Rating:   {renderRatingStars()}</h4>
-                                                        <span><small>3 reviews</small></span>
+                                                        <h4 className="mb--1">Rating:   {renderRatingStars(worker.rating)}</h4>
+                                                        <span><small>{worker.reviews === 0 ? "No reviews" : worker.reviews > 1 ? worker.reviews + " reviews" : worker.reviews + " review"}</small></span>
                                                     </Col>
                                                 </Row>
                                             </CardHeader>
@@ -429,7 +435,7 @@ const BookModal = ({ isModalOpenBook, toggleModalBook, workerToBook, services, c
                                 </thead>
                                 <tbody>
                                     {workerServices && workerServices.length ? workerServices.map((service, index) => {
-                                        return <tr onClick={() => setSelectedService(service)} className={`c-pointer ${service._id === selectedService?._id ? "selected-service" : ""}`} key={index}>
+                                        return <tr onClick={() => setSelectedService(service)} className={`c-pointer hover-service ${service._id === selectedService?._id ? "selected-service" : ""}`} key={index}>
                                             <td>{service.name}</td>
                                             <td>{service.description}</td>
                                             <td>{service.duration} h</td>

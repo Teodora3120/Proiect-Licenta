@@ -9,10 +9,7 @@ import {
     Table,
 } from "reactstrap";
 import { useUserContext } from "context/UserContext";
-import { useNavigate } from "react-router-dom";
 import ServiceApi from "api/service";
-import WorkerApi from "api/worker";
-import Select from 'react-select'
 import OrderApi from "api/order";
 import CustomerApi from "api/customer";
 import moment from "moment";
@@ -144,7 +141,12 @@ const WorkerDashboard = () => {
                                                     {customer.telephoneNumer}
                                                 </td>
                                                 <td>
-                                                    <Button color="danger" size="sm" disabled={!isAtLeastOneDayDifference} onClick={() => deleteOrder(order._id, user._id)}>Cancel</Button>
+                                                    {new Date().getTime() >= new Date(order.date).getTime()
+                                                        ?
+                                                        <Button color="danger" size="sm" disabled={!isAtLeastOneDayDifference} onClick={() => deleteOrder(order._id, user._id)}>Cancel</Button>
+                                                        :
+                                                        '-'
+                                                    }
                                                 </td>
                                             </tr>
                                         }) :

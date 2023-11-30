@@ -27,7 +27,7 @@ var routes = {
     {
       path: "/my-orders",
       name: "My Orders",
-      icon: "ni ni-single-02 text-yellow",
+      icon: "ni ni-cart text-info",
       component: <CustomerOrders />,
       layout: "/admin",
     },
