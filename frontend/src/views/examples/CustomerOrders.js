@@ -67,7 +67,7 @@ const CustomerOrders = () => {
     const [workers, setWorkers] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
     const { user } = useUserContext();
-    const itemsPerPage = 10;
+    const itemsPerPage = 8;
 
     const totalPages = Math.ceil(orders.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;

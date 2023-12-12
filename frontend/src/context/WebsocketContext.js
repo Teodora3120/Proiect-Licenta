@@ -25,10 +25,12 @@ export const WebSocketProvider = ({ children }) => {
         })
 
         socketInstance.on('orderCreated', (data) => {
+            console.log("Order created", data)
             setMessage(data);
         });
 
         socketInstance.on('orderDeleted', (data) => {
+            console.log("Order deleted", data)
             setMessage(data);
         });
 

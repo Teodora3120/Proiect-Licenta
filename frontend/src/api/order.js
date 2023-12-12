@@ -13,10 +13,6 @@ class OrderApi {
     static async UpdateOrder(data) {
         return await axios.patch(`/order/update-order`, data)
     }
-
-    static async DeleteOrder(orderId, userId) {
-        return await axios.delete(`/order/delete-order/${orderId}/${userId}`)
-    }
 }
 
 export default OrderApi

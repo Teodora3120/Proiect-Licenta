@@ -14,8 +14,6 @@ function renderRatingStars(rating) {
   const integerPart = Math.floor(rating);
   const fractionalPart = rating - integerPart;
 
-  console.log(integerPart, fractionalPart)
-
   if (fractionalPart > 0.9) {
     for (let i = 0; i < Math.ceil(rating); i++) {
       stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
@@ -139,7 +137,7 @@ const Header = () => {
                     <Row>
                       <Col>
                         <h5 className="card-title text-uppercase text-muted mb-0">Past Orders</h5>
-                        <span className="h2 font-weight-bold mb-0">{userPastOrders ? userPastOrders + " orders" : "No orders yet"}</span>
+                        <span className="h2 font-weight-bold mb-0">{userPastOrders ? userPastOrders + " orders" : "No orders"}</span>
                       </Col>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
@@ -162,7 +160,7 @@ const Header = () => {
                     <Row>
                       <Col>
                         <h5 className="card-title text-uppercase text-muted mb-0">Future Orders</h5>
-                        <span className="h2 font-weight-bold mb-0">{userFutureOrders ? userFutureOrders + " orders" : "No orders yet"}</span>
+                        <span className="h2 font-weight-bold mb-0">{userFutureOrders ? userFutureOrders + " orders" : "No orders"}</span>
                       </Col>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
@@ -199,7 +197,7 @@ const Header = () => {
                           <span className={workerRating > 3 ? `text-success mr-2` : workerRating === 3 ? `text-yellow mr-2` : `text-danger mr-2`}>
                             <i className={workerRating > 3 ? `fa-solid fa-arrow-up` : `fa-solid fa-arrow-down`}></i>
                           </span>
-                          <span className="text-nowrap">{workerReviews > 0 && workerRating > 3 ? "your rating is very good" : workerReviews > 0 && workerRating === 3 ? "your rating is good" : workerReviews > 0 && workerRating < 3 ? "try to improve you services" : "no ratings yet"}</span>
+                          <span className="text-nowrap">{workerReviews > 0 && workerRating > 3 ? "your rating is very good" : workerReviews > 0 && workerRating === 3 ? "your rating is good" : workerReviews > 0 && workerRating < 3 ? "try to improve you services" : "no ratings"}</span>
                         </p>
                       </Row>
                     </CardBody>
