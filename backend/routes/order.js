@@ -121,12 +121,14 @@ router.patch('/update-order', async (req, res) => {
             });
             await notification.save();
 
-            if (userConnections.has(order.customerId)) {
-                userConnections.get(order.customerId).emit('orderDeleted', order);
-            }
-
-            if (userConnections.has(order.workerId)) {
-                userConnections.get(order.workerId).emit('orderDeleted', order);
+            if (cancellerRole === "worker") {
+                if (userConnections.has((order.customerId).toString())) {
+                    userConnections.get((order.customerId).toString()).emit('orderDeleted', order);
+                }
+            } else if (cancellerRole === "customer") {
+                if (userConnections.has((order.workerId).toString())) {
+                    userConnections.get((order.workerId).toString()).emit('orderDeleted', order);
+                }
             }
         }
 
@@ -137,54 +139,6 @@ router.patch('/update-order', async (req, res) => {
     }
 });
 
-router.delete('/delete-order/:orderId/:userId', async (req, res) => {
-    try {
-        const orderId = req.params.orderId;
-        const userId = req.params.userId;
-
-        const deletedOrder = await Order.findByIdAndDelete(orderId);
-        const userWhoDeletedTheOrder = await User.findById(userId)
-        if (deletedOrder) {
-            if (userWhoDeletedTheOrder._id.equals(deletedOrder.customerId)) {
-                const notification = new Notification({
-                    sender: userId,
-                    receiver: deletedOrder.workerId,
-                    message: 'One of your appointments has been canceled.',
-                    read: false,
-                });
-                await notification.save();
-
-                if (userConnections.has(deletedOrder.customerId)) {
-                    userConnections.get(deletedOrder.customerId).emit('orderDeleted', deletedOrder);
-                }
-                if (userConnections.has(deletedOrder.workerId)) {
-                    userConnections.get(deletedOrder.workerId).emit('orderDeleted', deletedOrder);
-                }
-            } else if (userWhoDeletedTheOrder._id.equals(deletedOrder.workerId)) {
-                const notification = new Notification({
-                    sender: userId,
-                    receiver: deletedOrder.customerId,
-                    message: 'One of your appointments has been canceled.',
-                    read: false,
-                });
-                await notification.save();
-
-                if (userConnections.has(deletedOrder.customerId)) {
-                    userConnections.get(deletedOrder.customerId).emit('orderDeleted', deletedOrder);
-                }
-                if (userConnections.has(deletedOrder.workerId)) {
-                    userConnections.get(deletedOrder.workerId).emit('orderDeleted', deletedOrder);
-                }
-            }
-            res.status(200).json('Order deleted successfully');
-        } else {
-            res.status(404).json('Order not found');
-        }
-    } catch (error) {
-        console.error(error);
-        res.status(500).json('Internal Server Error');
-    }
-});
 
 
 module.exports = router;

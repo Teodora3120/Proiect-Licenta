@@ -591,7 +591,6 @@ const WorkerAvailableHours = ({ worker, selectedDate, selectedService, setSelect
                                         onChange={(e) => setSelectedStartTime(e)}
                                         placeholder="Start time"
                                         type="select"
-                                        defaultValue={schedule[0]}
                                         options={schedule}
                                     />
                                 ) : (

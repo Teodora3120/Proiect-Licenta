@@ -52,7 +52,6 @@ const AdminNavbar = (props) => {
   const getNotifications = async () => {
     try {
       const response = await NotificationApi.GetAllNotifications(user._id);
-      console.log(response)
       const notificationArr = response.data;
       let unreadNotif = 0;
       if (notificationArr?.length) {
@@ -62,9 +61,7 @@ const AdminNavbar = (props) => {
           }
         }
         setUnreadNotifications(unreadNotif)
-        console.log(unreadNotif)
       }
-
       setNotifications(response.data)
     } catch (error) {
       console.log(error)
@@ -73,17 +70,19 @@ const AdminNavbar = (props) => {
 
   const readNotification = async (notificationId) => {
     try {
-      await NotificationApi.SetReadNotification(notificationId)
-      if (user.type === "customer") {
-        navigate("/admin/my-orders")
+      await NotificationApi.SetReadNotification(notificationId);
+
+      const targetPath = user.type === "customer" ? "/admin/my-orders" : "/admin/index";
+
+      if (window.location.pathname === targetPath) {
+        window.location.reload();
       } else {
-        navigate("/admin/index")
+        navigate(targetPath);
       }
-      getNotifications()
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <>
@@ -123,9 +122,7 @@ const AdminNavbar = (props) => {
                       </div>
                     </DropdownItem>
                   ))
-                ) : (
-                  <DropdownItem>You've read all the notifications.</DropdownItem>
-                )}
+                ) : null}
               </DropdownMenu>
             </UncontrolledDropdown>
 

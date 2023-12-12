@@ -14,8 +14,6 @@ function renderRatingStars(rating) {
   const integerPart = Math.floor(rating);
   const fractionalPart = rating - integerPart;
 
-  console.log(integerPart, fractionalPart)
-
   if (fractionalPart > 0.9) {
     for (let i = 0; i < Math.ceil(rating); i++) {
       stars.push(<i className="fa-solid fa-star text-yellow" key={i} />);
@@ -116,7 +114,7 @@ const Header = () => {
 
         if (orderDate.isBefore(formattedDate, 'day')) {
           pastOrdersArr.push(order);
-        } else {
+        } else if (order.status === "On going") {
           futureOrdersArr.push(order);
         }
       });
@@ -133,13 +131,13 @@ const Header = () => {
         <Container fluid>
           <div className="header-body">
             <Row>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
+              <Col className="d-flex" lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0 flex-fill">
                   <CardBody>
                     <Row>
                       <Col>
                         <h5 className="card-title text-uppercase text-muted mb-0">Past Orders</h5>
-                        <span className="h2 font-weight-bold mb-0">{userPastOrders ? userPastOrders + " orders" : "No orders yet"}</span>
+                        <span className="h2 font-weight-bold mb-0">{userPastOrders ? userPastOrders + " orders" : "No orders"}</span>
                       </Col>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
@@ -156,13 +154,13 @@ const Header = () => {
                   </CardBody>
                 </Card>
               </Col>
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
+              <Col className="d-flex" lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0 flex-fill">
                   <CardBody>
                     <Row>
                       <Col>
                         <h5 className="card-title text-uppercase text-muted mb-0">Future Orders</h5>
-                        <span className="h2 font-weight-bold mb-0">{userFutureOrders ? userFutureOrders + " orders" : "No orders yet"}</span>
+                        <span className="h2 font-weight-bold mb-0">{userFutureOrders ? userFutureOrders + " orders" : "No orders"}</span>
                       </Col>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
@@ -179,39 +177,40 @@ const Header = () => {
                   </CardBody>
                 </Card>
               </Col>
-              {user.type === "worker" ? <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
-                  <CardBody>
-                    <Row>
-                      <Col>
-                        <h5 className="card-title text-uppercase text-muted mb-0">Your rating</h5>
-                        <span className="h2 font-weight-bold mb-0">
-                          {renderRatingStars(workerRating)}
-                        </span>
-                      </Col>
-                      <Col className="col-auto">
-                        <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
-                          <i className="fa-solid fa-star"></i>
-                        </div>
-                      </Col>
-                      <p className="mt-3 mb-0 ml-2 text-sm">
-                        <span className={workerRating > 3 ? `text-success mr-2` : workerRating === 3 ? `text-yellow mr-2` : `text-danger mr-2`}>
-                          <i className={workerRating > 3 ? `fa-solid fa-arrow-up` : `fa-solid fa-arrow-down`}></i>
-                        </span>
-                        <span className="text-nowrap">{workerReviews > 0 && workerRating > 3 ? "your rating is very good" : workerReviews > 0 && workerRating === 3 ? "your rating is good" : workerReviews > 0 && workerRating < 3 ? "try to improve you services" : "no ratings yet"}</span>
-                      </p>
-                    </Row>
-                  </CardBody>
-                </Card>
-              </Col> :
-                <Col lg="6" xl="3">
-                  <Card className="card-stats mb-4 mb-xl-0">
+              {user.type === "worker" ?
+                <Col className="d-flex" lg="6" xl="3">
+                  <Card className="card-stats mb-4 mb-xl-0 flex-fill">
+                    <CardBody>
+                      <Row>
+                        <Col>
+                          <h5 className="card-title text-uppercase text-muted mb-0">Your rating</h5>
+                          <span className="h2 font-weight-bold mb-0">
+                            {renderRatingStars(workerRating)}
+                          </span>
+                        </Col>
+                        <Col className="col-auto">
+                          <div className="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
+                            <i className="fa-solid fa-star"></i>
+                          </div>
+                        </Col>
+                        <p className="mt-3 mb-0 ml-2 text-sm">
+                          <span className={workerRating > 3 ? `text-success mr-2` : workerRating === 3 ? `text-yellow mr-2` : `text-danger mr-2`}>
+                            <i className={workerRating > 3 ? `fa-solid fa-arrow-up` : `fa-solid fa-arrow-down`}></i>
+                          </span>
+                          <span className="text-nowrap">{workerReviews > 0 && workerRating > 3 ? "your rating is very good" : workerReviews > 0 && workerRating === 3 ? "your rating is good" : workerReviews > 0 && workerRating < 3 ? "try to improve you services" : "no ratings"}</span>
+                        </p>
+                      </Row>
+                    </CardBody>
+                  </Card>
+                </Col> :
+                <Col className="d-flex" lg="6" xl="3">
+                  <Card className="card-stats mb-4 mb-xl-0 flex-fill">
                     <CardBody>
                       <Row>
                         <Col>
                           <h5 className="card-title text-uppercase text-muted mb-0">Given reviews</h5>
                           <span className="h2 font-weight-bold mb-0">
-                            {customerRatings > 0 ? customerRatings + " reviews" : "No reviews yet"}
+                            {customerRatings > 0 ? customerRatings + " reviews" : "No reviews"}
                           </span>
                         </Col>
                         <Col className="col-auto">
@@ -229,8 +228,8 @@ const Header = () => {
                     </CardBody>
                   </Card>
                 </Col>}
-              <Col lg="6" xl="3">
-                <Card className="card-stats mb-4 mb-xl-0">
+              <Col className="d-flex" lg="6" xl="3">
+                <Card className="card-stats mb-4 mb-xl-0 flex-fill">
                   <CardBody>
                     <Row>
                       <Col>

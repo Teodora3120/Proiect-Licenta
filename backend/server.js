@@ -57,36 +57,8 @@ db.once('open', () => {
 
         console.log('New user connected', userId);
 
-        socket.on('orderCreated', (data) => {
-            // Get the user's socket based on data.customerId or data.workerId
-            const customerSocket = userConnections.get(data.customerId);
-            const workerSocket = userConnections.get(data.workerId);
-
-            // Broadcast the order creation event to the user's socket
-            if (customerSocket) {
-                customerSocket.emit('orderCreated', data);
-            }
-            if (workerSocket) {
-                workerSocket.emit('orderCreated', data);
-            }
-        });
-
-        socket.on('orderDeleted', (data) => {
-            // Get the user's socket based on data.customerId or data.workerId
-            const customerSocket = userConnections.get(data.customerId);
-            const workerSocket = userConnections.get(data.workerId);
-
-            // Broadcast the order deletion event to the user's socket
-            if (customerSocket) {
-                customerSocket.emit('orderDeleted', data);
-            }
-            if (workerSocket) {
-                workerSocket.emit('orderDeleted', data);
-            }
-        });
-
         socket.on('disconnect', () => {
-            console.log('A user disconnected');
+            console.log('A user disconnected', userId);
             userConnections.delete(userId)
         });
     });
