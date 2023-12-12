@@ -47,12 +47,16 @@ git clone https://github.com/Teodora3120/Proiect-Licenta.git
 
 ### Example .env file for the backend
 
+```env
 PORT=5000
-JWT_SECRET=
+JWT_SECRET=secret_key
+```
 
 ### Example .env file for the frontend
 
+```env
 REACT_APP_SERVER_URL=http://localhost:5000/
+```
 
 ## Usage
 
