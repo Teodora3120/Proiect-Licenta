@@ -11,7 +11,8 @@ import {
   InputGroup,
   Col,
   CardHeader,
-  Row
+  Row,
+  CardFooter
 } from 'reactstrap'
 import AuthApi from 'api/auth'
 import { useNavigate } from 'react-router-dom'
@@ -120,6 +121,9 @@ const Login = () => {
               </div>
             </Form>
           </CardBody>
+          <CardFooter className='bg-secondary text-center py-2'>
+            <small>Don't have an account?<br /><a href="/auth/register">Register one</a></small>
+          </CardFooter>
         </Card> :
           <Card>
             <CardHeader>
