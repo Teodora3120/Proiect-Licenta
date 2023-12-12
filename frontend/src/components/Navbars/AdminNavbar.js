@@ -24,6 +24,8 @@ const AdminNavbar = (props) => {
   const { user } = useUserContext();
   const { message } = useWebSocket();
 
+  console.log("Message from socket", message)
+
   useEffect(() => {
     if (user && user._id) {
       const fetchData = async () => {
@@ -76,7 +78,7 @@ const AdminNavbar = (props) => {
       await NotificationApi.SetReadNotification(notificationId)
       if (user.type === "customer") {
         navigate("/admin/my-orders")
-      } else {
+      } else if (user.type === "worker") {
         navigate("/admin/index")
       }
       getNotifications()

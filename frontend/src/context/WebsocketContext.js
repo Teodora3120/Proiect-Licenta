@@ -28,7 +28,6 @@ export const WebSocketProvider = ({ children }) => {
             setMessage(data);
         });
 
-        // Listen for the 'orderDeleted' event
         socketInstance.on('orderDeleted', (data) => {
             setMessage(data);
         });

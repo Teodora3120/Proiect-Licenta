@@ -116,7 +116,7 @@ const Header = () => {
 
         if (orderDate.isBefore(formattedDate, 'day')) {
           pastOrdersArr.push(order);
-        } else {
+        } else if (order.status === "On going") {
           futureOrdersArr.push(order);
         }
       });
