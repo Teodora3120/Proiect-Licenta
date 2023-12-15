@@ -9,7 +9,11 @@ import {
     Table,
     Pagination,
     PaginationItem,
-    PaginationLink
+    PaginationLink,
+    Dropdown,
+    DropdownMenu,
+    DropdownItem,
+    DropdownToggle
 } from "reactstrap";
 import { useUserContext } from "context/UserContext";
 import ServiceApi from "api/service";
@@ -17,6 +21,32 @@ import OrderApi from "api/order";
 import CustomerApi from "api/customer";
 import moment from "moment";
 
+
+const ordersTimeRange = [
+    {
+        time: 0,
+        title: "All"
+    },
+    {
+        time: 1,
+        title: "Last month"
+    },
+    {
+        time: 3,
+        title: "Last 3 months"
+    },
+    {
+        time: 6,
+        title: "Last 6 months"
+    },
+    {
+        time: 12,
+        title: "Last year"
+    }, {
+        time: 24,
+        title: "Last two years"
+    }
+]
 
 function formatDate(inputDate) {
     // Parse the input date string
@@ -30,9 +60,12 @@ function formatDate(inputDate) {
 
 const WorkerDashboard = () => {
     const [orders, setOrders] = useState([])
+    const [filteredOrders, setFilteredOrders] = useState([]);
     const [services, setServices] = useState([])
     const [customers, setCustomers] = useState([])
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedDuration, setSelectedDuration] = useState(ordersTimeRange[0]);
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const { user } = useUserContext();
     const itemsPerPage = 8;
 
@@ -44,6 +77,13 @@ const WorkerDashboard = () => {
         setCurrentPage(page);
     };
 
+    const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+    const handleSelectDuration = (duration) => {
+        setSelectedDuration(duration);
+        setDropdownOpen(false);
+        filterOrdersByDuration(duration);
+    };
 
     useEffect(() => {
         if (user._id) {
@@ -57,10 +97,25 @@ const WorkerDashboard = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user])
 
+    const filterOrdersByDuration = (duration) => {
+        const today = moment();
+        const filteredOrdersArr = orders.filter((order) => {
+            const orderDate = moment(order.date);
+            switch (duration.time) {
+                case 0: // All
+                    return true;
+                default:
+                    return orderDate.isAfter(today.clone().subtract(duration.time, 'months'));
+            }
+        });
+        setFilteredOrders(filteredOrdersArr);
+    };
+
     const getOrders = async () => {
         try {
             const response = await OrderApi.GetOrders(user._id)
             setOrders(response.data)
+            setFilteredOrders(response.data)
         } catch (error) {
             console.log(error)
         }
@@ -126,6 +181,21 @@ const WorkerDashboard = () => {
                             <Col>
                                 <h3>My Orders</h3>
                             </Col>
+                            <Col className="text-right">
+                                <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                                    <DropdownToggle caret>
+                                        {selectedDuration.title}
+                                    </DropdownToggle>
+                                    <DropdownMenu>
+                                        {ordersTimeRange.map((orderTimeRange) => {
+                                            return <DropdownItem
+                                                onClick={() => handleSelectDuration(orderTimeRange)}>{orderTimeRange.title}</DropdownItem>
+
+                                        })}
+
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </Col>
                         </Row>
                     </CardHeader>
                     <CardBody>
@@ -138,13 +208,14 @@ const WorkerDashboard = () => {
                                             <th scope="col" className="text-white">Service</th>
                                             <th scope="col" className="text-white">Date</th>
                                             <th scope="col" className="text-white">Price</th>
+                                            <th scope="col" className="text-white">Address</th>
                                             <th scope="col" className="text-white">Status</th>
                                             <th scope="col" className="text-white">Contact info</th>
                                             <th scope="col" className="text-white">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {orders && orders.length ? orders.sort((a, b) => new Date(b.date) - new Date(a.date))
+                                        {filteredOrders && filteredOrders.length ? filteredOrders.sort((a, b) => new Date(b.date) - new Date(a.date))
                                             .slice(startIndex, endIndex)
                                             .map((order, index) => {
                                                 const service = services?.length ? services.find((serviceObj) => {
@@ -158,6 +229,7 @@ const WorkerDashboard = () => {
                                                     <td>{service.name}</td>
                                                     <td>{formatDate(order.date)}, {order.start} </td>
                                                     <td>{service.price} RON</td>
+                                                    <td>{customer.address}</td>
                                                     <td>
                                                         <span className={`${order.status === 'Completed' ? 'text-success' :
                                                             order.status === 'Canceled' ? 'text-danger' : ''

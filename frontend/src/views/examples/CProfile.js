@@ -101,7 +101,7 @@ const CProfile = () => {
 
     const saveAccountChanges = async () => {
         if (!lastName || !address) {
-            setAccountDetailsError("All fields must not be null.")
+            setAccountDetailsError("All fields must be completed.")
             return
         }
         try {

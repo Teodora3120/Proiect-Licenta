@@ -118,7 +118,9 @@ router.get('/get-schedule-for-a-day/:userId', async (req, res) => {
         const ordersForDay = await Order.find({
             workerId: userId,
             date: date,
+            status: 'On going'
         });
+
 
         const service = await Service.findById(serviceId);
 

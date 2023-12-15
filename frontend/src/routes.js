@@ -6,6 +6,7 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Logout from "views/examples/Logout";
 import CustomerOrders from "views/examples/CustomerOrders";
+import Support from "views/examples/Support";
 
 var routes = {
   ADMIN: [],
@@ -29,6 +30,13 @@ var routes = {
       name: "My Orders",
       icon: "ni ni-cart text-info",
       component: <CustomerOrders />,
+      layout: "/admin",
+    },
+    {
+      path: "/support",
+      name: "Support",
+      icon: "ni ni-settings-gear-65 text-red",
+      component: <Support />,
       layout: "/admin",
     },
     {
@@ -76,6 +84,13 @@ var routes = {
       name: "My Schedule",
       icon: "ni ni-single-02 text-info",
       component: <WSchedule />,
+      layout: "/admin",
+    },
+    {
+      path: "/support",
+      name: "Support",
+      icon: "ni ni-settings-gear-65 text-red",
+      component: <Support />,
       layout: "/admin",
     },
     {

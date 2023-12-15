@@ -247,7 +247,7 @@ const WProfile = () => {
 
   const saveAccountChanges = async () => {
     if (!lastName || !address || !description) {
-      setAccountDetailsError("All fields must not be null.")
+      setAccountDetailsError("All fields must be completed.")
       return
     }
     try {
@@ -410,15 +410,15 @@ const WProfile = () => {
                   <div className="col">
                     <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                       <div>
-                        <span className="heading">{userPastOrders}</span>
+                        <span className="heading">{userPastOrders ? userPastOrders : 0}</span>
                         <span className="description text-nowrap">Past bookings</span>
                       </div>
                       <div>
-                        <span className="heading">{workerReviews}</span>
+                        <span className="heading">{workerReviews ? workerReviews : 0}</span>
                         <span className="description">Reviews</span>
                       </div>
                       <div>
-                        <span className="heading">{userFutureOrders}</span>
+                        <span className="heading">{userFutureOrders ? userFutureOrders : 0}</span>
                         <span className="description text-nowrap">Coming booking</span>
                       </div>
                     </div>
@@ -628,11 +628,11 @@ const WProfile = () => {
                       <Col lg="5" className="mt-xs-5">
                         <Row>
                           <Col>
-                            <Label>Service (maximum 5 services)</Label>
+                            <Label>Service </Label>
                           </Col>
                         </Row>
 
-                        <Button color="primary" size="sm" onClick={toggleModal} disabled={domain && services?.length < 5 ? false : true}> <i className="fa-solid fa-plus ml-2"></i> Add Custom Service</Button>
+                        <Button color="primary" size="sm" onClick={toggleModal}> <i className="fa-solid fa-plus ml-2"></i> Add Custom Service</Button>
                       </Col>
                     </Row>
                     <Row className="mt-5">
