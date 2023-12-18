@@ -222,7 +222,7 @@ const CProfile = () => {
                             </CardHeader>
                             <CardBody className="pt-0 pt-md-4">
                                 <Row>
-                                    <div className="col">
+                                    {user.type !== "admin" ? (<div className="col">
                                         <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                                             <div>
                                                 <span className="heading">{userPastOrders}</span>
@@ -237,7 +237,7 @@ const CProfile = () => {
                                                 <span className="description text-nowrap">Coming bookings</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>) : <div className="card-profile-stats d-flex justify-content-center mt-md-5"></div>}
                                 </Row>
                                 <div className="text-center">
                                     <div className="h5 font-weight-300">

@@ -225,8 +225,8 @@ const CustomerOrders = () => {
                                     <Col>
                                         <h2>My orders</h2>
                                     </Col>
-                                    <Col className="text-right">
-                                        <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+                                    <Col className="text-right mr-2">
+                                        <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown} direction="left">
                                             <DropdownToggle caret>
                                                 {selectedDuration.title}
                                             </DropdownToggle>

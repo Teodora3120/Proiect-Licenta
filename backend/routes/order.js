@@ -94,6 +94,16 @@ router.get('/get-orders/:userId', async (req, res) => {
     }
 });
 
+router.get('/get-all-orders', async (req, res) => {
+    try {
+        const orders = await Order.find();
+        res.status(200).json(orders);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
 router.patch('/update-order', async (req, res) => {
     const { orderId, status, userId } = req.body;
 

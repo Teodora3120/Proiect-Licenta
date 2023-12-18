@@ -7,9 +7,48 @@ import Login from "views/examples/Login.js";
 import Logout from "views/examples/Logout";
 import CustomerOrders from "views/examples/CustomerOrders";
 import Support from "views/examples/Support";
+import AdminData from "views/examples/AdminData";
 
 var routes = {
-  ADMIN: [],
+  ADMIN: [
+    {
+      path: "/data",
+      name: "Data",
+      icon: "ni ni-single-02 text-yellow",
+      component: <AdminData />,
+      layout: "/admin",
+    },
+    {
+      path: "/my-profile",
+      name: "My Profile",
+      icon: "ni ni-single-02 text-yellow",
+      component: <CProfile />,
+      layout: "/admin",
+    },
+    {
+      path: "/support",
+      name: "Support",
+      icon: "ni ni-settings-gear-65 text-red",
+      component: <Support />,
+      layout: "/admin",
+    },
+    {
+      path: "/login",
+      name: "Login",
+      icon: "ni ni-key-25 text-info",
+      component: <Login />,
+      layout: "/auth",
+      hide: true
+    },
+    {
+      path: "/logout",
+      name: "Logout",
+      icon: "ni ni-circle-08 text-pink",
+      component: <Logout />,
+      layout: "/auth",
+      hide: true
+    },
+  ],
   CUSTOMER: [
     {
       path: "/index",

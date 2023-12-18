@@ -333,7 +333,12 @@ const CustomerDashboard = () => {
                                                         <h5>Services:  <span className="font-weight-500">{concatenateServiceNames(worker._id, services)}</span></h5>
                                                         <h5>City: <span className="font-weight-500">{citiesJson[worker.city - 1].name}</span></h5>
                                                         <h5>Phone: <span className="font-weight-500"> +{worker.telephoneNumber}</span></h5>
-                                                        <h5>About: <span className="font-weight-500">{worker.description?.slice(0, 40)}...</span></h5>
+                                                        <h5>About: <span
+                                                            className="font-weight-500"
+                                                            data-toggle="tooltip"
+                                                            data-placement="left"
+                                                            title={worker.description}
+                                                        >{worker.description?.slice(0, 40)}...</span></h5>
                                                     </Col>
                                                 </Row>
                                             </CardBody>

@@ -16,6 +16,10 @@ class RatingApi {
     static async GetWorkersRatings() {
         return await axios.get(`/rating/workers-ratings`)
     }
+
+    static async GetRatings() {
+        return await axios.get(`/rating`)
+    }
 }
 
 export default RatingApi

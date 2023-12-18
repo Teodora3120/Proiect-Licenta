@@ -119,4 +119,15 @@ router.get('/workers-ratings', async (req, res) => {
 });
 
 
+router.get('/', async (req, res) => {
+    try {
+        const ratings = await Rating.find();
+        res.status(200).json(ratings);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
+
 module.exports = router;

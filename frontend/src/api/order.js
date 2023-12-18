@@ -10,9 +10,13 @@ class OrderApi {
         return await axios.get(`/order/get-orders/${userId}`)
     }
 
+    static async GetAllOrders() {
+        return await axios.get(`/order/get-all-orders`)
+    }
+
     static async UpdateOrder(data) {
         return await axios.patch(`/order/update-order`, data)
     }
 }
 
-export default OrderApi
+export default OrderApi;
