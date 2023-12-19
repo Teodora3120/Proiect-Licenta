@@ -1,10 +1,10 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const User = require('../models/User');
 const Service = require('../models/Service');
 const Order = require('../models/Order')
 
-router.put('/update-account-details/:userId', async (req, res) => {
+app.put('/update-account-details/:userId', async (req, res) => {
     try {
         const { lastName, address, description } = req.body;
         const userId = req.params.userId;
@@ -33,7 +33,7 @@ router.put('/update-account-details/:userId', async (req, res) => {
 });
 
 
-router.put('/save-domain/:userId', async (req, res) => {
+app.put('/save-domain/:userId', async (req, res) => {
     try {
         const { domain } = req.body;
         const userId = req.params.userId;
@@ -59,7 +59,7 @@ router.put('/save-domain/:userId', async (req, res) => {
     }
 });
 
-router.delete('/delete-account/:userId', async (req, res) => {
+app.delete('/delete-account/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -76,7 +76,7 @@ router.delete('/delete-account/:userId', async (req, res) => {
     }
 });
 
-router.put('/send-schedule/:userId', async (req, res) => {
+app.put('/send-schedule/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
         const { schedule } = req.body;
@@ -97,7 +97,7 @@ router.put('/send-schedule/:userId', async (req, res) => {
     }
 });
 
-router.get('/get-schedule-for-a-day/:userId', async (req, res) => {
+app.get('/get-schedule-for-a-day/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
         const date = req.query.date;
@@ -118,7 +118,9 @@ router.get('/get-schedule-for-a-day/:userId', async (req, res) => {
         const ordersForDay = await Order.find({
             workerId: userId,
             date: date,
+            status: 'On going'
         });
+
 
         const service = await Service.findById(serviceId);
 
@@ -206,7 +208,7 @@ router.get('/get-schedule-for-a-day/:userId', async (req, res) => {
 });
 
 
-router.get('/get-all-workers', async (req, res) => {
+app.get('/get-all-workers', async (req, res) => {
     try {
         const workers = await User.find({ type: "worker" });
         res.status(200).json(workers);
@@ -217,7 +219,7 @@ router.get('/get-all-workers', async (req, res) => {
 });
 
 
-router.get('/get-worker-by-id/:userId', async (req, res) => {
+app.get('/get-worker-by-id/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -234,5 +236,8 @@ router.get('/get-worker-by-id/:userId', async (req, res) => {
     }
 });
 
+app.listen(process.env.PORT_WORKER, () => {
+    console.log(`Worker microservice listening on port ${process.env.PORT_WORKER}`);
+});
 
-module.exports = router;
+module.exports = app;

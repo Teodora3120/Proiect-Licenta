@@ -1,10 +1,10 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const Service = require('../models/Service');
 const User = require('../models/User');
 
 
-router.get('/get-all-services', async (req, res) => {
+app.get('/get-all-services', async (req, res) => {
     try {
         const services = await Service.find();
 
@@ -15,7 +15,7 @@ router.get('/get-all-services', async (req, res) => {
     }
 });
 
-router.post('/create-service', async (req, res) => {
+app.post('/create-service', async (req, res) => {
     try {
         const { name, description, price, userId, domain, duration } = req.body;
 
@@ -52,7 +52,7 @@ router.post('/create-service', async (req, res) => {
 });
 
 
-router.put('/edit-service', async (req, res) => {
+app.put('/edit-service', async (req, res) => {
     try {
         const { name, description, price, duration, _id } = req.body;
 
@@ -80,7 +80,7 @@ router.put('/edit-service', async (req, res) => {
     }
 });
 
-router.delete('/delete-service/:serviceId', async (req, res) => {
+app.delete('/delete-service/:serviceId', async (req, res) => {
     try {
         const serviceId = req.params.serviceId;
 
@@ -114,7 +114,7 @@ router.delete('/delete-service/:serviceId', async (req, res) => {
 });
 
 
-router.delete('/delete-all-services/:userId', async (req, res) => {
+app.delete('/delete-all-services/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -134,7 +134,7 @@ router.delete('/delete-all-services/:userId', async (req, res) => {
     }
 });
 
-router.get('/get-services/:userId', async (req, res) => {
+app.get('/get-services/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -153,5 +153,8 @@ router.get('/get-services/:userId', async (req, res) => {
     }
 });
 
+app.listen(process.env.PORT_SERVICE, () => {
+    console.log(`Service microservice listening on port ${process.env.PORT_SERVICE}`);
+});
 
-module.exports = router;
+module.exports = app;

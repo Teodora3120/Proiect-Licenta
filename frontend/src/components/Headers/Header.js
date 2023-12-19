@@ -51,7 +51,10 @@ const Header = () => {
   useEffect(() => {
     const fetchData = async () => {
       await getUpdatedUser();
-      await getUserOrders();
+
+      if (user.type !== "admin") {
+        await getUserOrders();
+      }
       if (user.type === "customer") {
         await getCustomerRatings();
       } else if (user.type === "worker") {
@@ -130,7 +133,7 @@ const Header = () => {
       <div className="header bg-header pb-8 pt-5 pt-md-8">
         <Container fluid>
           <div className="header-body">
-            <Row>
+            {user.type !== "admin" ? (<Row>
               <Col className="d-flex" lg="6" xl="3">
                 <Card className="card-stats mb-4 mb-xl-0 flex-fill">
                   <CardBody>
@@ -253,7 +256,7 @@ const Header = () => {
                   </CardBody>
                 </Card>
               </Col>
-            </Row>
+            </Row>) : null}
           </div>
         </Container>
       </div>

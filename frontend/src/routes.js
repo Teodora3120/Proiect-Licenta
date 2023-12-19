@@ -6,9 +6,49 @@ import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Logout from "views/examples/Logout";
 import CustomerOrders from "views/examples/CustomerOrders";
+import Support from "views/examples/Support";
+import AdminSupport from "views/examples/AdminSupport";
 
 var routes = {
-  ADMIN: [],
+  ADMIN: [
+    {
+      path: "/index",
+      name: "Data",
+      icon: "ni ni-chart-bar-32 text-primary",
+      component: <Index />,
+      layout: "/admin",
+    },
+    {
+      path: "/my-profile",
+      name: "My Profile",
+      icon: "ni ni-single-02 text-yellow",
+      component: <CProfile />,
+      layout: "/admin",
+    },
+    {
+      path: "/admin-support",
+      name: "Support",
+      icon: "ni ni-settings-gear-65 text-red",
+      component: <AdminSupport />,
+      layout: "/admin",
+    },
+    {
+      path: "/login",
+      name: "Login",
+      icon: "ni ni-key-25 text-info",
+      component: <Login />,
+      layout: "/auth",
+      hide: true
+    },
+    {
+      path: "/logout",
+      name: "Logout",
+      icon: "ni ni-circle-08 text-pink",
+      component: <Logout />,
+      layout: "/auth",
+      hide: true
+    },
+  ],
   CUSTOMER: [
     {
       path: "/index",
@@ -29,6 +69,13 @@ var routes = {
       name: "My Orders",
       icon: "ni ni-cart text-info",
       component: <CustomerOrders />,
+      layout: "/admin",
+    },
+    {
+      path: "/support",
+      name: "Support",
+      icon: "ni ni-settings-gear-65 text-red",
+      component: <Support />,
       layout: "/admin",
     },
     {
@@ -76,6 +123,13 @@ var routes = {
       name: "My Schedule",
       icon: "ni ni-single-02 text-info",
       component: <WSchedule />,
+      layout: "/admin",
+    },
+    {
+      path: "/support",
+      name: "Support",
+      icon: "ni ni-settings-gear-65 text-red",
+      component: <Support />,
       layout: "/admin",
     },
     {

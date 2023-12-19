@@ -1,8 +1,8 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const User = require('../models/User');
 
-router.put('/update-account-details/:userId', async (req, res) => {
+app.put('/update-account-details/:userId', async (req, res) => {
     try {
         const { lastName, address } = req.body;
         const userId = req.params.userId;
@@ -30,7 +30,7 @@ router.put('/update-account-details/:userId', async (req, res) => {
 });
 
 
-router.delete('/delete-account/:userId', async (req, res) => {
+app.delete('/delete-account/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -48,7 +48,7 @@ router.delete('/delete-account/:userId', async (req, res) => {
 });
 
 
-router.get('/get-all-customers', async (req, res) => {
+app.get('/get-all-customers', async (req, res) => {
     try {
         const customers = await User.find({ type: "customer" });
         res.status(200).json(customers);
@@ -58,7 +58,7 @@ router.get('/get-all-customers', async (req, res) => {
     }
 });
 
-router.get('/get-customer-by-id/:userId', async (req, res) => {
+app.get('/get-customer-by-id/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
 
@@ -75,5 +75,8 @@ router.get('/get-customer-by-id/:userId', async (req, res) => {
     }
 });
 
+app.listen(process.env.PORT_CUSTOMER, () => {
+    console.log(`Customer microservice listening on port ${process.env.PORT_CUSTOMER}`);
+});
 
-module.exports = router;
+module.exports = app;

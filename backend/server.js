@@ -4,13 +4,14 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser')
 const http = require('http');
-const authRoute = require("./routes/auth")
-const workerRoute = require("./routes/worker")
-const customerRoute = require('./routes/customer')
-const serviceRoute = require('./routes/service')
-const orderRoute = require('./routes/order')
-const notificationRoute = require('./routes/notification')
-const ratingRoute = require('./routes/rating')
+const authRoute = require("./microservices/auth")
+const workerRoute = require("./microservices/worker")
+const customerRoute = require('./microservices/customer')
+const serviceRoute = require('./microservices/service')
+const orderRoute = require('./microservices/order')
+const notificationRoute = require('./microservices/notification')
+const ratingRoute = require('./microservices/rating')
+const supportQuestionRoute = require('./microservices/support-question')
 const verifyToken = require('./utils/verifyToken')
 const app = express();
 const port = process.env.PORT || 5000;
@@ -42,14 +43,14 @@ db.once('open', () => {
     app.use(cors());
     app.use(bodyParser.json())
 
-    //routes
     app.use('/auth', authRoute);
-    app.use('/worker', verifyToken, workerRoute)
     app.use('/customer', verifyToken, customerRoute)
-    app.use('/service', verifyToken, serviceRoute)
-    app.use('/order', verifyToken, orderRoute)
     app.use('/notification', verifyToken, notificationRoute)
+    app.use('/order', verifyToken, orderRoute)
     app.use('/rating', verifyToken, ratingRoute)
+    app.use('/service', verifyToken, serviceRoute)
+    app.use('/support', verifyToken, supportQuestionRoute)
+    app.use('/worker', verifyToken, workerRoute)
 
     io.on('connection', (socket) => {
         const userId = socket.handshake.query.userId;

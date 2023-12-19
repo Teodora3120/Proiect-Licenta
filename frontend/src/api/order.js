@@ -6,6 +6,10 @@ class OrderApi {
         return await axios.post(`/order/create-order`, data)
     }
 
+    static async GetAllOrders() {
+        return await axios.get(`/order/get-all-orders`)
+    }
+
     static async GetOrders(userId) {
         return await axios.get(`/order/get-orders/${userId}`)
     }
@@ -15,4 +19,4 @@ class OrderApi {
     }
 }
 
-export default OrderApi
+export default OrderApi;

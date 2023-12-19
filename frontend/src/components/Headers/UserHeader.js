@@ -31,8 +31,7 @@ const UserHeader = () => {
             <Col lg="7" md="10">
               <h1 className="display-2 text-white">Hello {fullName}</h1>
               <p className="text-white mt-0 mb-5">
-                This is your profile page. You can see your account details (and edit some of them),
-                or how many bookings did you have and other helpful information.
+                {user.type !== "admin" ? "This is your profile page. You can see your account details (and edit some of them), or how many bookings did you have and other helpful information." : "This is your profile page. You can see your account details and edit some of them."}
               </p>
             </Col>
           </Row>
