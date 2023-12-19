@@ -1,9 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const User = require('../models/User');
 const Notification = require('../models/Notification')
 
-router.get('/get-notifications-by-user/:userId', async (req, res) => {
+app.get('/get-notifications-by-user/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
         const user = await User.findById(userId);
@@ -21,7 +21,7 @@ router.get('/get-notifications-by-user/:userId', async (req, res) => {
     }
 });
 
-router.put('/set-read-notification/:notificationId', async (req, res) => {
+app.put('/set-read-notification/:notificationId', async (req, res) => {
     try {
         const notificationId = req.params.notificationId;
         if (!notificationId) {
@@ -45,4 +45,8 @@ router.put('/set-read-notification/:notificationId', async (req, res) => {
     }
 })
 
-module.exports = router;
+app.listen(process.env.PORT_NOTIFICATION, () => {
+    console.log(`Notification microservice listening on port ${process.env.PORT_NOTIFICATION}`);
+});
+
+module.exports = app;

@@ -14,6 +14,8 @@ import { useUserContext } from "context/UserContext";
 import { useWebSocket } from "context/WebsocketContext";
 import { useEffect, useState } from "react"
 import NotificationApi from "api/notification";
+import CustomerApi from "api/customer";
+import WorkerApi from "api/worker";
 
 
 const AdminNavbar = (props) => {
@@ -43,7 +45,10 @@ const AdminNavbar = (props) => {
   useEffect(() => {
     if (user && user._id) {
       const fetchData = async () => {
-        await getNotifications()
+        if (user.type !== "admin") {
+          await getNotifications()
+        }
+        await getUser();
       }
       fetchData()
     }
@@ -63,6 +68,22 @@ const AdminNavbar = (props) => {
         setUnreadNotifications(unreadNotif)
       }
       setNotifications(response.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const getUser = async () => {
+    try {
+      if (user.type === "customer") {
+        const response = await CustomerApi.GetUserById(user._id)
+        const updatedUser = response.data;
+        setFullName(updatedUser.firstName + " " + updatedUser.lastName)
+      } else {
+        const response = await WorkerApi.GetUserById(user._id)
+        const updatedUser = response.data;
+        setFullName(updatedUser.firstName + " " + updatedUser.lastName)
+      }
     } catch (error) {
       console.log(error)
     }
@@ -95,36 +116,38 @@ const AdminNavbar = (props) => {
             {props.brandText}
           </Link>
           <Nav className="align-items-center d-none d-md-flex" navbar>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav>
-                <i className={`fa-solid fa-bell text-lg mt-2 ${unreadNotifications > 0 ? "text-danger" : "text-white"}`} />
-              </DropdownToggle>
-              <DropdownMenu className="dropdown-menu-arrow" right style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                <DropdownItem className="noti-title text-lowercase" header tag="div">
-                  <h4 className="text-left text-muted font-weight-600 py-0 mb-4 mt-1">You have <span className="text-danger">{unreadNotifications}</span> new notifications.</h4>
-                </DropdownItem>
-                {notifications && notifications.length > 0 ? (
-                  notifications.reverse().map((notification, index) => (
-                    <DropdownItem key={index} onClick={() => readNotification(notification._id)} className="mb-3">
-                      <div className="d-flex align-items-center">
-                        <span className="avatar avatar-sm rounded-circle">
-                          <img
-                            alt="..."
-                            src={require("../../assets/img/brand/worker_notification_image-removebg-preview.png")}
-                          />
-                        </span>
-                        <span className="ml-2">{notification.message}</span>
-                        {notification.read === false ? (
-                          <span>
-                            <i className="fa-solid fa-circle text-danger ml-2"></i>
+            {user.type !== "admin" ? (
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav>
+                  <i className={`fa-solid fa-bell text-lg mt-2 ${unreadNotifications > 0 ? "text-danger" : "text-white"}`} />
+                </DropdownToggle>
+                <DropdownMenu className="dropdown-menu-arrow" right style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  <DropdownItem className="noti-title text-lowercase" header tag="div">
+                    <h4 className="text-left text-muted font-weight-600 py-0 mb-4 mt-1">You have <span className="text-danger">{unreadNotifications}</span> new notifications.</h4>
+                  </DropdownItem>
+                  {notifications && notifications.length > 0 ? (
+                    notifications.reverse().map((notification, index) => (
+                      <DropdownItem key={index} onClick={() => readNotification(notification._id)} className="mb-3">
+                        <div className="d-flex align-items-center">
+                          <span className="avatar avatar-sm rounded-circle">
+                            <img
+                              alt="..."
+                              src={require("../../assets/img/brand/worker_notification_image-removebg-preview.png")}
+                            />
                           </span>
-                        ) : null}
-                      </div>
-                    </DropdownItem>
-                  ))
-                ) : null}
-              </DropdownMenu>
-            </UncontrolledDropdown>
+                          <span className="ml-2">{notification.message}</span>
+                          {notification.read === false ? (
+                            <span>
+                              <i className="fa-solid fa-circle text-danger ml-2"></i>
+                            </span>
+                          ) : null}
+                        </div>
+                      </DropdownItem>
+                    ))
+                  ) : null}
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            ) : null}
 
             <UncontrolledDropdown nav>
               <DropdownToggle className="pr-0" nav>

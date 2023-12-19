@@ -1,11 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const User = require('../models/User');
 const Rating = require('../models/Rating');
 const Order = require('../models/Order');
 
 
-router.post('/rate', async (req, res) => {
+app.post('/rate', async (req, res) => {
     try {
         const { workerId, customerId, orderId, stars } = req.body;
 
@@ -51,7 +51,7 @@ router.post('/rate', async (req, res) => {
     }
 });
 
-router.get('/worker-rating/:workerId', async (req, res) => {
+app.get('/worker-rating/:workerId', async (req, res) => {
     try {
         const workerId = req.params.workerId;
 
@@ -77,7 +77,7 @@ router.get('/worker-rating/:workerId', async (req, res) => {
     }
 });
 
-router.get('/customer-ratings/:customerId', async (req, res) => {
+app.get('/customer-ratings/:customerId', async (req, res) => {
     try {
         const customerId = req.params.customerId;
 
@@ -94,7 +94,7 @@ router.get('/customer-ratings/:customerId', async (req, res) => {
     }
 });
 
-router.get('/workers-ratings', async (req, res) => {
+app.get('/workers-ratings', async (req, res) => {
     try {
         const workers = await User.find();
 
@@ -119,7 +119,7 @@ router.get('/workers-ratings', async (req, res) => {
 });
 
 
-router.get('/', async (req, res) => {
+app.get('/', async (req, res) => {
     try {
         const ratings = await Rating.find();
         res.status(200).json(ratings);
@@ -129,5 +129,8 @@ router.get('/', async (req, res) => {
     }
 });
 
+app.listen(process.env.PORT_RATING, () => {
+    console.log(`Rating microservice listening on port ${process.env.PORT_RATING}`);
+});
 
-module.exports = router;
+module.exports = app;

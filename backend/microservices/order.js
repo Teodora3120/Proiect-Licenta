@@ -1,11 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const Order = require('../models/Order')
 const User = require('../models/User')
 const Notification = require('../models/Notification')
 const { userConnections } = require('../socketConnections');
 
-router.post('/create-order', async (req, res) => {
+app.post('/create-order', async (req, res) => {
     try {
         const { customerId, workerId, serviceId, date, start, paid } = req.body;
 
@@ -66,7 +66,7 @@ router.post('/create-order', async (req, res) => {
 });
 
 
-router.get('/get-orders/:userId', async (req, res) => {
+app.get('/get-orders/:userId', async (req, res) => {
     try {
         const userId = req.params.userId;
         if (!userId) {
@@ -94,7 +94,7 @@ router.get('/get-orders/:userId', async (req, res) => {
     }
 });
 
-router.get('/get-all-orders', async (req, res) => {
+app.get('/get-all-orders', async (req, res) => {
     try {
         const orders = await Order.find();
         res.status(200).json(orders);
@@ -104,7 +104,7 @@ router.get('/get-all-orders', async (req, res) => {
     }
 });
 
-router.patch('/update-order', async (req, res) => {
+app.patch('/update-order', async (req, res) => {
     const { orderId, status, userId } = req.body;
 
     try {
@@ -149,6 +149,8 @@ router.patch('/update-order', async (req, res) => {
     }
 });
 
+app.listen(process.env.PORT_ORDER, () => {
+    console.log(`Order microservice listening on port ${process.env.PORT_ORDER}`);
+});
 
-
-module.exports = router;
+module.exports = app;

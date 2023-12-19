@@ -1,12 +1,12 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt')
 require('dotenv').config();
 const jwtSecret = process.env.JWT_SECRET;
 
-router.post('/register', async (req, res) => {
+app.post('/register', async (req, res) => {
     try {
         const { firstName, lastName, email, password, dateOfBirth, city, type, telephoneNumber } = req.body;
 
@@ -29,7 +29,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+app.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -62,5 +62,8 @@ router.post('/login', async (req, res) => {
     }
 });
 
+app.listen(process.env.PORT_AUTH, () => {
+    console.log(`Auth microservice listening on port ${process.env.PORT_AUTH}`);
+});
 
-module.exports = router;
+module.exports = app;

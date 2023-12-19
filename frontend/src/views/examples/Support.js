@@ -43,10 +43,11 @@ const Support = () => {
     const submitReport = async () => {
         try {
             setLoading(true);
+            console.log(user)
             const data = {
                 userId: user._id,
                 userEmail: user.email,
-                userFullname: user.lastname + " " + user.firstame,
+                userFullname: user.lastName + " " + user.firstName,
                 question: reportDescription,
             };
             await SupportQuestionApi.CreateSupportQuestion(data);

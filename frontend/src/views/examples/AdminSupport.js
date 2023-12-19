@@ -164,7 +164,7 @@ const AdminSupport = () => {
                                                     style={{ cursor: "pointer" }}
                                                     onClick={() => toggleAnswerAdmin(index)}
                                                 >
-                                                    {questionText}
+                                                    {questionText} <small>asked by {question.userFullname} ({question.userEmail})</small>
                                                 </div>
                                                 <small className="text-muted text-right">Created on {moment(question.createdAt).format('MMMM D, YYYY [at] h:mm A')}</small>
                                                 {question.isOpen && question.answer ? (

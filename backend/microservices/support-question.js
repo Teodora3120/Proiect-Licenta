@@ -1,9 +1,9 @@
 const express = require('express');
-const router = express.Router();
+const app = express();
 const User = require('../models/User');
 const SupportQuestion = require('../models/SupportQuestion')
 
-router.post('/create-question', async (req, res) => {
+app.post('/create-question', async (req, res) => {
     try {
         const { userId, userEmail, userFullname, question } = req.body;
 
@@ -35,7 +35,7 @@ router.post('/create-question', async (req, res) => {
 });
 
 
-router.put('/answer-question', async (req, res) => {
+app.put('/answer-question', async (req, res) => {
     try {
         const { answer, questionId } = req.body;
 
@@ -60,7 +60,7 @@ router.put('/answer-question', async (req, res) => {
     }
 });
 
-router.put('/edit-answer-question', async (req, res) => {
+app.put('/edit-answer-question', async (req, res) => {
     try {
         const { answer, questionId } = req.body;
 
@@ -85,7 +85,7 @@ router.put('/edit-answer-question', async (req, res) => {
     }
 });
 
-router.get('/', async (req, res) => {
+app.get('/', async (req, res) => {
     try {
         const allQuestions = await SupportQuestion.find();
         res.status(200).json(allQuestions);
@@ -95,4 +95,8 @@ router.get('/', async (req, res) => {
     }
 })
 
-module.exports = router;
+app.listen(process.env.PORT_SUPPORT_QUESTION, () => {
+    console.log(`Support-question microservice listening on port ${process.env.PORT_SUPPORT_QUESTION}`);
+});
+
+module.exports = app;
