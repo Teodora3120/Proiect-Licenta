@@ -52,6 +52,8 @@ const Login = () => {
       console.log(error)
       if (error.response.status === 401) {
         return setError("Invalid credentials.")
+      } else if (error.response.status === 404) {
+        return setError("This account does not exists.")
       }
       return setError('There has been an error.')
     }
