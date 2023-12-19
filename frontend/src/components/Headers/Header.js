@@ -51,7 +51,10 @@ const Header = () => {
   useEffect(() => {
     const fetchData = async () => {
       await getUpdatedUser();
-      await getUserOrders();
+
+      if (user.type !== "admin") {
+        await getUserOrders();
+      }
       if (user.type === "customer") {
         await getCustomerRatings();
       } else if (user.type === "worker") {

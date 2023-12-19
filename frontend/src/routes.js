@@ -7,15 +7,15 @@ import Login from "views/examples/Login.js";
 import Logout from "views/examples/Logout";
 import CustomerOrders from "views/examples/CustomerOrders";
 import Support from "views/examples/Support";
-import AdminData from "views/examples/AdminData";
+import AdminSupport from "views/examples/AdminSupport";
 
 var routes = {
   ADMIN: [
     {
-      path: "/data",
+      path: "/index",
       name: "Data",
-      icon: "ni ni-single-02 text-yellow",
-      component: <AdminData />,
+      icon: "ni ni-chart-bar-32 text-primary",
+      component: <Index />,
       layout: "/admin",
     },
     {
@@ -26,10 +26,10 @@ var routes = {
       layout: "/admin",
     },
     {
-      path: "/support",
+      path: "/admin-support",
       name: "Support",
       icon: "ni ni-settings-gear-65 text-red",
-      component: <Support />,
+      component: <AdminSupport />,
       layout: "/admin",
     },
     {

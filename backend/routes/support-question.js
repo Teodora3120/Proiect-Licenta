@@ -22,7 +22,7 @@ router.post('/create-question', async (req, res) => {
             userEmail,
             userFullname,
             question,
-            response: ""
+            answer: ""
         });
 
         const savedQuestion = await supportQuestion.save();
@@ -36,6 +36,31 @@ router.post('/create-question', async (req, res) => {
 
 
 router.put('/answer-question', async (req, res) => {
+    try {
+        const { answer, questionId } = req.body;
+
+        if (!answer || !questionId) {
+            return res.status(400).json('Missing required fields');
+        }
+
+        const question = await SupportQuestion.findById(questionId);
+
+        if (!question) {
+            return res.status(404).json({ message: 'Question not found' });
+        }
+
+        question.answer = answer;
+
+        await question.save();
+
+        res.status(200).json(question);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json('Internal Server Error');
+    }
+});
+
+router.put('/edit-answer-question', async (req, res) => {
     try {
         const { answer, questionId } = req.body;
 

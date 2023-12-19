@@ -14,6 +14,10 @@ class SupportQuestionApi {
         return await axios.put('/support/answer-question', data)
     }
 
+    static async EditAnswerSupportQuestion(data) {
+        return await axios.put('/support/edit-answer-question', data)
+    }
+
 }
 
 export default SupportQuestionApi
