@@ -272,9 +272,10 @@ const WProfile = () => {
   }
 
   const saveDomain = async (domain) => {
-    if (!domain.value) {
-      return
+    if (!domain || !domain.value) {
+      return;
     }
+
     try {
       const data = {
         domain: domain.value
@@ -295,7 +296,7 @@ const WProfile = () => {
   const getUser = async () => {
     try {
       const response = await WorkerApi.GetUserById(user._id)
-      const newUser = response.data
+      const newUser = response.data;
       setLastName(newUser?.lastName)
       setDateOfBirth(newUser?.dateOfBirth)
       setAdress(newUser?.address)
@@ -462,8 +463,10 @@ const WProfile = () => {
                 <Row className="align-items-center">
                   <Col xs="8" className="text-left">
                     <h3 className="mb-0">My account</h3>
-                    {!scheduleExists === 0 || services.length === 0 ?
-                      <h4 className="font-weight-400 text-nowrap text-danger mb-0">You must add you schedule and services in order to be active on this platform.</h4> : null}
+                    {services.length === 0 ?
+                      <h4 className="font-weight-400 text-nowrap text-danger mb-0">You must add your services in order to be active on this platform.</h4> : null}
+                    {!scheduleExists ?
+                      <h4 className="font-weight-400 text-nowrap text-danger mb-0">You must set your schedule in order to be active on this platform.</h4> : null}
                   </Col>
                   <Col className="text-right">
                     {accountChanges ? <h4 className="font-weight-400 text-nowrap text-success mb-0">Account changes saved successfully</h4> :
@@ -621,7 +624,6 @@ const WProfile = () => {
                           }
                           defaultValue={domain}
                           onChange={(e) => saveDomain(e)}
-                          isClearable
                         />
                         {errorDomain ? <h4 className="font-weight-400 text-danger">{errorDomain}</h4> : ""}
                       </Col>
@@ -632,7 +634,7 @@ const WProfile = () => {
                           </Col>
                         </Row>
 
-                        <Button color="primary" size="sm" onClick={toggleModal}> <i className="fa-solid fa-plus ml-2"></i> Add Custom Service</Button>
+                        <Button color="primary" size="sm" disabled={!domain ? true : false} onClick={toggleModal}> <i className="fa-solid fa-plus ml-2"></i> Add Custom Service</Button>
                       </Col>
                     </Row>
                     <Row className="mt-5">
@@ -798,7 +800,6 @@ const WProfile = () => {
                     { value: '7', label: '7 hours' },
                     { value: '8', label: '8 hours' },
                   ]}
-                  isClearable
                   onChange={(e) => handleService("duration", e.value)}
                 />
               </FormGroup>

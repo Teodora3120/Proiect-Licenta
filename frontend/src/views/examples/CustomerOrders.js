@@ -101,6 +101,7 @@ const CustomerOrders = () => {
     const [services, setServices] = useState([])
     const [workers, setWorkers] = useState([])
     const [workerModalOpen, setWorkerModalOpen] = useState(false);
+    const [unkownWorkerModalOpen, setUnknownWorkerModalOpen] = useState(false);
     const [selectedWorker, setSelectedWorker] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDuration, setSelectedDuration] = useState(ordersTimeRange[0]);
@@ -129,7 +130,7 @@ const CustomerOrders = () => {
         const filteredOrdersArr = orders.filter((order) => {
             const orderDate = moment(order.date);
             switch (duration.time) {
-                case 0: // All
+                case 0:
                     return true;
                 default:
                     return orderDate.isAfter(today.clone().subtract(duration.time, 'months'));
@@ -140,8 +141,12 @@ const CustomerOrders = () => {
 
 
     const handleWorkerClick = (worker) => {
-        setSelectedWorker(worker);
-        setWorkerModalOpen(true);
+        if (worker && worker._id) {
+            setSelectedWorker(worker);
+            setWorkerModalOpen(true);
+        } else {
+            setUnknownWorkerModalOpen(true);
+        }
     };
 
     useEffect(() => {
@@ -231,8 +236,8 @@ const CustomerOrders = () => {
                                                 {selectedDuration.title}
                                             </DropdownToggle>
                                             <DropdownMenu>
-                                                {ordersTimeRange.map((orderTimeRange) => {
-                                                    return <DropdownItem
+                                                {ordersTimeRange.map((orderTimeRange, index) => {
+                                                    return <DropdownItem key={index}
                                                         onClick={() => handleSelectDuration(orderTimeRange)}>{orderTimeRange.title}</DropdownItem>
 
                                                 })}
@@ -268,38 +273,38 @@ const CustomerOrders = () => {
                                                             const worker = workers?.length ? workers.find((workerObj) => {
                                                                 return workerObj._id === order.workerId
                                                             }) : {}
+                                                            const tooltipTitle = `${worker?.firstName ? "See" + worker?.firstName + "'s profile" : "Unkown data"}`
                                                             return <tr key={index}>
-                                                                <td>{service.name}</td>
-                                                                <td data-toggle="tooltip" data-placement="top" title={`See ${worker.firstName}'s profile`}>
+                                                                <td>{service?.name}</td>
+                                                                <td data-toggle="tooltip" data-placement="top" title={tooltipTitle}>
                                                                     <span
                                                                         style={{ cursor: 'pointer', textDecoration: 'underline', color: 'blue' }}
                                                                         onClick={() => handleWorkerClick(worker)}
                                                                     >
-                                                                        {worker.firstName} {worker.lastName}
+                                                                        {worker?.firstName ? worker?.firstName : "[deleted account]"} {worker?.lastName ? worker?.lastName : ""}
                                                                     </span>
                                                                 </td>
-                                                                <td>{formatDate(order.date)}, {order.start} </td>
-                                                                <td>{service.price} RON</td>
+                                                                <td>{formatDate(order?.date)}, {order?.start} </td>
+                                                                <td>{service?.price ? service?.price : "Unkown price"} RON</td>
                                                                 <td>
-                                                                    <span className={`${order.status === 'Completed' ? 'text-success' :
-                                                                        order.status === 'Canceled' ? 'text-danger' : ''
+                                                                    <span className={`${order?.status === 'Completed' ? 'text-success' :
+                                                                        order?.status === 'Canceled' ? 'text-danger' : ''
                                                                         }`}>
-                                                                        {order.status}
+                                                                        {order?.status}
                                                                     </span>
                                                                 </td>
                                                                 <td>
-                                                                    <h6>{worker.email}</h6>
-                                                                    <h6>+{worker.telephoneNumber}</h6>
-                                                                    {worker.telephoneNumer}
+                                                                    <h6>{worker?.email ? worker.email : "-"}</h6>
+                                                                    <h6>{worker?.telephoneNumber ? "+" + worker.telephoneNumber : ""}</h6>
                                                                 </td>
                                                                 <td>
-                                                                    {order.status === 'On going' ? (
-                                                                        <Button color="danger" size="sm" onClick={() => cancelOrder(order._id, user._id)}>
+                                                                    {order?.status === 'On going' ? (
+                                                                        <Button color="danger" size="sm" onClick={() => cancelOrder(order?._id, user?._id)}>
                                                                             Cancel
                                                                         </Button>
-                                                                    ) : order.status === 'Completed' ? (
-                                                                        order.rating ? (
-                                                                            <h4>{renderRatingStars(order.rating)}</h4>
+                                                                    ) : order?.status === 'Completed' ? (
+                                                                        order?.rating ? (
+                                                                            <h4>{renderRatingStars(order?.rating)}</h4>
                                                                         ) : (
                                                                             <Rating onClick={(e) => handleRating(e, worker, order)} size="20" />
                                                                         )
@@ -350,12 +355,15 @@ const CustomerOrders = () => {
                     worker={selectedWorker}
                 />
             )}
+            <UnkownWorkerModal
+                isOpen={unkownWorkerModalOpen}
+                toggle={() => setUnknownWorkerModalOpen(!unkownWorkerModalOpen)}
+            />
         </>
     )
 }
 
 const WorkerDetailsModal = ({ isOpen, toggle, worker }) => {
-
     const [workerPastOrders, setWorkerPastOrders] = useState(0);
     const [workerFutureOrders, setWorkerFutureOrders] = useState(0);
     const [workerReviews, setWorkerReviews] = useState(0);
@@ -431,11 +439,11 @@ const WorkerDetailsModal = ({ isOpen, toggle, worker }) => {
     return (
         <Modal isOpen={isOpen} toggle={toggle}>
             <ModalHeader toggle={toggle} className="bg-secondary">
-                <h4>{worker.firstName}'s profile</h4>
+                <h4>{worker?.firstName ? worker.firstName + "'s profile" : "Deleted account"}</h4>
             </ModalHeader>
             <ModalBody>
                 <Row>
-                    <Col className="">
+                    <Col>
                         <Card className="card-profile shadow">
                             <Row className="justify-content-center">
                                 <Col className="order-lg-2" lg="3">
@@ -461,7 +469,7 @@ const WorkerDetailsModal = ({ isOpen, toggle, worker }) => {
                                                 <span className="description text-nowrap">Past bookings</span>
                                             </div>
                                             <div>
-                                                <span className="heading">{workerReviews}</span>
+                                                <span className="heading">{workerReviews ? workerReviews : 0}</span>
                                                 <span className="description">Reviews</span>
                                             </div>
                                             <div>
@@ -488,20 +496,24 @@ const WorkerDetailsModal = ({ isOpen, toggle, worker }) => {
                                         {city}, Romania
                                     </div>
                                     <div className="h5 font-weight-300">
+                                        <i className="fa-solid fa-location-dot mr-2" />
+                                        {worker?.address ? worker?.address : "Ask the worker via email or phone number"}
+                                    </div>
+                                    <div className="h5 font-weight-300">
                                         <i className="fa-solid fa-cake-candles mr-2" />
-                                        {worker.dateOfBirth}
+                                        {worker?.dateOfBirth}
                                     </div>
                                     <div className="h5 mt-4">
                                         <i className="ni business_briefcase-24 mr-2" />
-                                        {domain.name ? domain.name : "Unknown Domain"}
+                                        {domain?.name ? domain.name : "Unknown Domain"}
                                     </div>
                                     <div className="h5 mt-4">
                                         <i className="fa-solid fa-phone mr-2" />
-                                        {worker.telephoneNumber ? "+" + worker.telephoneNumber : "Unknown telephone  number"}
+                                        {worker?.telephoneNumber ? "+" + worker.telephoneNumber : "Unknown telephone  number"}
                                     </div>
                                     <hr className="my-4" />
                                     <p>
-                                        {worker.description ? worker.description : "No description"}
+                                        {worker?.description ? worker.description : "No description"}
                                     </p>
                                 </div>
                             </CardBody>
@@ -510,6 +522,27 @@ const WorkerDetailsModal = ({ isOpen, toggle, worker }) => {
                 </Row>
             </ModalBody>
         </Modal>
+
+    );
+};
+
+
+const UnkownWorkerModal = ({ isOpen, toggle }) => {
+
+    return (
+        <Modal isOpen={isOpen} toggle={toggle}>
+            <ModalHeader toggle={toggle} className="bg-secondary">
+                <h4>Deleted account</h4>
+            </ModalHeader>
+            <ModalBody>
+                <Row>
+                    <Col>
+                        <h5>This account was deleted by its owner, therefore we no longer have any information about it.</h5>
+                    </Col>
+                </Row>
+            </ModalBody>
+        </Modal>
+
     );
 };
 

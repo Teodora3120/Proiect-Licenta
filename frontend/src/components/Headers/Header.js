@@ -200,7 +200,7 @@ const Header = () => {
                           <span className={workerRating > 3 ? `text-success mr-2` : workerRating === 3 ? `text-yellow mr-2` : `text-danger mr-2`}>
                             <i className={workerRating > 3 ? `fa-solid fa-arrow-up` : `fa-solid fa-arrow-down`}></i>
                           </span>
-                          <span className="text-nowrap">{workerReviews > 0 && workerRating > 3 ? "your rating is very good" : workerReviews > 0 && workerRating === 3 ? "your rating is good" : workerReviews > 0 && workerRating < 3 ? "try to improve you services" : "no ratings"}</span>
+                          <span className="text-nowrap">{workerReviews > 0 && workerRating > 3 ? "your rating is very good" : workerReviews > 0 && workerRating === 3 ? "your rating is good" : workerReviews > 0 && workerRating < 3 ? "try to improve you services" : "no ratings received yet"}</span>
                         </p>
                       </Row>
                     </CardBody>
