@@ -28,7 +28,7 @@ const serviceSchema = new mongoose.Schema({
     }
 },
     {
-        timestamps: true // Automatically add createdAt and updatedAt fields
+        timestamps: true
     });
 
 const Service = mongoose.model('Service', serviceSchema);

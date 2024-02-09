@@ -557,7 +557,6 @@ const WProfile = () => {
                     </Row>
                   </div>
                   <hr className="my-4" />
-                  {/* Address */}
                   <h6 className="heading-small text-muted mb-4">
                     Contact information
                   </h6>
@@ -682,7 +681,6 @@ const WProfile = () => {
                     </Row>
                   </div>
                   <hr className="my-4" />
-                  {/* Description */}
                   <h6 className="heading-small text-muted mb-4">About me</h6>
                   <div className="pl-lg-4">
                     <FormGroup>

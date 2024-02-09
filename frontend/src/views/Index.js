@@ -15,7 +15,6 @@ const Index = () => {
   return (
     <>
       <Header />
-      {/* Page content */}
       <Container className="mt--7" fluid>
         {user.type === "customer" ? <CustomerDashboard /> : user.type === "worker" ? <WorkerDashboard /> : user.type === "admin" ? <AdminData /> : null}
       </Container>

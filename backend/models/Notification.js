@@ -16,10 +16,10 @@ const notificationSchema = new mongoose.Schema({
     },
     read: {
         type: Boolean,
-        default: false // Set to false by default
+        default: false
     }
 }, {
-    timestamps: true // Automatically add createdAt and updatedAt fields
+    timestamps: true
 });
 
 const Notification = mongoose.model('Notification', notificationSchema);

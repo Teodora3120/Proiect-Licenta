@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Define the Order schema
 const orderSchema = new mongoose.Schema({
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -40,10 +39,9 @@ const orderSchema = new mongoose.Schema({
     },
 },
     {
-        timestamps: true // Automatically add createdAt and updatedAt fields
+        timestamps: true
     });
 
-// Create the 'Order' model
 const Order = mongoose.model('Order', orderSchema);
 
 module.exports = Order;

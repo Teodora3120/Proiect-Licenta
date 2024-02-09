@@ -61,7 +61,7 @@ const useUserContext = () => {
     // get the context
     const context = useContext(UserContext)
 
-    // if `undefined`, throw an error
+    // if `undefined`, return empty object
     if (context === undefined) {
         return {};
     }
