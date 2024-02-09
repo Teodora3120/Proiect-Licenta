@@ -10,6 +10,8 @@ import { UserContextProvider } from 'context/UserContext'
 import ProtectedRoute from './utils/ProtectedRoute'
 import { WebSocketProvider } from 'context/WebsocketContext'
 
+import NotFoundPage from 'views/examples/NotFound';
+
 const App = () => {
     return (
         <BrowserRouter>
@@ -27,7 +29,7 @@ const App = () => {
                         <Route
                             path="/"
                             element={<Navigate to="/auth/login" replace />} />
-                        <Route path="*" element={<Navigate to="/" replace />} />
+                        <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                 </WebSocketProvider>
             </UserContextProvider>

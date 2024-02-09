@@ -200,7 +200,6 @@ const CProfile = () => {
     return (
         <>
             <UserHeader />
-            {/* Page content */}
             <Container className="mt--7" fluid>
                 <Row>
                     <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">

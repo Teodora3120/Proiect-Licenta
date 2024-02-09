@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -68,7 +67,7 @@ const userSchema = new mongoose.Schema({
     }],
 },
     {
-        timestamps: true // Automatically add createdAt and updatedAt fields
+        timestamps: true
     });
 
 const User = mongoose.model('User', userSchema);

@@ -3,7 +3,6 @@ import React from "react";
 import { useLocation, Route, Routes, Navigate } from "react-router-dom";
 import { Container, Row, Col } from "reactstrap";
 
-// core components
 import AuthNavbar from "components/Navbars/AuthNavbar.js";
 import AuthFooter from "components/Footers/AuthFooter.js";
 
@@ -55,7 +54,7 @@ const Auth = (props) => {
             </div>
           </Container>
         </div>
-        {/* Page content */}
+
         <Container className="mt--8 pb-5">
           <Row className="justify-content-center">
             <Routes>
